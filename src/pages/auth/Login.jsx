@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { GoogleIcon } from "@/components/common/GoogleIcon";
 
 export default function Login() {
   const [email, setEmail] = useState("");

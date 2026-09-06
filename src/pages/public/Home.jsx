@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Layers, Boxes, Ruler, Sparkles, PaintBucket, Maximize } from "lucide-react";
 import { productService } from "@/services/productService";
 import { galleryService } from "@/services/galleryService";
-import SectionHeading from "@/components/layout/SectionHeading";
+
 import ProductCard from "@/components/site/ProductCard";
 import { Image } from "@/components/ui/image";
 import { GALLERY_SEED } from "@/lib/interiorData";

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import {
-  LayoutDashboard, Package, MessageSquare, Images, Home, ChevronLeft, ChevronRight, Menu, X, Settings as SettingsIcon, LogOut, Shield
+  LayoutDashboard, Package, MessageSquare, Images, Home, ChevronLeft, ChevronRight, Menu, X, Settings as SettingsIcon, LogOut
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
