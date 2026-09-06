@@ -24,10 +24,10 @@ export default function Register() {
     if (!form.name || !form.email || !form.password) {
       return setError("Please fill in all required fields.");
     }
-    if (!/^\\S+@\\S+\\.\\S+$/.test(form.email)) {
+    if (!/^\S+@\S+\.\S+$/.test(form.email)) {
       return setError("Please enter a valid email address.");
     }
-    if (form.phone && !/^\\+?[0-9\\s\\-()]{7,15}$/.test(form.phone)) {
+    if (form.phone && !/^\+?[0-9\s\-()]{7,15}$/.test(form.phone)) {
       return setError("Please enter a valid phone number.");
     }
     if (form.password.length < 8) {
