@@ -15,7 +15,7 @@ export default function About() {
     <div className="pb-24">
       <PageHero
         title="About Shree Mangalam"
-        subtitle="Crafting beautiful, functional spaces since 2010"
+        description="Crafting beautiful, functional spaces since 2010"
         image="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop"
       />
 

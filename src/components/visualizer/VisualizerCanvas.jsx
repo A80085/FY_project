@@ -2,7 +2,6 @@ import React, { useEffect, useRef, forwardRef, useImperativeHandle } from "react
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
-import { Maximize2, RotateCw, Sun, RefreshCw } from "lucide-react";
 import { FINISH_PROPS, BUILTIN_SLOTS } from "./constants";
 
 // ---------- texture helpers ----------
