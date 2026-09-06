@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, X, Layers, User, LogOut, Shield, Compass, Calculator, Image as ImageIcon, PhoneCall } from "lucide-react";
+import { Menu, X, User, LogOut, Shield } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 

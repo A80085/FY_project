@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MessageSquare, Check, Trash2, Mail, Phone, Calendar, Search } from "lucide-react";
+import { Trash2, Mail, Phone, Calendar, Search } from "lucide-react";
 import { inquiryService } from "@/services/inquiryService";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Skeleton } from "@/components/ui/skeleton";

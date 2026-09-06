@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Check, AlertTriangle, ShieldCheck, Truck, Package } from "lucide-react";
+import { ArrowLeft, Check, AlertTriangle, ShieldCheck, Truck } from "lucide-react";
 import { productService } from "@/services/productService";
 import { formatINR, PRODUCT_SEED } from "@/lib/interiorData";
 import { Image } from "@/components/ui/image";

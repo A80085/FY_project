@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Package, AlertTriangle, MessageSquare, TrendingUp, ArrowRight, Boxes, Wallet, Images } from "lucide-react";
+import { Package, AlertTriangle, MessageSquare, TrendingUp, ArrowRight, Boxes, Wallet } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
 import { productService } from "@/services/productService";
 import { inquiryService } from "@/services/inquiryService";

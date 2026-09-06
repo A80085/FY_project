@@ -1,6 +1,5 @@
 import React from "react";
 import { AlertTriangle, Home } from "lucide-react";
-import { Link } from "react-router-dom";
 
 export class ErrorBoundary extends React.Component {
   constructor(props) {

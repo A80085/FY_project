@@ -4,6 +4,9 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { FINISH_PROPS, BUILTIN_SLOTS } from "./constants";
 
+// Room shell dimensions (width x height x depth in metres)
+const ROOM_DIMS = { w: 8.4, h: 3.2, d: 8.4 };
+
 // ---------- texture helpers ----------
 function makeCanvasTexture(size, draw) {
   const c = document.createElement("canvas");
