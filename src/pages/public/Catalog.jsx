@@ -44,7 +44,7 @@ export default function Catalog() {
         eyebrow="Material Catalog"
         title="Browse our full range"
         description="Filter by category and search by finish, colour family or name. Prices are indicative and may vary with custom sizing."
-        image="https://images.unsplash.com/photo-1567016526105-22da7c13161a?auto=format&fit=crop&w=1600&q=80"
+        image="https://loremflickr.com/1200/800/interior,design?lock=18"
       />
       <div className="container-px max-w-7xl mx-auto pt-10">
         {/* controls */}

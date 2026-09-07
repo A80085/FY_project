@@ -68,7 +68,7 @@ export default function Inquiry() {
         eyebrow="Contact & Inquiries"
         title="Let's talk interiors."
         description="Send us a message and we'll get back with pricing, availability or a site visit."
-        image="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=80"
+        image="https://loremflickr.com/1200/800/interior,design?lock=24"
       />
       <div className="container-px max-w-7xl mx-auto pt-10">
         <div className="grid lg:grid-cols-[1fr_360px] gap-8">
@@ -108,7 +108,7 @@ export default function Inquiry() {
           <div className="space-y-4">
             <div className="bg-primary text-primary-foreground rounded-sm overflow-hidden shadow-md">
               <div className="relative h-32">
-                <Image src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=900&q=80" alt="Showroom" className="h-full w-full object-cover" fittingType="fill" />
+                <Image src="https://loremflickr.com/1200/800/interior,design?lock=25" alt="Showroom" className="h-full w-full object-cover" fittingType="fill" />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary to-primary/40" />
               </div>
               <div className="p-6">

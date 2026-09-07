@@ -16,7 +16,7 @@ export default function About() {
       <PageHero
         title="About Shree Mangalam"
         description="Crafting beautiful, functional spaces since 2010"
-        image="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop"
+        image="https://loremflickr.com/1200/800/interior,design?lock=16"
       />
 
       <div className="container mx-auto px-4 md:px-8 mt-16 max-w-5xl">
@@ -38,7 +38,7 @@ export default function About() {
           </div>
           <div className="relative">
             <div className="aspect-[4/5] rounded-sm overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=1000&auto=format&fit=crop" alt="Interior designer at work" className="w-full h-full object-cover" />
+              <img src="https://loremflickr.com/1200/800/interior,design?lock=17" alt="Interior designer at work" className="w-full h-full object-cover" />
             </div>
             <div className="absolute -bottom-6 -left-6 bg-card border border-border p-6 rounded-sm shadow-xl max-w-[240px]">
               <p className="font-display text-4xl font-bold text-accent mb-1">10+</p>
