@@ -8,7 +8,7 @@ export default function AuthLayout() {
       <div className="relative hidden lg:flex flex-col justify-between p-12 bg-primary text-primary-foreground overflow-hidden">
         <div className="absolute inset-0 opacity-40">
           <img
-            src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=80"
+            src="https://loremflickr.com/1200/800/interior,design?lock=1"
             alt="Interior Studio"
             className="h-full w-full object-cover"
           />
