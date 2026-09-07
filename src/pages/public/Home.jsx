@@ -1,153 +1,173 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Layers, Boxes, Ruler, Sparkles, PaintBucket, Maximize } from "lucide-react";
+import { ArrowRight, Layers, Ruler, Maximize, ArrowUpRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { productService } from "@/services/productService";
 import { galleryService } from "@/services/galleryService";
-
 import ProductCard from "@/components/site/ProductCard";
 import { Image } from "@/components/ui/image";
 import { GALLERY_SEED } from "@/lib/interiorData";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [gallery, setGallery] = useState([]);
 
   useEffect(() => {
-    productService.list("-created_date", 8)
-      .then(setProducts)
-      .catch(() => setProducts([]));
-    galleryService.list("-created_date", 6)
-      .then(setGallery)
-      .catch(() => setGallery(GALLERY_SEED.slice(0, 6)));
+    productService.list("-created_date", 8).then(setProducts).catch(() => setProducts([]));
+    galleryService.list("-created_date", 6).then(setGallery).catch(() => setGallery(GALLERY_SEED.slice(0, 6)));
   }, []);
 
   const featured = products.filter((p) => p.is_featured);
   const featuredDisplay = featured.length ? featured.slice(0, 4) : products.slice(0, 4);
-  const heroGallery = gallery.length ? gallery : GALLERY_SEED.slice(0, 3);
 
   return (
-    <div className="bg-background pt-20">
-      {/* HERO - Clean, Split Layout */}
-      <section className="container-px max-w-7xl mx-auto py-12 lg:py-20 flex flex-col lg:flex-row items-center gap-12">
-        <div className="flex-1 space-y-8">
-          <div className="inline-flex items-center rounded-full border border-border px-3 py-1 text-xs font-semibold tracking-wide uppercase text-muted-foreground">
-            Shree Mangalam Interior Studio
-          </div>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-primary leading-[1.1]">
-            Structured spaces. <br className="hidden sm:block" />
-            <span className="text-muted-foreground">Premium finishes.</span>
-          </h1>
-          <p className="max-w-xl text-lg text-muted-foreground leading-relaxed">
-            Engineered laminates, architectural hardware, and precision veneers for modern homes. Browse our catalog and configure your space in 3D with exacting detail.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <Link to="/catalog" className="inline-flex h-12 items-center justify-center gap-2 bg-primary text-primary-foreground px-8 text-sm font-semibold tracking-wide hover:bg-primary/90 transition-colors rounded-sm shadow-sm">
-              Explore Catalog <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link to="/visualizer" className="inline-flex h-12 items-center justify-center gap-2 border border-input bg-background text-foreground px-8 text-sm font-semibold tracking-wide hover:bg-secondary transition-colors rounded-sm shadow-sm">
-              Launch 3D Configurator <Maximize className="h-4 w-4" />
-            </Link>
-          </div>
-          
-          <div className="pt-8 border-t border-border grid grid-cols-3 gap-6">
-            {[
-              ["12+", "Years Est."],
-              ["2.4k", "Projects"],
-              ["180", "Finishes"],
-            ].map(([n, l]) => (
-              <div key={l}>
-                <p className="text-2xl font-bold text-primary">{n}</p>
-                <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mt-1">{l}</p>
-              </div>
-            ))}
-          </div>
+    <div className="bg-background min-h-screen text-foreground overflow-hidden">
+      {/* HERO SECTION */}
+      <section className="relative min-h-[90vh] flex items-center pt-20 pb-12">
+        <div className="absolute inset-0 z-0 opacity-40">
+          <Image
+            src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=2000&q=80"
+            alt="Hero Background"
+            className="w-full h-full object-cover"
+            fittingType="fill"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/80 to-background" />
         </div>
         
-        <div className="flex-1 w-full">
-          <div className="aspect-[4/3] rounded-sm overflow-hidden bg-secondary border border-border">
-            <Image
-              src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=80"
-              alt="Architectural interior"
-              className="h-full w-full object-cover"
-              fittingType="fill"
-            />
-          </div>
+        <div className="container-px max-w-7xl mx-auto relative z-10 w-full">
+          <motion.div 
+            initial="hidden" animate="visible" variants={staggerContainer}
+            className="max-w-4xl"
+          >
+            <motion.div variants={fadeInUp} className="mb-6">
+              <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-semibold tracking-widest uppercase text-primary">
+                Shree Mangalam Interior Studio
+              </span>
+            </motion.div>
+            
+            <motion.h1 variants={fadeInUp} className="text-5xl sm:text-7xl lg:text-[5.5rem] font-display font-medium tracking-tight text-primary leading-[1.05] mb-8">
+              Crafting timeless <br className="hidden sm:block" />
+              <span className="text-muted-foreground italic font-light">architectural spaces.</span>
+            </motion.h1>
+            
+            <motion.p variants={fadeInUp} className="max-w-2xl text-lg sm:text-xl text-muted-foreground leading-relaxed mb-10 font-light">
+              Elevate your interiors with engineered laminates, bespoke hardware, and precision veneers. Experience our collection through an immersive 3D lens.
+            </motion.p>
+            
+            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-5">
+              <Link to="/catalog" className="group inline-flex h-14 items-center justify-center gap-3 bg-primary text-primary-foreground px-8 text-sm font-semibold tracking-wide hover:bg-primary/90 transition-all rounded-sm shadow-xl">
+                Explore Collection <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link to="/visualizer" className="group inline-flex h-14 items-center justify-center gap-3 border border-primary/20 bg-background/50 backdrop-blur-sm text-foreground px-8 text-sm font-semibold tracking-wide hover:bg-secondary transition-all rounded-sm">
+                Open 3D Configurator <Maximize className="h-4 w-4 group-hover:scale-110 transition-transform" />
+              </Link>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
-      {/* CATEGORIES GRID */}
-      <section className="border-y border-border bg-secondary/50">
-        <div className="container-px max-w-7xl mx-auto py-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
-          {[
-            ["Laminates", Layers],
-            ["Plywood", Boxes],
-            ["Hardware", Sparkles],
-            ["Veneer", PaintBucket],
-            ["Custom", Ruler],
-            ["Accessories", Boxes],
-          ].map(([label, Icon]) => (
-            <div key={label} className="flex flex-col items-center gap-3 p-4 bg-background border border-border rounded-sm hover:border-primary/50 transition-colors cursor-pointer shadow-sm">
-              <Icon className="h-6 w-6 text-primary" />
-              <span className="text-xs tracking-wider uppercase font-semibold text-primary">{label}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ARCHITECTURAL INTRO */}
-      <section className="section-y">
-        <div className="container-px max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
-          <div className="order-2 lg:order-1 relative aspect-square rounded-sm overflow-hidden border border-border bg-secondary">
-            <Image
-              src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80"
-              alt="Material detail"
-              className="h-full w-full object-cover"
-              fittingType="fill"
-            />
-            <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-background/90 to-transparent">
-              <div className="bg-background border border-border p-4 rounded-sm shadow-sm inline-block">
-                <p className="text-xs font-semibold tracking-wider uppercase text-muted-foreground mb-1">Specification</p>
-                <p className="text-sm font-medium text-primary">Book-matched teak veneer, architectural grade.</p>
-              </div>
-            </div>
-          </div>
-          <div className="order-1 lg:order-2 lg:pt-12">
-            <h2 className="text-3xl font-bold tracking-tight text-primary mb-4">Precision from selection to installation.</h2>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-10">
-              We provide a seamless specification process for architects, designers, and homeowners. Access our digital catalog for exact material properties, or visualize the application before committing.
-            </p>
-            <div className="grid sm:grid-cols-2 gap-8">
-              {[
-                ["Curated Finishes", "180+ laminates, veneers & acrylics. Rigorously tested for durability."],
-                ["Made-to-Measure", "Precision CNC cutting and edge-banding on request."],
-                ["Live Inventory", "Real-time stock data ensures your project stays on schedule."],
-                ["Instant Estimates", "Calculate material costs programmatically based on your 3D layout."],
-              ].map(([t, d]) => (
-                <div key={t} className="flex flex-col gap-2">
-                  <h4 className="font-semibold text-primary border-b border-border pb-2">{t}</h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{d}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FEATURED PRODUCTS */}
-      <section className="section-y bg-secondary/30 border-t border-border">
+      {/* METRICS / STATS (Scroll Reveal) */}
+      <section className="py-20 bg-background border-t border-border/50">
         <div className="container-px max-w-7xl mx-auto">
-          <div className="flex items-end justify-between gap-6 mb-8 border-b border-border pb-4">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight text-primary">Featured Materials</h2>
-              <p className="text-sm text-muted-foreground mt-1">High-specification materials currently in stock.</p>
-            </div>
-            <Link to="/catalog" className="text-sm font-semibold hover:text-muted-foreground flex items-center gap-1 transition-colors">
-              View catalog <ArrowRight className="h-4 w-4" />
-            </Link>
+          <motion.div 
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}
+            className="grid grid-cols-2 md:grid-cols-4 gap-10 lg:gap-16 divide-x divide-border/50"
+          >
+            {[
+              ["12+", "Years established"],
+              ["2.4k", "Projects delivered"],
+              ["180+", "Curated finishes"],
+              ["3D", "Live visualization"]
+            ].map(([stat, label], i) => (
+              <motion.div key={i} variants={fadeInUp} className="pl-6 md:pl-10 first:pl-0 first:border-0 border-l-0 md:border-l">
+                <p className="text-4xl md:text-5xl font-display text-primary mb-2">{stat}</p>
+                <p className="text-sm uppercase tracking-widest text-muted-foreground font-medium">{label}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ASYMMETRIC BENTO GRID - ARCHITECTURAL INTRO */}
+      <section className="py-24 bg-secondary/30">
+        <div className="container-px max-w-7xl mx-auto">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} className="mb-16">
+            <h2 className="text-4xl md:text-5xl font-display text-primary mb-6">Precision engineered.</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl font-light leading-relaxed">
+              We provide a seamless specification process for architects, designers, and homeowners. Our digital catalog guarantees exact material properties for your vision.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
+            {/* Bento Box 1 - Large Image */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} viewport={{ once: true }}
+              className="md:col-span-2 md:row-span-2 relative rounded-xl overflow-hidden group"
+            >
+              <Image src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80" alt="Material" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" fittingType="fill" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute bottom-8 left-8 text-white">
+                <p className="text-sm uppercase tracking-widest font-semibold mb-2 opacity-80">Specification</p>
+                <p className="text-xl font-display">Book-matched teak veneer, architectural grade.</p>
+              </div>
+            </motion.div>
+
+            {/* Bento Box 2 - Service */}
+            <motion.div initial="hidden" whileInView="visible" variants={fadeInUp} viewport={{ once: true }} className="bg-background rounded-xl p-8 border border-border flex flex-col justify-between hover:border-primary/30 transition-colors">
+              <Layers className="h-8 w-8 text-primary/60 mb-4" />
+              <div>
+                <h3 className="text-xl font-display text-primary mb-3">Curated Finishes</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">180+ laminates, veneers & acrylics. Rigorously tested for durability and aesthetic perfection.</p>
+              </div>
+            </motion.div>
+
+            {/* Bento Box 3 - Service */}
+            <motion.div initial="hidden" whileInView="visible" variants={fadeInUp} viewport={{ once: true }} className="bg-primary text-primary-foreground rounded-xl p-8 flex flex-col justify-between">
+              <Ruler className="h-8 w-8 text-primary-foreground/60 mb-4" />
+              <div>
+                <h3 className="text-xl font-display mb-3">Made-to-Measure</h3>
+                <p className="text-primary-foreground/80 text-sm leading-relaxed">Precision CNC cutting and edge-banding on request, ensuring a flawless fit.</p>
+              </div>
+            </motion.div>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        </div>
+      </section>
+
+      {/* FEATURED COLLECTION */}
+      <section className="py-24 bg-background">
+        <div className="container-px max-w-7xl mx-auto">
+          <motion.div initial="hidden" whileInView="visible" variants={fadeInUp} viewport={{ once: true }} className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-display text-primary mb-4">Featured Collection</h2>
+              <p className="text-muted-foreground text-lg font-light">High-specification materials currently in stock.</p>
+            </div>
+            <Link to="/catalog" className="group flex items-center gap-2 text-sm uppercase tracking-widest font-semibold text-primary hover:text-muted-foreground transition-colors">
+              View full catalog <ArrowUpRight className="h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            </Link>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {featuredDisplay.length ? (
-              featuredDisplay.map((p) => <ProductCard key={p.id} product={p} />)
+              featuredDisplay.map((p, i) => (
+                <motion.div key={p.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: i * 0.1 }} viewport={{ once: true }}>
+                  <ProductCard product={p} />
+                </motion.div>
+              ))
             ) : (
               <p className="col-span-full text-muted-foreground text-sm py-12 text-center border border-dashed border-border rounded-sm">Loading inventory data…</p>
             )}
@@ -155,36 +175,35 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3D CONFIGURATOR CTA */}
-      <section className="section-y border-t border-border">
-        <div className="container-px max-w-7xl mx-auto bg-primary rounded-sm overflow-hidden flex flex-col lg:flex-row">
-          <div className="flex-1 p-10 lg:p-16 flex flex-col justify-center">
-            <div className="inline-flex w-fit items-center rounded-sm bg-primary-foreground/10 px-2.5 py-0.5 text-xs font-semibold tracking-wide uppercase text-primary-foreground mb-6">
-              Interactive Tools
+      {/* 3D CONFIGURATOR HERO */}
+      <section className="py-24 bg-background">
+        <div className="container-px max-w-7xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }} viewport={{ once: true }}
+            className="relative rounded-2xl overflow-hidden bg-primary min-h-[500px] flex items-center"
+          >
+            <div className="absolute inset-0 z-0 w-full lg:w-1/2 left-1/2 hidden lg:block">
+               <Image src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1200&q=80" alt="3D wireframe" className="h-full w-full object-cover opacity-60" fittingType="fill" />
+               <div className="absolute inset-0 bg-gradient-to-r from-primary to-transparent" />
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-primary-foreground mb-4">
-              Visualize before you build.
-            </h2>
-            <p className="text-primary-foreground/80 leading-relaxed mb-8 max-w-md">
-              Configure room layouts, apply exact material textures from our catalog, and generate a bill of quantities instantly using our 3D visualization engine.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/visualizer" className="inline-flex h-12 items-center justify-center gap-2 bg-background text-foreground px-6 text-sm font-semibold rounded-sm hover:bg-secondary transition-colors">
-                Open 3D Configurator
-              </Link>
-              <Link to="/estimate" className="inline-flex h-12 items-center justify-center gap-2 border border-primary-foreground/20 text-primary-foreground px-6 text-sm font-semibold rounded-sm hover:bg-primary-foreground/10 transition-colors">
-                Run Cost Estimate
-              </Link>
+            
+            <div className="relative z-10 w-full lg:w-1/2 p-10 lg:p-20 flex flex-col justify-center">
+              <span className="inline-flex w-fit items-center rounded-full bg-primary-foreground/10 px-4 py-1.5 text-xs font-semibold tracking-widest uppercase text-primary-foreground mb-8">
+                Interactive Technology
+              </span>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-display text-primary-foreground mb-6 leading-tight">
+                Visualize before <br /> you build.
+              </h2>
+              <p className="text-primary-foreground/80 text-lg leading-relaxed mb-10 font-light max-w-md">
+                Configure room layouts, apply exact material textures, and generate a bill of quantities instantly using our 3D engine.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-5">
+                <Link to="/visualizer" className="inline-flex h-14 items-center justify-center bg-background text-foreground px-8 text-sm font-semibold tracking-wide rounded-sm hover:scale-105 transition-transform shadow-lg">
+                  Launch 3D Configurator
+                </Link>
+              </div>
             </div>
-          </div>
-          <div className="flex-1 relative min-h-[300px] lg:min-h-full">
-             <Image
-              src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1200&q=80"
-              alt="3D render wireframe"
-              className="absolute inset-0 h-full w-full object-cover"
-              fittingType="fill"
-            />
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>

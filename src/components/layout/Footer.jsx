@@ -27,7 +27,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <p className="eyebrow text-primary-foreground/50 mb-4">Navigation</p>
+            <p className="text-[11px] font-semibold tracking-widest uppercase text-primary-foreground/50 mb-4">Navigation</p>
             <ul className="space-y-2.5 text-xs text-primary-foreground/80">
               <li><Link to="/catalog" className="hover:text-accent transition-colors">Material Catalog</Link></li>
               <li><Link to="/visualizer" className="hover:text-accent transition-colors">3D Room Visualiser</Link></li>
@@ -40,7 +40,7 @@ export default function Footer() {
 
           {/* Product Categories */}
           <div>
-            <p className="eyebrow text-primary-foreground/50 mb-4">Material Finishes</p>
+            <p className="text-[11px] font-semibold tracking-widest uppercase text-primary-foreground/50 mb-4">Material Finishes</p>
             <ul className="space-y-2.5 text-xs text-primary-foreground/80">
               <li><Link to="/catalog?category=Laminates" className="hover:text-accent transition-colors">Matt &amp; Glossy Laminates</Link></li>
               <li><Link to="/catalog?category=Plywood" className="hover:text-accent transition-colors">18mm BWP Marine Plywood</Link></li>
@@ -52,7 +52,7 @@ export default function Footer() {
 
           {/* Showroom Location & Contact */}
           <div>
-            <p className="eyebrow text-primary-foreground/50 mb-4">Showroom Visit</p>
+            <p className="text-[11px] font-semibold tracking-widest uppercase text-primary-foreground/50 mb-4">Showroom Visit</p>
             <ul className="space-y-3 text-xs text-primary-foreground/80">
               <li className="flex items-start gap-2.5">
                 <MapPin className="h-4 w-4 text-accent shrink-0 mt-0.5" />
