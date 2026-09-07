@@ -49,13 +49,3 @@ This is a comprehensive full-stack (simulated backend) React + Vite web applicat
 - `src/lib` — Shared utilities, mock database schemas, and configuration
 - `src/contexts` — React contexts (e.g., AuthContext)
 
-## Authentication (Admin Panel)
-- **Email:** admin@shreemangalam.com
-- **Password:** admin123
-
-## Notes for Evaluators
-This project was developed strictly adhering to industry standards:
-- Modular folder structures and component-based architecture.
-- Real-time 3D rendering optimized for web browsers.
-- Lazy-loading for performance and SEO-friendly meta tags.
-- Consistent UI design systems and user-feedback loops (Toasts, Skeletons, Error Boundaries).
