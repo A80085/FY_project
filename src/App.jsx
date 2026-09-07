@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from '@/context/AuthContext';
 import UserNotRegisteredError from '@/components/common/UserNotRegisteredError';
 import ScrollToTop from '@/components/common/ScrollToTop';
 import SiteLayout from '@/components/layout/SiteLayout';
+import AuthLayout from '@/components/layout/AuthLayout';
 import AdminLayout from '@/components/layout/AdminLayout';
 import Home from '@/pages/public/Home';
 import Catalog from '@/pages/public/Catalog';
@@ -49,6 +50,8 @@ const AuthenticatedApp = () => {
         <Route path="/visualizer" element={<Visualizer />} />
         <Route path="/estimate" element={<Estimate />} />
         <Route path="/inquiry" element={<Inquiry />} />
+      </Route>
+      <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
