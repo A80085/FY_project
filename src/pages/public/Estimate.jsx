@@ -88,7 +88,7 @@ export default function Estimate() {
         eyebrow="Rough Estimate Calculator"
         title="Plan a budget in minutes."
         description="An indicative estimate based on room size and the finishes we stock. Final pricing is confirmed at the showroom."
-        image="https://loremflickr.com/1200/800/interior,design?lock=19"
+        image="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=1600&q=80"
       />
       <div className="container-px max-w-7xl mx-auto pt-10">
         {/* progress */}
