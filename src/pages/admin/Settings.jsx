@@ -9,23 +9,23 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 export default function Settings() {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState(settingsService.getSettings());
+  const [form, setForm] = useState({
+    showroomName: "", address: "", phone: "", email: "", labourRate: 18, gstRate: 5,
+  });
 
   useEffect(() => {
-    setForm(settingsService.getSettings());
+    settingsService.getSettings().then(setForm);
   }, []);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setSaving(true);
-    settingsService.saveSettings(form);
-    setTimeout(() => {
-      setSaving(false);
-      toast({
-        title: "Settings saved",
-        description: "Your changes have been updated globally.",
-      });
-    }, 500);
+    await settingsService.saveSettings(form);
+    setSaving(false);
+    toast({
+      title: "Settings saved",
+      description: "Your changes have been updated globally.",
+    });
   }
 
   const [confirmOpen, setConfirmOpen] = useState(false);

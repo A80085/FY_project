@@ -173,7 +173,7 @@ export default function GalleryManager() {
           <form onSubmit={save} className="bg-background w-full max-w-xl rounded-sm border border-border my-8 shadow-xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between p-5 border-b border-border">
               <h2 className="font-display text-xl font-bold text-primary">{editing === "new" ? "Add project" : "Edit project"}</h2>
-              <button type="button" onClick={close}><X className="h-5 w-5 text-muted-foreground hover:text-primary" /></button>
+              <button aria-label="Close modal" type="button" onClick={close}><X className="" /></button>
             </div>
             <div className="p-5 grid sm:grid-cols-2 gap-4">
               <F label="Project Title *"><input required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="ainput" /></F>

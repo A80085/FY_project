@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { Maximize2, RotateCw, Sun, RefreshCw } from "lucide-react";
+import { Maximize2, RotateCw, Sun, RefreshCw, Camera } from "lucide-react";
 import { productService } from "@/services/productService";
 import { BUILTIN_SLOTS, CATALOG_TO_SLOT, COLOR_FAMILY_MAP, FINISH_MAP } from "./constants";
 import VisualizerControls from "./VisualizerControls";
@@ -136,3 +136,4 @@ export default function RoomVisualizer() {
     </div>
   );
 }
+
