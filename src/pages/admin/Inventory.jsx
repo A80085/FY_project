@@ -103,7 +103,7 @@ export default function Inventory() {
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search inventory…" className="pl-8 pr-3 py-2 text-sm border border-border rounded-sm focus:outline-none focus:border-accent" />
           </div>
-          <button onClick={resetData} title="Reset catalog to seed" className="p-2 border border-border rounded-sm hover:bg-secondary"><RefreshCw className="h-4 w-4 text-muted-foreground" /></button>
+          <button aria-label="Reset catalog to seed" onClick={resetData} title="Reset catalog to seed" className=""><RefreshCw className="" /></button>
           <button onClick={openNew} className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-4 py-2 text-sm font-medium rounded-sm hover:bg-accent/90 shadow-sm"><Plus className="h-4 w-4" /> Add product</button>
         </div>
       </div>
@@ -168,8 +168,8 @@ export default function Inventory() {
                       <td className="p-3 text-right text-muted-foreground">{p.min_threshold}</td>
                       <td className="p-3">
                         <div className="flex items-center justify-end gap-1">
-                          <button onClick={() => openEdit(p)} className="p-1.5 hover:bg-secondary rounded-sm text-muted-foreground hover:text-primary"><Pencil className="h-4 w-4" /></button>
-                          <button onClick={() => remove(p)} className="p-1.5 hover:bg-destructive/10 rounded-sm text-destructive"><Trash2 className="h-4 w-4" /></button>
+                          <button aria-label="Edit item" onClick={() => openEdit(p)} className=""><Pencil className="" /></button>
+                          <button aria-label="Delete item" onClick={() => remove(p)} className=""><Trash2 className="" /></button>
                         </div>
                       </td>
                     </tr>
@@ -187,7 +187,7 @@ export default function Inventory() {
           <form onSubmit={save} className="bg-background w-full max-w-2xl rounded-sm border border-border my-8 shadow-xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between p-5 border-b border-border">
               <h2 className="font-display text-xl font-bold text-primary">{editing === "new" ? "Add product" : "Edit product"}</h2>
-              <button type="button" onClick={close}><X className="h-5 w-5 text-muted-foreground hover:text-primary" /></button>
+              <button aria-label="Close modal" type="button" onClick={close}><X className="" /></button>
             </div>
             <div className="p-5 grid sm:grid-cols-2 gap-4">
               <F label="Name *"><input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="ainput" /></F>

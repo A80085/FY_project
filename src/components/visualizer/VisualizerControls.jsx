@@ -42,7 +42,7 @@ export default function VisualizerControls({
       </div>
 
       <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">{BUILTIN_SLOTS[activeSlot].label} finishes</p>
-      <div className="grid grid-cols-1 gap-2 overflow-y-auto max-h-[380px] pr-1">
+      <div className="grid grid-cols-1 gap-2 overflow-y-auto max-h-[200px] sm:max-h-[250px] lg:max-h-[380px] pr-1">
         {slotList.map((sw, i) => (
           <button
             key={i}
@@ -81,3 +81,4 @@ export default function VisualizerControls({
     </div>
   );
 }
+

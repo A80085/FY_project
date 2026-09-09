@@ -1,15 +1,18 @@
 # Shree Mangalam Interior Studio
 
-This is a comprehensive full-stack (simulated backend) React + Vite web application built as a final year diploma project for a 5th-semester student. It serves as an interior design storefront, 3D visualizer, and an administrative dashboard for an interior and material showroom.
+This is a comprehensive full-stack React + Vite web application built as a final year diploma project. It serves as an interior design storefront, 3D visualizer, and an administrative dashboard for an interior and material showroom. 
+
+The project is fully integrated with **Firebase** (Authentication + Firestore) for real-time cloud data persistence.
 
 ## Project Highlights
 
-- **3D Room Visualizer:** Built with `Three.js` (React + vanilla three.js implementation), allowing users to switch room types, apply custom textures (walls, flooring, upholstery, cabinetry), modify lighting (warm/cool), and orbit/zoom the scene in real time.
-- **Admin Dashboard:** Includes inventory tracking, project gallery management, lead/inquiries handling, global settings, and sales analytics/charts using `recharts`.
-- **Estimate Generator:** Lets customers generate PDF quotations for interior setups using `jspdf` and `html2canvas`.
-- **Responsive & Modern UI:** Styled meticulously with Tailwind CSS and Radix UI primitives, featuring custom loaders (Skeleton), interactive dialogs, toasts, and a fully polished dark mode experience.
-- **Robust State & Auth:** Uses React Context API for global authentication simulation and standard hooks (`useState`, `useEffect`, `useMemo`) for component-level state.
-- **Data Layer:** Uses a simulated backend service structure (`productService`, `galleryService`, `inquiryService`) which can be seamlessly replaced with a real REST API or Firebase setup.
+- **3D Room Visualizer:** Built with vanilla Three.js inside React, allowing users to switch room types, apply custom textures (walls, flooring, upholstery, cabinetry), modify lighting (warm/cool), orbit/zoom, and take high-resolution screenshots.
+- **Firebase Backend:** 
+  - **Auth:** Secure admin login system.
+  - **Firestore:** Cloud persistence for the product catalog, gallery, customer inquiries, and global store settings.
+- **Admin Dashboard:** Includes inventory tracking (CRUD), project gallery management, lead/inquiries handling, global settings, and sales analytics/charts using Recharts.
+- **Estimate Generator:** Lets customers generate PDF quotations for interior setups using jsPDF and html2canvas.
+- **Responsive & Modern UI:** Styled meticulously with Tailwind CSS and Radix UI primitives, featuring custom loaders, interactive dialogs, toasts, full mobile responsiveness, and accessibility (aria-labels).
 
 ## Technologies Used
 
@@ -18,34 +21,29 @@ This is a comprehensive full-stack (simulated backend) React + Vite web applicat
 - **Styling:** Tailwind CSS
 - **Components:** Shadcn/ui (Radix Primitives), Lucide Icons
 - **3D Rendering:** Three.js
+- **Backend (BaaS):** Firebase (Auth + Firestore)
 - **Charts:** Recharts
 - **PDF Generation:** jsPDF, html2canvas
 - **Routing:** React Router DOM
 
-## Prerequisites
+## Setup & Running Locally
 
-- Node.js 18+
-- npm
-
-## Setup & Running
-
-1. Install dependencies:
-   ```bash
+1. **Install dependencies:**
    npm install
-   ```
 
-2. Run the development server locally:
-   ```bash
+2. **Run the development server:**
    npm run dev
-   ```
 
-3. Open the local Vite URL printed in the terminal (usually `http://localhost:5173`).
+3. Open the local Vite URL (usually http://localhost:5173).
+
+### Firebase Setup
+The project uses Firebase for data persistence. A configuration file src/lib/firebase.js connects to a Firestore instance. Ensure your Firebase Firestore Security Rules are set to allow public reads and authenticated writes (as implemented in firestore.rules).
 
 ## Project Structure
 
-- `src/pages` — Public pages (Home, Catalog, Gallery, Estimate, Visualizer, About) and Admin pages (Dashboard, Inventory, GalleryManager, Inquiries, Settings)
-- `src/components` — Reusable UI components (`site/`, `admin/`, `visualizer/`, `ui/`, `layout/`)
-- `src/services` — Simulated backend API wrappers
-- `src/lib` — Shared utilities, mock database schemas, and configuration
-- `src/contexts` — React contexts (e.g., AuthContext)
-
+- src/pages - Public pages (Home, Catalog, Gallery, Estimate, Visualizer, About) and Admin pages (Dashboard, Inventory, GalleryManager, Inquiries, Settings)
+- src/components - Reusable UI components (admin, visualizer, ui, layout)
+- src/services - Firebase API wrappers (productService, galleryService, inquiryService, settingsService, authService)
+- src/lib - Shared utilities, constants, and Firebase configuration
+- src/context - Global React contexts (e.g., AuthContext)
+- public/images - AI-generated static assets and product images

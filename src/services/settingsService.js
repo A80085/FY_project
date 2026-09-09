@@ -1,8 +1,11 @@
-const SETTINGS_KEY = "shree_mangalam_settings";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
+const DOC_REF = doc(db, "settings", "showroom");
 
 const DEFAULT_SETTINGS = {
   showroomName: "Shree Mangalam Interior Studio",
-  address: "Station Road, Surat — Gujarat 395003",
+  address: "Station Road, Surat - Gujarat 395003",
   phone: "+91 98250 12345",
   email: "contact@mangalaminterior.in",
   labourRate: 18,
@@ -10,22 +13,23 @@ const DEFAULT_SETTINGS = {
 };
 
 export const settingsService = {
-  getSettings() {
+  async getSettings() {
     try {
-      const raw = localStorage.getItem(SETTINGS_KEY);
-      if (!raw) return DEFAULT_SETTINGS;
-      return JSON.parse(raw);
+      const docSnap = await getDoc(DOC_REF);
+      if (docSnap.exists()) return { ...DEFAULT_SETTINGS, ...docSnap.data() };
+      return DEFAULT_SETTINGS;
     } catch (e) {
+      console.error("Firestore error reading settings:", e);
       return DEFAULT_SETTINGS;
     }
   },
 
-  saveSettings(settings) {
+  async saveSettings(settings) {
     try {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+      await setDoc(DOC_REF, settings, { merge: true });
       return settings;
     } catch (e) {
-      console.error("Error saving settings:", e);
+      console.error("Firestore error saving settings:", e);
       return DEFAULT_SETTINGS;
     }
   }

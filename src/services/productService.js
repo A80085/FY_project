@@ -1,75 +1,53 @@
-import { PRODUCT_SEED } from "@/lib/interiorData";
+import { collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, limit } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
-const STORAGE_KEY = "shree_mangalam_products";
-
-function getStoredProducts() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(PRODUCT_SEED));
-      return PRODUCT_SEED;
-    }
-    return JSON.parse(raw);
-  } catch (e) {
-    console.error("Error reading products from localStorage:", e);
-    return PRODUCT_SEED;
-  }
-}
-
-function saveProducts(products) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-  } catch (e) {
-    console.error("Error saving products to localStorage:", e);
-  }
-}
+const COLLECTION_NAME = "products";
 
 export const productService = {
-  async list(sort = "-created_date", limit = 200) {
-    const items = getStoredProducts();
-    // Simple sort support if requested
-    let sorted = [...items];
-    if (sort === "-created_date") {
-      sorted.reverse();
+  async list(filters = {}, maxLimit = 50) {
+    try {
+      const q = query(collection(db, COLLECTION_NAME), limit(maxLimit));
+      const snapshot = await getDocs(q);
+      let items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
+      if (filters.category) items = items.filter(p => p.category === filters.category);
+      if (filters.search && typeof filters.search === 'string') items = items.filter(p => p.name?.toLowerCase().includes(filters.search.toLowerCase()) || p.sku?.toLowerCase().includes(filters.search.toLowerCase()));
+      
+      return items;
+    } catch (e) {
+      console.error("Firestore error listing products:", e);
+      return [];
     }
-    return sorted.slice(0, limit);
   },
 
   async getById(id) {
-    const items = getStoredProducts();
-    return items.find((p) => String(p.id) === String(id)) || null;
+    try {
+      const docRef = doc(db, COLLECTION_NAME, id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) return { id: docSnap.id, ...docSnap.data() };
+      return null;
+    } catch (e) {
+      console.error("Firestore error fetching product:", e);
+      return null;
+    }
   },
 
   async create(data) {
-    const items = getStoredProducts();
-    const newProduct = {
-      ...data,
-      id: "prod_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
-      created_date: new Date().toISOString(),
-    };
-    items.unshift(newProduct);
-    saveProducts(items);
-    return newProduct;
+    const newId = "p" + Date.now();
+    const newItem = { ...data, created_date: new Date().toISOString() };
+    await setDoc(doc(db, COLLECTION_NAME, newId), newItem);
+    return { id: newId, ...newItem };
   },
 
   async update(id, data) {
-    const items = getStoredProducts();
-    const index = items.findIndex((p) => String(p.id) === String(id));
-    if (index === -1) throw new Error("Product not found");
-    items[index] = { ...items[index], ...data, updated_date: new Date().toISOString() };
-    saveProducts(items);
-    return items[index];
+    const docRef = doc(db, COLLECTION_NAME, id);
+    const updateData = { ...data, updated_date: new Date().toISOString() };
+    await updateDoc(docRef, updateData);
+    return { id, ...updateData };
   },
 
   async delete(id) {
-    let items = getStoredProducts();
-    items = items.filter((p) => String(p.id) !== String(id));
-    saveProducts(items);
+    await deleteDoc(doc(db, COLLECTION_NAME, id));
     return true;
-  },
-
-  async reset() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(PRODUCT_SEED));
-    return PRODUCT_SEED;
   }
 };

@@ -565,7 +565,7 @@ const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotat
     const camera = new THREE.PerspectiveCamera(42, mount.clientWidth / mount.clientHeight, 0.1, 100);
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     renderer.shadowMap.enabled = true;
@@ -860,3 +860,4 @@ const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotat
 });
 
 export default VisualizerCanvas;
+
