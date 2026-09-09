@@ -30,7 +30,7 @@ export default function Gallery() {
         eyebrow="Project Gallery"
         title="Delivered interiors across South Gujarat"
         description="Explore finished living spaces, modular kitchens, master bedrooms and office setups fitted by Shree Mangalam Interior Studio."
-        image="https://loremflickr.com/1200/800/interior,design?lock=20"
+        image="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=80"
       />
       <div className="container-px max-w-7xl mx-auto pt-10">
         <div className="flex flex-wrap gap-2 mb-8 justify-center">
