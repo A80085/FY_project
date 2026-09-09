@@ -77,7 +77,7 @@ export default function ProductDetail() {
             className="lg:sticky lg:top-32 relative aspect-[4/5] rounded-xl overflow-hidden bg-secondary border border-border shadow-2xl"
           >
             <Image
-              src={product.image_url || "https://loremflickr.com/1200/800/interior,design?lock=26"}
+              src={product.image_url || "https://images.unsplash.com/photo-1567016526105-22da7c13161a?auto=format&fit=crop&w=1200&q=80"}
               alt={product.name}
               className="h-full w-full object-cover transition-transform duration-1000 hover:scale-105"
               fittingType="fill"
