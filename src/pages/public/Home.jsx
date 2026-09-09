@@ -41,7 +41,7 @@ export default function Home() {
       <section className="relative min-h-[90vh] flex items-center pt-20 pb-12">
         <div className="absolute inset-0 z-0 opacity-40">
           <Image
-            src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=2000&q=80"
+            src="/images/hero_interior_1788941933675.jpg"
             alt="Hero Background"
             className="w-full h-full object-cover"
             fittingType="fill"
@@ -119,7 +119,7 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} viewport={{ once: true }}
               className="md:col-span-2 md:row-span-2 relative rounded-xl overflow-hidden group"
             >
-              <Image src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80" alt="Material" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" fittingType="fill" />
+              <Image src="/images/gallery_lounge_1788942051775.jpg" alt="Material" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" fittingType="fill" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               <div className="absolute bottom-8 left-8 text-white">
                 <p className="text-sm uppercase tracking-widest font-semibold mb-2 opacity-80">Specification</p>
@@ -183,7 +183,7 @@ export default function Home() {
             className="relative rounded-2xl overflow-hidden bg-primary min-h-[500px] flex items-center"
           >
             <div className="absolute inset-0 z-0 w-full lg:w-1/2 left-1/2 hidden lg:block">
-               <Image src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1200&q=80" alt="3D wireframe" className="h-full w-full object-cover opacity-60" fittingType="fill" />
+               <Image src="/images/gallery_bedroom_1788942008850.jpg" alt="3D wireframe" className="h-full w-full object-cover opacity-60" fittingType="fill" />
                <div className="absolute inset-0 bg-gradient-to-r from-primary to-transparent" />
             </div>
             
