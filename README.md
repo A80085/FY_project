@@ -1,6 +1,6 @@
 # Shree Mangalam Interior Studio
 
-This is a comprehensive full-stack React + Vite web application built as a final year diploma project. It serves as an interior design storefront, 3D visualizer, and an administrative dashboard for an interior and material showroom. 
+This is a comprehensive full-stack React + Vite web application. It serves as an interior design storefront, 3D visualizer, and an administrative dashboard for an interior and material showroom. 
 
 The project is fully integrated with **Firebase** (Authentication + Firestore) for real-time cloud data persistence.
 

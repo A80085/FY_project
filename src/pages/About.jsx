@@ -1,5 +1,5 @@
 import React from "react";
-import PageHero from "@/components/layout/PageHero";
+import PageHero from "@/components/PageHero";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle2, Shield, Users, Clock, Zap } from "lucide-react";
 

@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import {
-  LayoutDashboard, Package, MessageSquare, Images, Home, ChevronLeft, ChevronRight, Menu, X, Settings as SettingsIcon, LogOut
+  LayoutDashboard, Package, MessageSquare, Images, Home, ChevronLeft, ChevronRight, Menu, X, Settings as SettingsIcon, LogOut, Users, Truck, FileText
 } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/AuthContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 const NAV = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/admin/inventory", label: "Inventory", icon: Package },
+  { to: "/admin/suppliers", label: "Suppliers", icon: Truck },
+  { to: "/admin/purchase-orders", label: "Purchase Orders", icon: FileText },
   { to: "/admin/inquiries", label: "Inquiries", icon: MessageSquare },
   { to: "/admin/gallery", label: "Project Gallery", icon: Images },
+  { to: "/admin/roles", label: "Roles", icon: Users },
   { to: "/admin/settings", label: "Settings", icon: SettingsIcon },
 ];
 

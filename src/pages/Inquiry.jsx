@@ -3,7 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { MapPin, Phone, Mail, Clock, CheckCircle2 } from "lucide-react";
 import { inquiryService } from "@/services/inquiryService";
 import { Image } from "@/components/ui/image";
-import PageHero from "@/components/layout/PageHero";
+import PageHero from "@/components/PageHero";
 
 export default function Inquiry() {
   const [params] = useSearchParams();

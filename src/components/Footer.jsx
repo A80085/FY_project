@@ -21,7 +21,7 @@ export default function Footer() {
               South Gujarat&apos;s premier destination for laminates, marine plywood, natural veneers, custom brass hardware, and bespoke interior spaces.
             </p>
             <p className="text-[11px] text-primary-foreground/50 uppercase tracking-widest flex items-center gap-1.5">
-              <ShieldCheck className="h-4 w-4 text-accent" /> Diploma Final Year Project
+              <ShieldCheck className="h-4 w-4 text-accent" /> Secure System
             </p>
           </div>
 
@@ -75,7 +75,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-primary-foreground/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-primary-foreground/60">
-          <p>© {new Date().getFullYear()} Shree Mangalam Interior Studio. Developed for Final Year Diploma Evaluation.</p>
+          <p>© {new Date().getFullYear()} Shree Mangalam Interior Studio.</p>
           <div className="flex gap-6">
             <Link to="/inquiry" className="hover:text-primary-foreground">Privacy Policy</Link>
             <Link to="/inquiry" className="hover:text-primary-foreground">Terms of Service</Link>
