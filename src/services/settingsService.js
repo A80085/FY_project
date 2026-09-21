@@ -1,5 +1,5 @@
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "@/services/firebase";
 
 const DOC_REF = doc(db, "settings", "showroom");
 

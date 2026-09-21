@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { galleryService } from "@/services/galleryService";
-import PageHero from "@/components/layout/PageHero";
+import PageHero from "@/components/PageHero";
 import { GALLERY_SEED } from "@/lib/interiorData";
 
 const ROOM_TYPES = ["All", "Living Room", "Bedroom", "Kitchen", "Bathroom", "Office", "Dining"];

@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Search } from "lucide-react";
 import { productService } from "@/services/productService";
-import ProductCard from "@/components/site/ProductCard";
-import PageHero from "@/components/layout/PageHero";
+import ProductCard from "@/components/ProductCard";
+import PageHero from "@/components/PageHero";
 import { PRODUCT_SEED } from "@/lib/interiorData";
 import { Skeleton } from "@/components/ui/skeleton";
 

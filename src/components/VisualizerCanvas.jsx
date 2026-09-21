@@ -305,15 +305,15 @@ function buildSideTable(mats) {
 function buildFloorLamp(mats) {
   const g = new THREE.Group();
   g.add(contactShadow(0.18, 0.18));
-  place(cyl(0.07, 0.06, 0.03, mats.metal, 16), 0, 0.015, 0, g);
-  place(cyl(0.014, 0.014, 0.62, mats.metal, 10), 0, 0.34, 0, g);
+  place(cyl(0.06, 0.05, 0.03, mats.metal, 16), 0, 0.015, 0, g);
+  place(cyl(0.012, 0.012, 0.35, mats.metal, 10), 0, 0.2, 0, g);
   const shade = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.12, 0.17, 0.2, 24),
+    new THREE.CylinderGeometry(0.1, 0.15, 0.18, 24),
     new THREE.MeshStandardMaterial({ color: 0xfff6e6, roughness: 0.85, emissive: 0xffdca0, emissiveIntensity: 0.7 })
   );
-  shade.position.y = 0.65; shade.castShadow = true; g.add(shade);
+  shade.position.y = 0.46; shade.castShadow = true; g.add(shade);
   const glow = new THREE.PointLight(0xffd9a0, 0.35, 4, 2);
-  glow.position.y = 0.62; g.add(glow);
+  glow.position.y = 0.43; g.add(glow);
   return g;
 }
 
@@ -390,18 +390,18 @@ function buildBed(mats) {
 
 function buildNightstand(mats) {
   const g = new THREE.Group();
-  g.add(contactShadow(0.45, 0.4));
-  [[-0.26, -0.2], [0.26, -0.2], [-0.26, 0.2], [0.26, 0.2]].forEach(([x, z]) =>
-    place(cyl(0.03, 0.04, 0.225, mats.wood, 10), x, 0.1125, z, g)
+  g.add(contactShadow(0.55, 0.5));
+  [[-0.32, -0.22], [0.32, -0.22], [-0.32, 0.22], [0.32, 0.22]].forEach(([x, z]) =>
+    place(cyl(0.035, 0.045, 0.28, mats.wood, 10), x, 0.14, z, g)
   );
-  place(rbox(0.6, 0.55, 0.5, 0.03, mats.wood), 0, 0.5, 0, g);
-  place(box(0.5, 0.02, 0.46, mats.metal), 0, 0.7, 0, g);
-  place(cyl(0.035, 0.035, 0.05, mats.metal, 12), 0, 0.72, 0.2, g);
-  // table lamp: base, stem, tapered shade
-  place(cyl(0.07, 0.06, 0.025, mats.metal, 14), 0, 0.787, -0.08, g);
-  place(cyl(0.012, 0.012, 0.1, mats.metal, 8), 0, 0.85, -0.08, g);
-  const lampShade = cyl(0.045, 0.08, 0.12, new THREE.MeshStandardMaterial({ color: 0xfff3df, roughness: 0.8, emissive: 0xffd9a0, emissiveIntensity: 0.5 }), 18);
-  lampShade.position.set(0, 0.96, -0.08); g.add(lampShade);
+  place(rbox(0.75, 0.45, 0.55, 0.03, mats.wood), 0, 0.5, 0, g);
+  place(box(0.76, 0.015, 0.56, new THREE.MeshStandardMaterial({color: 0x111111})), 0, 0.5, 0, g);
+  place(box(0.2, 0.015, 0.03, mats.metal), 0, 0.6, 0.28, g);
+  place(box(0.2, 0.015, 0.03, mats.metal), 0, 0.4, 0.28, g);
+  place(cyl(0.12, 0.1, 0.03, mats.metal, 16), 0, 0.74, -0.05, g);
+  place(cyl(0.015, 0.015, 0.25, mats.metal, 10), 0, 0.86, -0.05, g);
+  const lampShade = cyl(0.09, 0.22, 0.24, new THREE.MeshStandardMaterial({ color: 0xfff3df, roughness: 0.8, emissive: 0xffd9a0, emissiveIntensity: 0.5 }), 20);
+  lampShade.position.set(0, 1.1, -0.05); g.add(lampShade);
   return g;
 }
 
@@ -409,12 +409,9 @@ function buildWardrobe(mats) {
   const g = new THREE.Group();
   g.add(contactShadow(1.2, 0.4));
   place(rbox(2.2, 2.2, 0.6, 0.03, mats.cabinetry), 0, 1.1, 0, g);
-  // plinth
   place(box(2.2, 0.08, 0.62, mats.wood), 0, 0.04, 0, g);
-  // door splits
-  [-0.73, 0, 0.73].forEach((x) => place(box(0.02, 2.1, 0.61, mats.metal), x, 1.1, 0, g));
-  // handles
-  [-1.1, -0.36, 0.36, 1.1].forEach((x) => place(cyl(0.018, 0.018, 0.3, mats.metal, 12).rotateZ(Math.PI / 2), x, 1.1, 0.32, g));
+  [-0.55, 0, 0.55].forEach((x) => place(box(0.015, 2.15, 0.605, new THREE.MeshStandardMaterial({color: 0x111111})), x, 1.1, 0, g));
+  [-0.58, -0.52, 0.52, 0.58].forEach((x) => place(cyl(0.014, 0.014, 0.6, mats.metal, 12), x, 1.1, 0.31, g));
   return g;
 }
 
@@ -485,30 +482,30 @@ const ROOMS = {
     cameraTarget: [0, 0.7, -1.4],
     cameraPos: [3.4, 1.3, 4.6],
     build: (mats) => [
-      { group: buildRug(mats, 4.0, 2.8), at: [0, 0, -0.7] },
+      { group: buildRug(mats, 4.0, 3.8), at: [0, 0, -1.0] },
       { group: buildSofa(mats), at: [0, 0, -1.6] },
       { group: buildCoffeeTable(mats), at: [0, 0, 0.5] },
-      { group: buildTVUnit(mats), at: [-3.05, 0, -1.1], rotY: Math.PI / 2 },
+      { group: buildTVUnit(mats), at: [-3.89, 0, -1.1], rotY: Math.PI / 2 },
       { group: buildSideTable(mats), at: [2.1, 0, -1.9] },
       { group: buildFloorLamp(mats), at: [2.1, 0.575, -1.9] },
       { group: buildArmchair(mats), at: [-2.4, 0, 1.8], rotY: Math.PI / 4 },
-      { group: buildPlant(mats, 1.1), at: [2.9, 0, 2.4] },
-      { group: buildWallArt(mats, 1.0, 0.7, mats.accent), at: [-1.1, 1.45, -3.42] },
-      { group: buildWallArt(mats, 0.7, 0.9, mats.stone), at: [0.2, 1.5, -3.42] },
+      { group: buildPlant(mats, 1.6), at: [3.7, 0, 2.8] }, // SE Corner (Front Right)
+      { group: buildWallArt(mats, 1.0, 0.7, mats.accent), at: [-1.1, 1.45, -4.11] },
+      { group: buildWallArt(mats, 0.7, 0.9, mats.stone), at: [0.2, 1.5, -4.11] },
     ],
   },
   bedroom: {
     name: "Bedroom",
-    cameraTarget: [0, 0.7, 0.1],
+    cameraTarget: [0, 0.7, -1.0],
     cameraPos: [5.2, 2.3, 5.8],
     build: (mats) => [
-      { group: buildRug(mats, 3.8, 4.0), at: [0, 0, 0.3] },
-      { group: buildBed(mats), at: [0, 0, -0.1] },
-      { group: buildNightstand(mats), at: [-2.0, 0, -2.45] },
-      { group: buildNightstand(mats), at: [2.0, 0, -2.45] },
-      { group: buildWardrobe(mats), at: [3.14, 0, 2.2], rotY: Math.PI / 2 },
-      { group: buildPlant(mats, 0.8), at: [-2.9, 0, 2.6] },
-      { group: buildWallArt(mats, 1.4, 0.6, mats.primary), at: [0, 1.95, -3.42], rotY: 0 },
+      { group: buildRug(mats, 4.8, 5.4), at: [0, 0, -1.7] },
+      { group: buildBed(mats), at: [0, 0, -2.0] },
+      { group: buildNightstand(mats), at: [-2.3, 0, -3.86] },
+      { group: buildNightstand(mats), at: [2.3, 0, -3.86] },
+      { group: buildWardrobe(mats), at: [3.84, 0, 2.2], rotY: -Math.PI / 2 },
+      { group: buildPlant(mats, 1.2), at: [-3.5, 0, -3.5] },
+      { group: buildWallArt(mats, 1.4, 0.6, mats.primary), at: [0, 1.95, -4.11], rotY: 0 },
     ],
   },
   kitchen: {
@@ -516,10 +513,10 @@ const ROOMS = {
     cameraTarget: [0, 0.9, -0.4],
     cameraPos: [5.8, 2.6, 5.9],
     build: (mats) => {
-      const items = [{ group: buildKitchen(mats), at: [0, 0, 0] }];
-      items.push({ group: buildPendant(-0.7, 2.35, 0.7), at: [0, 0, 0] });
-      items.push({ group: buildPendant(0.7, 2.35, 0.7), at: [0, 0, 0] });
-      items.push({ group: buildPlant(mats, 0.55), at: [-0.95, 0.965, 0.45] });
+      const items = [{ group: buildKitchen(mats), at: [0, 0, -1.15] }];
+      items.push({ group: buildPendant(-0.7, 2.35, 0.7), at: [0, 0, -1.15] });
+      items.push({ group: buildPendant(0.7, 2.35, 0.7), at: [0, 0, -1.15] });
+      items.push({ group: buildPlant(mats, 0.55), at: [-0.95, 0.965, -0.7] });
       return items;
     },
   },

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X, User, LogOut, Shield } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/AuthContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function Navbar() {

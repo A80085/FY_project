@@ -33,7 +33,7 @@ export default function AuthLayout() {
           </p>
         </div>
         <div className="relative z-10 text-xs text-primary-foreground/50">
-          Final Year Diploma Project Evaluation
+          System Access
         </div>
       </div>
 

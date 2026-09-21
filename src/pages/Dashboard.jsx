@@ -6,7 +6,7 @@ import { productService } from "@/services/productService";
 import { inquiryService } from "@/services/inquiryService";
 import { galleryService } from "@/services/galleryService";
 import { formatINR } from "@/lib/interiorData";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/AuthContext";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', '#16a34a', '#d97706', '#dc2626', '#9333ea', '#0891b2'];

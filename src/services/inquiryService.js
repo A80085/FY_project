@@ -1,5 +1,5 @@
 import { collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy, limit as fbLimit } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "@/services/firebase";
 
 const COLLECTION_NAME = "inquiries";
 

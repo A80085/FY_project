@@ -1,5 +1,6 @@
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { auth } from "@/services/firebase";
+import { userService } from "./userService";
 
 // Keep track of the current user in localStorage just for fast initial loads
 const CURRENT_USER_KEY = "shree_mangalam_current_user";
@@ -19,25 +20,39 @@ export const authService = {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
+      let dbUser = await userService.getUser(user.uid);
+      if (!dbUser) {
+         dbUser = {
+           id: user.uid,
+           name: email === "admin@mangalam.com" ? "Admin User" : "User",
+           email: user.email,
+           role: email === "admin@mangalam.com" ? "admin" : "customer",
+         };
+         await userService.createUser(user.uid, dbUser);
+      }
+      
       const authUser = {
         id: user.uid,
-        name: email === "admin@mangalam.com" ? "Admin User" : "User",
-        email: user.email,
-        role: email === "admin@mangalam.com" ? "admin" : "customer",
+        ...dbUser
       };
       
       localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(authUser));
       return authUser;
     } catch (error) {
       if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-        // Fallback: auto-register for Final Year Project demo purposes!
+        // Fallback: auto-register for demo purposes!
         try {
           const newUser = await createUserWithEmailAndPassword(auth, email, password);
-          const authUser = {
-            id: newUser.user.uid,
+          const dbUser = {
             name: email === "admin@mangalam.com" ? "Admin User" : "User",
             email: newUser.user.email,
             role: email === "admin@mangalam.com" ? "admin" : "customer",
+          };
+          await userService.createUser(newUser.user.uid, dbUser);
+          
+          const authUser = {
+            id: newUser.user.uid,
+            ...dbUser
           };
           localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(authUser));
           return authUser;
@@ -52,11 +67,16 @@ export const authService = {
   async register(userData) {
     try {
       const newUser = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
-      const authUser = {
-        id: newUser.user.uid,
+      const dbUser = {
         name: userData.name,
         email: newUser.user.email,
         role: userData.role || "customer",
+      };
+      await userService.createUser(newUser.user.uid, dbUser);
+      
+      const authUser = {
+        id: newUser.user.uid,
+        ...dbUser
       };
       localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(authUser));
       return authUser;

@@ -1,5 +1,5 @@
 import React from "react";
-import RoomVisualizer from "@/components/visualizer/RoomVisualizer";
+import RoomVisualizer from "@/components/RoomVisualizer";
 
 export default function Visualizer() {
   return (

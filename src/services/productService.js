@@ -1,5 +1,5 @@
 import { collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, limit } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "@/services/firebase";
 
 const COLLECTION_NAME = "products";
 
@@ -8,6 +8,7 @@ export const productService = {
     try {
       const q = query(collection(db, COLLECTION_NAME), limit(maxLimit));
       const snapshot = await getDocs(q);
+      /** @type {any[]} */
       let items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       
       if (filters.category) items = items.filter(p => p.category === filters.category);

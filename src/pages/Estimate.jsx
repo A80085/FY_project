@@ -4,7 +4,7 @@ import { Check, ArrowRight, ArrowLeft, Sofa, BedDouble, UtensilsCrossed, Briefca
 import { ROOM_TYPES, WALL_FINISHES, FLOORING_OPTIONS, HARDWARE_OPTIONS, FURNISHING_ADDONS, CUSTOM_PRESETS, calcEstimate, formatINR } from "@/lib/interiorData";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import PageHero from "@/components/layout/PageHero";
+import PageHero from "@/components/PageHero";
 
 const STEPS = ["Room", "Dimensions", "Materials", "Add-ons", "Custom", "Estimate"];
 const ICONS = { Sofa, BedDouble, UtensilsCrossed, Briefcase, DoorOpen };

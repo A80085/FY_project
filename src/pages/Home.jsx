@@ -4,7 +4,7 @@ import { ArrowRight, Layers, Ruler, Maximize, ArrowUpRight } from "lucide-react"
 import { motion } from "framer-motion";
 import { productService } from "@/services/productService";
 import { galleryService } from "@/services/galleryService";
-import ProductCard from "@/components/site/ProductCard";
+import ProductCard from "@/components/ProductCard";
 import { Image } from "@/components/ui/image";
 import { GALLERY_SEED } from "@/lib/interiorData";
 
