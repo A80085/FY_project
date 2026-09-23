@@ -53,15 +53,19 @@ export const authService = {
   async register(userData) {
     try {
       const newUser = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
-      
       // Auto-assign admin role to the master admin email so you aren't locked out
-      const defaultRole = userData.email === "admin@mangalam.com" ? "admin" : "customer";
+      const isMaster = userData.email === "admin@mangalam.com";
       
       const dbUser = {
         name: userData.name,
         email: newUser.user.email,
-        role: userData.role || defaultRole,
+        role: isMaster ? "admin" : "customer",
       };
+
+      if (!isMaster && userData.requestedRole) {
+        dbUser.requestedRole = userData.requestedRole;
+      }
+
       await userService.createUser(newUser.user.uid, dbUser);
       
       const authUser = {
