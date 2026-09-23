@@ -38,7 +38,13 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      const user = await register(form);
+      const submitData = { ...form };
+      if (submitData.role !== "customer") {
+        submitData.requestedRole = submitData.role;
+        submitData.role = "customer";
+      }
+
+      const user = await register(submitData);
       if (user.role === "admin") {
         navigate("/admin");
       } else {

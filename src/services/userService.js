@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, setDoc, getDocs, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, getDocs, updateDoc, deleteField } from "firebase/firestore";
 import { db } from "@/services/firebase";
 
 export const userService = {
@@ -49,6 +49,20 @@ export const userService = {
       await updateDoc(docRef, { role });
     } catch (error) {
       console.error("Error updating user role:", error);
+      throw error;
+    }
+  },
+
+  async resolveRoleRequest(uid, approved, requestedRole) {
+    try {
+      const docRef = doc(db, "users", uid);
+      const updates = { requestedRole: deleteField() };
+      if (approved && requestedRole) {
+        updates.role = requestedRole;
+      }
+      await updateDoc(docRef, updates);
+    } catch (error) {
+      console.error("Error resolving role request:", error);
       throw error;
     }
   }
