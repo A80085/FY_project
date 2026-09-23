@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2, X, Search, CheckCircle } from "lucide-react";
+import { Plus, X, CheckCircle } from "lucide-react";
 import { supplierService } from "@/services/supplierService";
 import { productService } from "@/services/productService";
 import { useToast } from "@/components/ui/use-toast";

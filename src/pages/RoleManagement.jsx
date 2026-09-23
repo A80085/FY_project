@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { userService } from "@/services/userService";
+import { useAuth } from "@/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function RoleManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user: currentUser } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => { load(); }, []);
@@ -61,16 +63,20 @@ export default function RoleManagement() {
                       </span>
                     </td>
                     <td className="p-3">
-                      <select 
-                        value={u.role || "customer"}
-                        onChange={(e) => updateRole(u.id, e.target.value)}
-                        className="bg-transparent border border-border rounded px-2 py-1 text-sm focus:outline-none focus:border-accent"
-                      >
-                        <option value="customer">Customer</option>
-                        <option value="staff">Staff</option>
-                        <option value="manager">Manager</option>
-                        <option value="admin">Admin</option>
-                      </select>
+                      {currentUser?.id === u.id ? (
+                        <span className="px-2 py-1 text-xs rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 font-medium">You</span>
+                      ) : (
+                        <select 
+                          value={u.role || "customer"}
+                          onChange={(e) => updateRole(u.id, e.target.value)}
+                          className="bg-transparent border border-border rounded px-2 py-1 text-sm focus:outline-none focus:border-accent"
+                        >
+                          <option value="customer">Customer</option>
+                          <option value="staff">Staff</option>
+                          <option value="manager">Manager</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      )}
                     </td>
                   </tr>
                 ))}

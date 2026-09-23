@@ -39,26 +39,12 @@ export const authService = {
       localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(authUser));
       return authUser;
     } catch (error) {
-      if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-        // Fallback: auto-register for demo purposes!
-        try {
-          const newUser = await createUserWithEmailAndPassword(auth, email, password);
-          const dbUser = {
-            name: email === "admin@mangalam.com" ? "Admin User" : "User",
-            email: newUser.user.email,
-            role: email === "admin@mangalam.com" ? "admin" : "customer",
-          };
-          await userService.createUser(newUser.user.uid, dbUser);
-          
-          const authUser = {
-            id: newUser.user.uid,
-            ...dbUser
-          };
-          localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(authUser));
-          return authUser;
-        } catch (regError) {
-          throw new Error("Invalid email or password");
-        }
+      if (
+        error.code === 'auth/user-not-found' ||
+        error.code === 'auth/wrong-password' ||
+        error.code === 'auth/invalid-credential'
+      ) {
+        throw new Error("Invalid email or password");
       }
       throw new Error("Authentication failed: " + error.message);
     }

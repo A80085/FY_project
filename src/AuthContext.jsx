@@ -1,5 +1,8 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/services/firebase";
 import { authService } from "@/services/authService";
+import { userService } from "@/services/userService";
 
 const AuthContext = createContext(null);
 
@@ -8,9 +11,35 @@ export const AuthProvider = ({ children }) => {
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
   useEffect(() => {
-    const currentUser = authService.getCurrentUser();
-    setUser(currentUser);
-    setIsLoadingAuth(false);
+    // Subscribe to Firebase Auth state changes for real-time session sync
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // Firebase session is active — load user profile from Firestore
+        try {
+          const dbUser = await userService.getUser(firebaseUser.uid);
+          if (dbUser) {
+            const authUser = { id: firebaseUser.uid, ...dbUser };
+            localStorage.setItem("shree_mangalam_current_user", JSON.stringify(authUser));
+            setUser(authUser);
+          } else {
+            // User exists in Firebase Auth but not Firestore — use localStorage cache
+            const cached = authService.getCurrentUser();
+            setUser(cached);
+          }
+        } catch {
+          // Firestore error — fall back to localStorage cache
+          const cached = authService.getCurrentUser();
+          setUser(cached);
+        }
+      } else {
+        // No active Firebase session
+        localStorage.removeItem("shree_mangalam_current_user");
+        setUser(null);
+      }
+      setIsLoadingAuth(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const login = async (email, password) => {
