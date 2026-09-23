@@ -116,7 +116,7 @@ export default function AdminLayout() {
             <ThemeToggle />
             <div className="text-right hidden sm:block ml-2">
               <p className="text-xs font-medium text-foreground">{user?.name || "Admin User"}</p>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Showroom Manager</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{user?.role || "Staff"}</p>
             </div>
             <div className="h-9 w-9 rounded-full bg-accent text-accent-foreground grid place-items-center text-sm font-semibold">
               {user?.name?.[0] || "A"}

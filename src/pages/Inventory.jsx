@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Pencil, Trash2, X, Search, AlertTriangle, Package, RefreshCw } from "lucide-react";
 import { productService } from "@/services/productService";
-import { formatINR, PRODUCT_SEED } from "@/lib/interiorData";
+import { formatINR } from "@/lib/interiorData";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
@@ -24,7 +24,7 @@ export default function Inventory() {
   async function load() {
     setLoading(true);
     const data = await productService.list("-created_date", 200).catch(() => []);
-    setItems(data.length ? data : PRODUCT_SEED);
+    setItems(data);
     setLoading(false);
   }
 
