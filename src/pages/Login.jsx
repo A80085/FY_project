@@ -20,7 +20,7 @@ export default function Login() {
     setLoading(true);
     try {
       const user = await login(email, password);
-      if (user.role === "admin") {
+      if (user.role === "admin" || user.role === "manager") {
         navigate("/admin");
       } else {
         navigate("/");
@@ -87,10 +87,10 @@ export default function Login() {
           <span>Admin Portal:</span>
           <button
             type="button"
-            onClick={() => { setEmail("admin@mangalam.com"); setPassword("admin123"); }}
+            onClick={() => { setEmail("admin@mangalam.com"); setPassword("Admin@123"); }}
             className="text-accent font-mono hover:underline"
           >
-            admin@mangalam.com / admin123
+            admin@mangalam.com / Admin@123
           </button>
         </div>
         <div className="flex justify-between items-center pt-1 border-t border-border/40">

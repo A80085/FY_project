@@ -48,17 +48,24 @@ export default function Dashboard() {
       .sort((a, b) => b.value - a.value);
   }, [stats.products]);
 
-  // Mock trend data for inquiries over the week
+  // Real trend data — group inquiries by day for the last 7 days
   const trendData = useMemo(() => {
-    return [
-      { name: 'Mon', inquiries: 2 },
-      { name: 'Tue', inquiries: 5 },
-      { name: 'Wed', inquiries: 3 },
-      { name: 'Thu', inquiries: Math.max(1, stats.inquiries.length - 10) },
-      { name: 'Fri', inquiries: 7 },
-      { name: 'Sat', inquiries: Math.max(2, stats.inquiries.length - 2) },
-      { name: 'Sun', inquiries: stats.inquiries.length }
-    ];
+    const days = [];
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() - i);
+      days.push({ date: d, name: dayNames[d.getDay()], inquiries: 0 });
+    }
+    stats.inquiries.forEach(inq => {
+      if (!inq.created_date) return;
+      const inqDate = new Date(inq.created_date);
+      inqDate.setHours(0, 0, 0, 0);
+      const match = days.find(d => d.date.getTime() === inqDate.getTime());
+      if (match) match.inquiries++;
+    });
+    return days.map(({ name, inquiries }) => ({ name, inquiries }));
   }, [stats.inquiries]);
 
   return (
@@ -156,7 +163,7 @@ export default function Dashboard() {
             <h2 className="font-display text-xl text-primary font-bold flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-accent" /> Inquiry Trends
             </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">Customer leads over the last 7 days (Simulated)</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Customer leads over the last 7 days</p>
           </div>
           {loading ? (
             <Skeleton className="w-full h-[250px] rounded-sm" />

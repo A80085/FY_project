@@ -1,5 +1,6 @@
 import { collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, limit } from "firebase/firestore";
 import { db } from "@/services/firebase";
+import { PRODUCT_SEED } from "@/lib/interiorData";
 
 const COLLECTION_NAME = "products";
 
@@ -50,5 +51,20 @@ export const productService = {
   async delete(id) {
     await deleteDoc(doc(db, COLLECTION_NAME, id));
     return true;
+  },
+
+  async reset() {
+    // Delete all existing products
+    const snapshot = await getDocs(collection(db, COLLECTION_NAME));
+    const deletePromises = snapshot.docs.map(d => deleteDoc(doc(db, COLLECTION_NAME, d.id)));
+    await Promise.all(deletePromises);
+    // Re-seed from local data
+    const seedPromises = PRODUCT_SEED.map(item => {
+      const { id, ...data } = item;
+      return setDoc(doc(db, COLLECTION_NAME, id), { ...data, created_date: new Date().toISOString() });
+    });
+    await Promise.all(seedPromises);
+    return PRODUCT_SEED;
   }
 };
+

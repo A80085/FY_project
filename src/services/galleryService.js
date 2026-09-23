@@ -1,5 +1,6 @@
 import { collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy, limit } from "firebase/firestore";
 import { db } from "@/services/firebase";
+import { GALLERY_SEED } from "@/lib/interiorData";
 
 const COLLECTION_NAME = "gallery";
 
@@ -45,5 +46,20 @@ export const galleryService = {
   async delete(id) {
     await deleteDoc(doc(db, COLLECTION_NAME, id));
     return true;
+  },
+
+  async reset() {
+    // Delete all existing gallery items
+    const snapshot = await getDocs(collection(db, COLLECTION_NAME));
+    const deletePromises = snapshot.docs.map(d => deleteDoc(doc(db, COLLECTION_NAME, d.id)));
+    await Promise.all(deletePromises);
+    // Re-seed from local data
+    const seedPromises = GALLERY_SEED.map((item, i) => {
+      const newId = "gal_seed_" + i;
+      return setDoc(doc(db, COLLECTION_NAME, newId), { ...item, created_date: new Date().toISOString() });
+    });
+    await Promise.all(seedPromises);
+    return GALLERY_SEED.map((item, i) => ({ id: "gal_seed_" + i, ...item }));
   }
 };
+
