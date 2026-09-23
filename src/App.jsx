@@ -85,8 +85,8 @@ function App() {
         <Router>
           <ScrollToTop />
           <AuthenticatedApp />
+          <Toaster />
         </Router>
-        <Toaster />
       </AuthProvider>
     </ThemeProvider>
   )

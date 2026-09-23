@@ -3,7 +3,7 @@ import { Navigate, useLocation, Outlet } from "react-router-dom";
 import { useAuth } from "@/AuthContext";
 
 export default function AdminRoute({ children }) {
-  const { isAuthenticated, isAdmin, isLoadingAuth } = useAuth();
+  const { isAuthenticated, hasAdminAccess, isLoadingAuth } = useAuth();
   const location = useLocation();
 
   if (isLoadingAuth) {
@@ -18,12 +18,12 @@ export default function AdminRoute({ children }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (!isAdmin) {
+  if (!hasAdminAccess) {
     return (
       <div className="pt-32 pb-24 text-center container-px max-w-lg mx-auto">
         <h1 className="font-display text-3xl text-primary">Access Restricted</h1>
         <p className="mt-3 text-muted-foreground text-sm">
-          You must be logged in as an Administrator to access the Management Portal.
+          You must be logged in as an Administrator or Manager to access the Management Portal.
         </p>
       </div>
     );
@@ -31,3 +31,4 @@ export default function AdminRoute({ children }) {
 
   return children ? children : <Outlet />;
 }
+
