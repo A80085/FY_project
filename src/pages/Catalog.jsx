@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { Search, LayoutGrid, Table, PackageCheck, ArrowUpRight, Check, AlertTriangle } from "lucide-react";
+import { Search, LayoutGrid, Table, ArrowUpRight, Check, AlertTriangle } from "lucide-react";
 import { productService } from "@/services/productService";
 import ProductCard from "@/components/ProductCard";
 import PageHero from "@/components/PageHero";
@@ -16,7 +16,6 @@ export default function Catalog() {
   const [category, setCategory] = useState("All");
   const [query, setQuery] = useState("");
   const [viewMode, setViewMode] = useState("grid"); // "grid" | "table"
-  const [sampleKitRequested, setSampleKitRequested] = useState(false);
   const [params] = useSearchParams();
 
   useEffect(() => {
@@ -51,42 +50,6 @@ export default function Catalog() {
       />
 
       <div className="container-px max-w-7xl mx-auto pt-8 sm:pt-12">
-        {/* ── PHYSICAL SAMPLE BOX PROMOTION (ARCHITECT CONCIERGE) ── */}
-        <div className="mb-10 wood-panel-dark text-white rounded-xl p-6 sm:p-8 border border-border/40 shadow-lg relative overflow-hidden">
-          {/* Subtle background showroom image overlay */}
-          <div className="absolute right-0 top-0 bottom-0 w-full lg:w-1/2 opacity-25 pointer-events-none">
-            <img src="/images/store_material_library.png" alt="Material Swatch Library" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[hsl(24,25%,8%)] via-[hsl(24,25%,8%)/70%] to-transparent" />
-          </div>
-
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="max-w-2xl space-y-2">
-              <div className="flex items-center gap-2 text-accent">
-                <PackageCheck className="h-5 w-5" />
-                <span className="text-xs uppercase tracking-[0.22em] font-semibold">Architect &amp; Designer Specimen Box</span>
-              </div>
-              <h3 className="font-display text-2xl sm:text-3xl font-medium text-white">
-                Request The 5-Piece Atelier Sample Kit
-              </h3>
-              <p className="text-white/80 text-xs sm:text-sm font-light leading-relaxed">
-                Curated directly from our physical showroom swatch wall in Virar West. Receive 5 physical 10×10cm wood veneer, fluted laminate, and acrylic sample swatches boxed with architectural spec sheets. Delivered across Mumbai, Palghar &amp; Gujarat.
-              </p>
-            </div>
-            <div className="shrink-0 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-              <button
-                onClick={() => setSampleKitRequested(true)}
-                disabled={sampleKitRequested}
-                className={`h-12 px-6 rounded-xs text-xs uppercase tracking-widest font-semibold transition-all ${
-                  sampleKitRequested
-                    ? "bg-emerald-600 text-white cursor-default"
-                    : "bg-accent text-accent-foreground hover:bg-accent/90 glow-amber shadow-md"
-                }`}
-              >
-                {sampleKitRequested ? "✓ Sample Box Dispatched" : "Request Sample Kit (Free for Architects)"}
-              </button>
-            </div>
-          </div>
-        </div>
 
         {/* ── FILTER & VIEW MODE TOOLBAR ── */}
         <div className="flex flex-col lg:flex-row gap-4 lg:items-center justify-between mb-8 pb-6 border-b border-border/60">

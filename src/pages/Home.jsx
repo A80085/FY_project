@@ -11,7 +11,6 @@ import {
   MapPin,
   Clock,
   Phone,
-  Star,
   Building2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -114,33 +113,6 @@ const BRANDS = [
   { name: "Godrej", category: "Locks & Security" }
 ];
 
-// Grounded local customer reviews
-const TESTIMONIALS = [
-  {
-    name: "Vikram & Sneha Patil",
-    location: "Rustomjee Global City, Virar West",
-    project: "2BHK Complete Interior Sourcing",
-    comment:
-      "We sourced all our 18mm BWP marine plywood, kitchen acrylic sheets, and soft-close hinges from Shree Mangalam. Transparent pricing, genuine sheets with warranty barcodes, and timely on-site delivery.",
-    rating: 5
-  },
-  {
-    name: "Ar. Rajesh Chokshi",
-    location: "Principal Architect, Vasai",
-    project: "Ongoing Residential Projects",
-    comment:
-      "Having 180+ physical finish swatches and prompt rate transparency makes presenting options to clients effortless. Their edgebanding quality and plywood grading are consistently reliable.",
-    rating: 5
-  },
-  {
-    name: "Pooja & Amit Vora",
-    location: "Evershine Avenue, Virar West",
-    project: "Modular Kitchen & Master Bedroom",
-    comment:
-      "The 3D room preview helped us compare charcoal fluted laminate with walnut veneer before buying. Zero hidden charges and genuine advice on hardware from the showroom team.",
-    rating: 5
-  }
-];
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -619,7 +591,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="mt-4 pt-3 border-t border-border/60 text-xs text-accent font-medium">
-                  Physical Samples Available For Architects
+                  180+ Finish Swatches on Display
                 </div>
               </div>
             </div>
@@ -699,50 +671,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 5. REAL CUSTOMER REVIEWS (AUTHENTIC TRUST LAYER) ── */}
-      <section className="py-16 sm:py-20 bg-background border-b border-border/60">
-        <div className="container-px max-w-7xl mx-auto">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs uppercase tracking-wider font-semibold text-accent mb-2 block">
-              Verified Client Feedback
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-display font-bold text-foreground mb-3">
-              Trusted by Homeowners &amp; Interior Designers
-            </h2>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              Real projects delivered across Virar West, Vasai, Palghar, and Mumbai.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t, idx) => (
-              <div
-                key={idx}
-                className="bg-card border border-border/80 rounded-xl p-6 flex flex-col justify-between shadow-2xs hover:border-accent/40 transition-colors"
-              >
-                <div>
-                  <div className="flex items-center gap-1 text-amber-500 mb-3">
-                    {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-amber-500" />
-                    ))}
-                  </div>
-                  <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed italic mb-4">
-                    "{t.comment}"
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-border/60">
-                  <p className="text-xs font-semibold text-foreground">{t.name}</p>
-                  <p className="text-[11px] text-muted-foreground">{t.location}</p>
-                  <p className="text-[10px] text-accent font-medium mt-0.5">{t.project}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 6. FEATURED MATERIAL ARCHIVE ── */}
+      {/* ── 5. FEATURED MATERIAL ARCHIVE ── */}
       <section className="py-16 sm:py-20 bg-secondary/15">
         <div className="container-px max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">

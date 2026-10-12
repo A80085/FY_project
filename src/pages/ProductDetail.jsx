@@ -9,8 +9,7 @@ import {
   ZoomIn, 
   Layers, 
   Ruler, 
-  ArrowUpRight,
-  PackageCheck
+  ArrowUpRight
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { productService } from "@/services/productService";
@@ -44,7 +43,6 @@ export default function ProductDetail() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [zoomMode, setZoomMode] = useState(false); // false = full view, true = 2.5x macro
-  const [sampleOrdered, setSampleOrdered] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -256,36 +254,6 @@ export default function ProductDetail() {
               </div>
             </motion.div>
 
-            {/* ── ORDER PHYSICAL ARCHITECT SAMPLE CHIP ── */}
-            <motion.div variants={fadeInUp} className="wood-panel-dark text-white rounded-xl p-6 border border-border/40 shadow-md">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <PackageCheck className="h-4 w-4 text-accent" />
-                    <h4 className="font-display font-semibold text-base text-white">Order Physical 10×10cm Sample Chip</h4>
-                  </div>
-                  <p className="text-white/80 text-xs font-light max-w-md leading-relaxed">
-                    Test the physical texture and grain against your site lighting. ₹150 per chip (100% credited toward your final project invoice).
-                  </p>
-                </div>
-                <button
-                  onClick={() => setSampleOrdered(true)}
-                  disabled={sampleOrdered}
-                  className={`shrink-0 px-5 py-2.5 rounded-xs text-xs uppercase tracking-wider font-semibold transition-all whitespace-nowrap ${
-                    sampleOrdered
-                      ? "bg-emerald-600 text-white cursor-default"
-                      : "bg-accent text-accent-foreground hover:bg-accent/90 glow-amber"
-                  }`}
-                >
-                  {sampleOrdered ? "✓ Sample Chip Requested" : "Order Sample (₹150)"}
-                </button>
-              </div>
-              {sampleOrdered && (
-                <p className="mt-3 text-[11px] text-accent/90 border-t border-white/10 pt-2 font-mono">
-                  Sample specimen added to your studio dispatch list. Our Virar West concierge will confirm delivery address.
-                </p>
-              )}
-            </motion.div>
 
             {/* ── PRIMARY PROJECT ACTIONS ── */}
             <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 pt-2">
