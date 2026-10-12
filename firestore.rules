@@ -59,6 +59,11 @@ service cloud.firestore {
       allow read, write: if isPrivilegedUser();
     }
 
+    // In-Store Sales (IRL): admin/manager only
+    match /sales/{docId} {
+      allow read, write: if isPrivilegedUser();
+    }
+
     // Block everything else
     match /{document=**} {
       allow read, write: if false;

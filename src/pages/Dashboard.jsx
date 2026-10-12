@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Package, AlertTriangle, MessageSquare, TrendingUp, ArrowRight, Boxes, Wallet } from "lucide-react";
+import { Package, AlertTriangle, MessageSquare, TrendingUp, ArrowRight, Boxes, Wallet, ShoppingCart } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
 import { productService } from "@/services/productService";
 import { inquiryService } from "@/services/inquiryService";
 import { galleryService } from "@/services/galleryService";
+import { salesService } from "@/services/salesService";
 import { formatINR } from "@/lib/interiorData";
 import { useAuth } from "@/AuthContext";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -33,7 +34,7 @@ const SEED_TREND_DATA = [
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [stats, setStats] = useState({ products: [], inquiries: [], gallery: [] });
+  const [stats, setStats] = useState({ products: [], inquiries: [], gallery: [], sales: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,8 +42,9 @@ export default function Dashboard() {
       productService.list("-created_date", 200).catch(() => []),
       inquiryService.list("-created_date", 200).catch(() => []),
       galleryService.list("-created_date", 60).catch(() => []),
-    ]).then(([products, inquiries, gallery]) => {
-      setStats({ products, inquiries, gallery });
+      salesService.list().catch(() => [])
+    ]).then(([products, inquiries, gallery, sales]) => {
+      setStats({ products, inquiries, gallery, sales });
       setLoading(false);
     });
   }, []);
@@ -50,11 +52,13 @@ export default function Dashboard() {
   const lowStock = stats.products.filter((p) => p.stock <= p.min_threshold);
   const newInquiries = stats.inquiries.filter((i) => i.status === "New");
   const inventoryValue = stats.products.reduce((s, p) => s + (p.price || 0) * (p.stock || 0), 0);
+  const totalSalesRevenue = stats.sales.reduce((s, x) => s + (Number(x.amountPaid) || Number(x.totalAmount) || 0), 0);
+  const pendingDues = stats.sales.reduce((s, x) => s + (Number(x.balanceDue) || 0), 0);
 
   const cards = [
     { label: "Total Products", value: stats.products.length, icon: Package, to: "/admin/inventory" },
-    { label: "Low-stock Items", value: lowStock.length, icon: AlertTriangle, to: "/admin/inventory", warn: lowStock.length > 0 },
-    { label: "Pending Inquiries", value: newInquiries.length, icon: MessageSquare, to: "/admin/inquiries", highlight: newInquiries.length > 0 },
+    { label: "In-Store Sales", value: formatINR(totalSalesRevenue), icon: ShoppingCart, to: "/admin/sales" },
+    { label: "Pending Balances", value: formatINR(pendingDues), icon: AlertTriangle, to: "/admin/sales", warn: pendingDues > 0 },
     { label: "Inventory Valuation", value: formatINR(inventoryValue), icon: Wallet, to: "/admin/inventory" },
   ];
 
@@ -107,6 +111,12 @@ export default function Dashboard() {
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
+          <Link
+            to="/admin/sales"
+            className="inline-flex items-center gap-2 bg-emerald-600 text-white px-4 py-2.5 text-xs font-semibold rounded-sm hover:bg-emerald-700 transition-colors shadow-sm"
+          >
+            <ShoppingCart className="h-4 w-4" /> In-Store Sales (POS)
+          </Link>
           <Link
             to="/admin/inventory"
             className="glow-amber inline-flex items-center gap-2 bg-accent text-accent-foreground px-4 py-2.5 text-xs font-medium rounded-sm hover:bg-accent/90 transition-colors shadow-sm"
@@ -211,19 +221,19 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Grid: Low Stock Alert & Recent Inquiries */}
-      <div className="grid lg:grid-cols-2 gap-8">
+      {/* Grid: Low Stock Alert, Recent In-Store Sales & Recent Inquiries (3 cols) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Low Stock Alerts */}
-        <div className="bg-card border border-border rounded-sm p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-5">
+        <div className="bg-card border border-border rounded-sm p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="font-display text-xl text-primary font-bold flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-amber-500" /> Low Stock Alerts
+              <h2 className="font-display text-lg text-primary font-bold flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-amber-500" /> Low Stock Alerts
               </h2>
-              <p className="text-xs text-muted-foreground mt-0.5">Products at or below reorder threshold</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">At or below reorder threshold</p>
             </div>
             <Link to="/admin/inventory" className="text-xs text-accent font-medium hover:underline flex items-center gap-1">
-              View inventory <ArrowRight className="h-3.5 w-3.5" />
+              Inventory <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
 
@@ -236,18 +246,62 @@ export default function Dashboard() {
               All product stock levels are above reorder thresholds.
             </div>
           ) : (
-            <div className="space-y-3">
-              {lowStock.slice(0, 5).map((p) => (
-                <div key={p.id} className="flex items-center justify-between p-3 bg-secondary/40 rounded-sm border border-border/60 text-sm">
+            <div className="space-y-2.5">
+              {lowStock.slice(0, 4).map((p) => (
+                <div key={p.id} className="flex items-center justify-between p-2.5 bg-secondary/40 rounded-sm border border-border/60 text-xs">
                   <div>
-                    <p className="font-medium text-foreground">{p.name}</p>
-                    <p className="text-xs text-muted-foreground">{p.category} · SKU: {p.sku}</p>
+                    <p className="font-medium text-foreground line-clamp-1">{p.name}</p>
+                    <p className="text-[10px] text-muted-foreground">{p.category} · SKU: {p.sku}</p>
                   </div>
-                  <div className="text-right">
-                    <span className="text-xs font-semibold text-destructive px-2 py-0.5 bg-destructive/10 rounded-sm">
+                  <div className="text-right shrink-0">
+                    <span className="text-[10px] font-semibold text-destructive px-2 py-0.5 bg-destructive/10 rounded-sm">
                       {p.stock} remaining
                     </span>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">Threshold: {p.min_threshold}</p>
+                    <p className="text-[9px] text-muted-foreground mt-0.5">Min: {p.min_threshold}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Recent In-Store Sales (IRL Walk-in Orders) */}
+        <div className="bg-card border border-border rounded-sm p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="font-display text-lg text-primary font-bold flex items-center gap-2">
+                <ShoppingCart className="h-4 w-4 text-emerald-600 dark:text-emerald-400" /> Recent In-Store Sales
+              </h2>
+              <p className="text-[11px] text-muted-foreground mt-0.5">Offline showroom transactions</p>
+            </div>
+            <Link to="/admin/sales" className="text-xs text-accent font-medium hover:underline flex items-center gap-1">
+              All sales <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+
+          {loading ? (
+            <div className="space-y-3">
+              {[1, 2, 3].map(i => <Skeleton key={i} className="h-14 w-full" />)}
+            </div>
+          ) : stats.sales.length === 0 ? (
+            <div className="p-8 text-center border border-dashed border-border rounded-sm text-xs text-muted-foreground">
+              No in-store sales logged yet.
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {stats.sales.slice(0, 4).map((sale) => (
+                <div key={sale.id} className="p-2.5 bg-secondary/40 rounded-sm border border-border/60 text-xs">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-semibold text-foreground line-clamp-1">{sale.customerName}</span>
+                    <span className="font-display font-bold text-foreground shrink-0">{formatINR(sale.totalAmount)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                    <span className="font-mono">{sale.invoiceNumber}</span>
+                    <span className={`font-semibold ${
+                      sale.paymentStatus === "Paid" ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"
+                    }`}>
+                      {sale.paymentStatus} · {sale.paymentMode}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -256,16 +310,16 @@ export default function Dashboard() {
         </div>
 
         {/* Recent Inquiries */}
-        <div className="bg-card border border-border rounded-sm p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-5">
+        <div className="bg-card border border-border rounded-sm p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="font-display text-xl text-primary font-bold flex items-center gap-2">
-                <MessageSquare className="h-5 w-5 text-accent" /> Recent Inquiries
+              <h2 className="font-display text-lg text-primary font-bold flex items-center gap-2">
+                <MessageSquare className="h-4 w-4 text-accent" /> Recent Inquiries
               </h2>
-              <p className="text-xs text-muted-foreground mt-0.5">Submissions from website and showroom</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">Website and catalog leads</p>
             </div>
             <Link to="/admin/inquiries" className="text-xs text-accent font-medium hover:underline flex items-center gap-1">
-              All inquiries <ArrowRight className="h-3.5 w-3.5" />
+              Inquiries <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
 
@@ -278,12 +332,12 @@ export default function Dashboard() {
               No inquiries received yet.
             </div>
           ) : (
-            <div className="space-y-3">
-              {stats.inquiries.slice(0, 5).map((inq) => (
-                <div key={inq.id} className="p-3 bg-secondary/40 rounded-sm border border-border/60">
+            <div className="space-y-2.5">
+              {stats.inquiries.slice(0, 4).map((inq) => (
+                <div key={inq.id} className="p-2.5 bg-secondary/40 rounded-sm border border-border/60 text-xs">
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="font-semibold text-foreground">{inq.customer_name}</span>
-                    <span className={`px-2 py-0.5 rounded-sm font-medium ${
+                    <span className="font-semibold text-foreground line-clamp-1">{inq.customer_name}</span>
+                    <span className={`px-1.5 py-0.2 rounded-sm text-[10px] font-medium ${
                       inq.status === "New"
                         ? "bg-accent/20 text-accent-foreground"
                         : inq.status === "Closed"
@@ -293,8 +347,8 @@ export default function Dashboard() {
                       {inq.status}
                     </span>
                   </div>
-                  <p className="text-xs font-medium text-primary">{inq.subject}</p>
-                  <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">{inq.message}</p>
+                  <p className="text-[11px] font-medium text-primary line-clamp-1">{inq.subject}</p>
+                  <p className="text-[10px] text-muted-foreground line-clamp-1 mt-0.5">{inq.message}</p>
                 </div>
               ))}
             </div>

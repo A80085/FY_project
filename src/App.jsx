@@ -26,6 +26,7 @@ import ForgotPassword from '@/pages/ForgotPassword';
 const Visualizer = lazy(() => import('@/pages/Visualizer'));
 const Estimate = lazy(() => import('@/pages/Estimate'));
 const Dashboard = lazy(() => import('@/pages/Dashboard'));
+const Sales = lazy(() => import('@/pages/Sales'));
 const Inventory = lazy(() => import('@/pages/Inventory'));
 const Inquiries = lazy(() => import('@/pages/Inquiries'));
 const GalleryManager = lazy(() => import('@/pages/GalleryManager'));
@@ -74,6 +75,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin" element={<AdminRoute />}>
           <Route element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
+            <Route path="sales" element={<Sales />} />
             <Route path="inventory" element={<Inventory />} />
             <Route path="inquiries" element={<Inquiries />} />
             <Route path="gallery" element={<GalleryManager />} />
