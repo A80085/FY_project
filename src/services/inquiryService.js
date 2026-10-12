@@ -10,7 +10,7 @@ export const inquiryService = {
       const snapshot = await getDocs(q);
       let items = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-      // Sort client-side (Firestore composite indexes not needed for FY project)
+      // Sort client-side by creation date
       if (sort === "-created_date") {
         items.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
       }
