@@ -115,6 +115,8 @@ export default function RoomVisualizer() {
     const idx = slotSwatches[slot].length;
     const reader = new FileReader();
     reader.onload = () => {
+      if (typeof reader.result !== "string") return;
+      const resultStr = reader.result;
       const img = new Image();
       img.onload = () => {
         const tex = new THREE.Texture(img);
@@ -124,12 +126,12 @@ export default function RoomVisualizer() {
         tex.userData = { custom: true };
         setSlotSwatches((prev) => {
           const list = prev[slot].slice();
-          list.push({ name: "Your texture", color: "#cccccc", finish: SLOT_FINISH[slot], customTex: tex, customThumb: reader.result });
+          list.push({ name: "Your texture", color: "#cccccc", finish: SLOT_FINISH[slot], customTex: tex, customThumb: resultStr });
           return { ...prev, [slot]: list };
         });
         setSelections((s) => ({ ...s, [slot]: idx }));
       };
-      img.src = reader.result;
+      img.src = resultStr;
     };
     reader.readAsDataURL(file);
     e.target.value = "";

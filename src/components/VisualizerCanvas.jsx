@@ -523,6 +523,9 @@ const ROOMS = {
 };
 
 
+/**
+ * @type {React.ForwardRefExoticComponent<any>}
+ */
 const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotate, lighting, interactionMode = "orbit" }, ref) => {
   const mountRef = useRef(null);
   const sceneRef = useRef(null);
@@ -751,7 +754,7 @@ const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotat
         ring.rotation.x = -Math.PI / 2;
         ring.position.set(x, ROOM_DIMS.h - 0.015, z);
         scene.add(ring);
-        const d = new THREE.Mesh(new THREE.CircleGeometry(0.1, 20), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff3df, emissiveIntensity: 0.7 }));
+        const d = new THREE.Mesh(new THREE.CircleGeometry(0.1, 20), new THREE.MeshBasicMaterial({ color: 0xfff8ee }));
         d.rotation.x = -Math.PI / 2;
         d.position.set(x, ROOM_DIMS.h - 0.02, z);
         scene.add(d);
