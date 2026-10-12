@@ -16,10 +16,8 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { productService } from "@/services/productService";
-import { galleryService } from "@/services/galleryService";
 import ProductCard from "@/components/ProductCard";
 import { Image } from "@/components/ui/image";
-import { GALLERY_SEED } from "@/lib/interiorData";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 35 },
@@ -112,7 +110,6 @@ export default function Home() {
 
   useEffect(() => {
     productService.list("-created_date", 8).then(setProducts).catch(() => setProducts([]));
-    galleryService.list("-created_date", 6).then(setGallery).catch(() => setGallery(GALLERY_SEED.slice(0, 6)));
   }, []);
 
   const featured = products.filter((p) => p.is_featured);

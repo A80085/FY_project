@@ -24,22 +24,36 @@ export class ErrorBoundary extends React.Component {
               <AlertTriangle className="h-6 w-6" />
             </div>
             <h1 className="text-xl font-bold text-primary mb-2 font-display">Something went wrong</h1>
-            <p className="text-sm text-muted-foreground mb-6">
+            <p className="text-sm text-muted-foreground mb-4">
               We encountered an unexpected error. Please try refreshing the page or returning home.
             </p>
+            {this.state.error?.message && (
+              <details className="text-left text-xs bg-muted/50 p-2.5 rounded border border-border/60 mb-5 text-muted-foreground font-mono overflow-auto max-h-32">
+                <summary className="cursor-pointer text-[11px] font-sans font-medium text-destructive mb-1">
+                  View Diagnostic Details
+                </summary>
+                {this.state.error.message}
+              </details>
+            )}
             <div className="flex gap-3 justify-center">
               <button 
-                onClick={() => window.location.reload()} 
+                onClick={() => {
+                  this.setState({ hasError: false, error: null });
+                  window.location.reload();
+                }} 
                 className="px-4 py-2 bg-primary text-primary-foreground rounded-sm text-sm font-medium hover:bg-primary/90"
               >
                 Refresh Page
               </button>
-              <a 
-                href="/" 
+              <button 
+                onClick={() => {
+                  this.setState({ hasError: false, error: null });
+                  window.location.href = "/";
+                }} 
                 className="px-4 py-2 bg-secondary text-secondary-foreground border border-border rounded-sm text-sm font-medium hover:bg-secondary/80 flex items-center gap-2"
               >
                 <Home className="w-4 h-4" /> Home
-              </a>
+              </button>
             </div>
           </div>
         </div>
