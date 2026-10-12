@@ -136,8 +136,8 @@ export default function RoomVisualizer() {
   }
 
   return (
-    <div className="grid lg:grid-cols-[1fr_340px] gap-5 items-start">
-      <div className="relative rounded-sm overflow-hidden border border-border bg-muted shadow-sm">
+    <div className="grid lg:grid-cols-[1fr_340px] gap-6 items-start">
+      <div className="relative rounded-2xl overflow-hidden border border-border/80 bg-muted shadow-xl">
         <VisualizerCanvas 
           ref={canvasRef}
           room={room}
@@ -149,15 +149,17 @@ export default function RoomVisualizer() {
         />
 
         {/* Top bar: Room selection pills */}
-        <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-3 z-10 pointer-events-none">
+        <div className="absolute top-4 left-4 right-4 flex items-center justify-between gap-3 z-10 pointer-events-none">
           <div className="min-w-0 flex-1 pointer-events-auto">
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5">
               {Object.entries(ROOMS).map(([key, r]) => (
                 <button
                   key={key}
                   onClick={() => setRoom(key)}
-                  className={`px-3 py-1.5 text-xs font-semibold tracking-wide rounded-sm border shrink-0 transition-colors shadow-xs ${
-                    room === key ? "bg-primary text-primary-foreground border-primary" : "bg-background/90 backdrop-blur border-border hover:border-accent text-foreground"
+                  className={`px-4 py-2 text-xs font-semibold tracking-wide rounded-full border shrink-0 transition-all shadow-sm ${
+                    room === key
+                      ? "bg-primary text-primary-foreground border-primary shadow-md"
+                      : "bg-card/90 backdrop-blur-md border-border/70 hover:border-accent text-foreground hover:bg-card"
                   }`}
                 >
                   {r.name}
@@ -165,25 +167,30 @@ export default function RoomVisualizer() {
               ))}
             </div>
           </div>
+
+          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card/90 backdrop-blur-md border border-border/60 text-[11px] font-medium text-foreground shadow-sm pointer-events-auto">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Interactive 3D WebGL</span>
+          </div>
         </div>
 
-        {/* Bottom bar controls: Unified Studio Toolbar */}
-        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-end gap-2 pointer-events-none z-10">
-          <div className="flex items-center gap-0.5 sm:gap-1 bg-background/95 backdrop-blur-md border border-border p-1 rounded-sm shadow-md pointer-events-auto max-w-full overflow-x-auto no-scrollbar">
+        {/* Bottom bar controls: Unified Studio CAD Toolbar */}
+        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-end gap-2 pointer-events-none z-10">
+          <div className="flex items-center gap-1 sm:gap-1.5 bg-card/95 backdrop-blur-md border border-border/80 p-1.5 rounded-2xl shadow-xl pointer-events-auto max-w-full overflow-x-auto no-scrollbar">
             {/* Mode Selector Segment: Orbit & Hand Move */}
-            <div className="flex items-center gap-0.5 bg-muted/60 p-0.5 rounded-xs shrink-0">
+            <div className="flex items-center gap-0.5 bg-muted/70 p-1 rounded-xl shrink-0">
               <button
                 type="button"
                 aria-label="Orbit 3D camera"
                 title="Orbit Mode: Rotate 360° around space [O]"
                 onClick={() => setInteractionMode("orbit")}
-                className={`flex items-center gap-1 text-[11px] sm:text-xs px-2 py-1 rounded-xs font-medium transition-all ${
+                className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg font-medium transition-all ${
                   interactionMode === "orbit"
                     ? "bg-primary text-primary-foreground font-semibold shadow-xs"
                     : "text-foreground hover:bg-background/80"
                 }`}
               >
-                <OrbitIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                <OrbitIcon className="h-3.5 w-3.5" />
                 <span>Orbit</span>
               </button>
               <button
@@ -191,19 +198,19 @@ export default function RoomVisualizer() {
                 aria-label="Hand Pan and Move camera"
                 title="Hand Move Mode: Click & drag to grab and pan across models [H / Space]"
                 onClick={() => setInteractionMode("hand")}
-                className={`flex items-center gap-1 text-[11px] sm:text-xs px-2 py-1 rounded-xs font-medium transition-all ${
+                className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg font-medium transition-all ${
                   interactionMode === "hand"
                     ? "bg-accent text-accent-foreground font-semibold shadow-xs"
                     : "text-foreground hover:bg-background/80"
                 }`}
               >
-                <Hand className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                <Hand className="h-3.5 w-3.5" />
                 <span className="hidden xs:inline sm:inline">Hand Move</span>
                 <span className="xs:hidden">Hand</span>
               </button>
             </div>
 
-            <div className="h-3.5 w-px bg-border shrink-0" />
+            <div className="h-4 w-px bg-border shrink-0" />
 
             {/* Auto-Rotate */}
             <button
@@ -211,15 +218,17 @@ export default function RoomVisualizer() {
               aria-label="Toggle continuous auto-rotation"
               title="Toggle continuous room rotation"
               onClick={() => setAutoRotate((v) => !v)}
-              className={`flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-xs font-medium transition-all shrink-0 ${
-                autoRotate ? "bg-accent text-accent-foreground font-semibold shadow-xs" : "text-foreground hover:bg-muted"
+              className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg font-medium transition-all shrink-0 ${
+                autoRotate
+                  ? "bg-accent text-accent-foreground font-semibold shadow-xs"
+                  : "text-foreground hover:bg-muted"
               }`}
             >
-              <RotateCw className={`h-3 w-3 sm:h-3.5 sm:w-3.5 ${autoRotate ? "animate-spin" : ""}`} />
+              <RotateCw className={`h-3.5 w-3.5 ${autoRotate ? "animate-spin" : ""}`} />
               <span className="hidden xs:inline sm:inline">Rotate</span>
             </button>
 
-            <div className="h-3.5 w-px bg-border shrink-0" />
+            <div className="h-4 w-px bg-border shrink-0" />
 
             {/* Lighting Preset */}
             <button
@@ -227,13 +236,13 @@ export default function RoomVisualizer() {
               aria-label="Cycle lighting ambience"
               title={`Lighting: ${lighting} (Click to switch Warm / Cool / Neutral)`}
               onClick={() => setLighting((l) => (l === "warm" ? "cool" : l === "cool" ? "neutral" : "warm"))}
-              className="flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-xs font-medium text-foreground hover:bg-muted transition-all shrink-0"
+              className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg font-medium text-foreground hover:bg-muted transition-all shrink-0"
             >
-              <Sun className={`h-3 w-3 sm:h-3.5 sm:w-3.5 ${lighting === "warm" ? "text-amber-500" : lighting === "cool" ? "text-blue-400" : "text-amber-200"}`} />
+              <Sun className={`h-3.5 w-3.5 ${lighting === "warm" ? "text-amber-500" : lighting === "cool" ? "text-blue-400" : "text-amber-200"}`} />
               <span className="hidden xs:inline sm:inline capitalize">{lighting}</span>
             </button>
 
-            <div className="h-3.5 w-px bg-border shrink-0" />
+            <div className="h-4 w-px bg-border shrink-0" />
 
             {/* Reset View */}
             <button
@@ -241,13 +250,13 @@ export default function RoomVisualizer() {
               aria-label="Reset camera view"
               title="Reset view to default angle"
               onClick={() => canvasRef.current?.resetView()}
-              className="flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-xs font-medium text-foreground hover:bg-muted transition-all shrink-0"
+              className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg font-medium text-foreground hover:bg-muted transition-all shrink-0"
             >
-              <RefreshCw className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              <RefreshCw className="h-3.5 w-3.5" />
               <span className="hidden xs:inline sm:inline">Reset</span>
             </button>
 
-            <div className="h-3.5 w-px bg-border shrink-0" />
+            <div className="h-4 w-px bg-border shrink-0" />
 
             {/* Snapshot */}
             <button
@@ -255,13 +264,13 @@ export default function RoomVisualizer() {
               aria-label="Save snapshot of your design"
               title="Take a high-resolution snapshot of this room design"
               onClick={() => canvasRef.current?.takeSnapshot()}
-              className="flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-xs font-medium text-foreground hover:bg-muted transition-all shrink-0"
+              className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg font-medium text-foreground hover:bg-muted transition-all shrink-0"
             >
-              <Camera className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-foreground" />
+              <Camera className="h-3.5 w-3.5 text-foreground" />
               <span className="hidden sm:inline">Snapshot</span>
             </button>
 
-            <div className="h-3.5 w-px bg-border shrink-0" />
+            <div className="h-4 w-px bg-border shrink-0" />
 
             {/* Fullscreen */}
             <button
@@ -269,9 +278,9 @@ export default function RoomVisualizer() {
               aria-label="Toggle fullscreen"
               title="Toggle full screen immersion"
               onClick={() => canvasRef.current?.fullscreen()}
-              className="flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-xs font-medium text-foreground hover:bg-muted transition-all shrink-0"
+              className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg font-medium text-foreground hover:bg-muted transition-all shrink-0"
             >
-              <Maximize2 className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              <Maximize2 className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Full</span>
             </button>
           </div>
