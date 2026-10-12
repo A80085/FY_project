@@ -552,6 +552,18 @@ const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotat
       if (!document.fullscreenElement) el.requestFullscreen?.();
       else document.exitFullscreen?.();
       setTimeout(() => window.dispatchEvent(new Event("resize")), 300);
+    },
+    takeSnapshot: () => {
+      const renderer = rendererRef.current;
+      const scene = sceneRef.current;
+      const camera = cameraRef.current;
+      if (!renderer || !scene || !camera) return;
+      renderer.render(scene, camera);
+      const dataUrl = renderer.domElement.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.download = `shree-mangalam-${room}-design.png`;
+      a.href = dataUrl;
+      a.click();
     }
   }));
 

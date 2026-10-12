@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { Maximize2, RotateCw, Sun, RefreshCw, Hand } from "lucide-react";
+import { Maximize2, RotateCw, Sun, RefreshCw, Hand, Camera } from "lucide-react";
 import { productService } from "@/services/productService";
 import { BUILTIN_SLOTS, CATALOG_TO_SLOT, COLOR_FAMILY_MAP, FINISH_MAP } from "./constants";
 import VisualizerControls from "./VisualizerControls";
@@ -148,9 +148,9 @@ export default function RoomVisualizer() {
           interactionMode={interactionMode}
         />
 
-        {/* Top bar: Room selection pills + Orbit/Hand tool selector */}
-        <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-3 z-10">
-          <div className="min-w-0 flex-1">
+        {/* Top bar: Room selection pills */}
+        <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-3 z-10 pointer-events-none">
+          <div className="min-w-0 flex-1 pointer-events-auto">
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
               {Object.entries(ROOMS).map(([key, r]) => (
                 <button
@@ -165,112 +165,116 @@ export default function RoomVisualizer() {
               ))}
             </div>
           </div>
-
-          {/* Mode Switcher: Orbit vs Hand Grab Tool */}
-          <div className="flex items-center gap-0.5 shrink-0 bg-background/90 backdrop-blur border border-border p-0.5 rounded-sm shadow-xs pointer-events-auto">
-            <button
-              type="button"
-              aria-label="Orbit 3D room rotation"
-              title="Orbit Mode (Rotate 360° around space) [O / R]"
-              onClick={() => setInteractionMode("orbit")}
-              className={`flex items-center gap-1 text-[11px] sm:text-xs px-2 py-1 rounded-xs font-medium transition-all ${
-                interactionMode === "orbit"
-                  ? "bg-primary text-primary-foreground shadow-xs font-semibold"
-                  : "text-foreground hover:bg-muted"
-              }`}
-            >
-              <OrbitIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-              <span className="hidden sm:inline">Orbit</span>
-            </button>
-            <button
-              type="button"
-              aria-label="Hand grab and move across 3D models"
-              title="Hand Tool (Click & drag to grab and move across models) [H or Hold Space]"
-              onClick={() => setInteractionMode("hand")}
-              className={`flex items-center gap-1 text-[11px] sm:text-xs px-2 py-1 rounded-xs font-medium transition-all ${
-                interactionMode === "hand"
-                  ? "bg-accent text-accent-foreground shadow-xs font-semibold"
-                  : "text-foreground hover:bg-muted"
-              }`}
-            >
-              <Hand className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-              <span>Hand Move</span>
-            </button>
-          </div>
         </div>
 
-        {/* Floating helper pill when Hand mode is active */}
-        {interactionMode === "hand" && (
-          <div className="absolute top-14 left-1/2 -translate-x-1/2 pointer-events-none z-10 transition-all">
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-black/80 backdrop-blur-md text-white text-[11px] rounded-full border border-white/10 shadow-lg tracking-wide font-medium whitespace-nowrap">
-              <Hand className="h-3.5 w-3.5 text-accent animate-pulse" />
-              <span>Hand Mode: Click &amp; drag to grab and move across space</span>
+        {/* Bottom bar controls: Unified Studio Toolbar */}
+        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-end gap-2 pointer-events-none z-10">
+          <div className="flex items-center gap-0.5 sm:gap-1 bg-background/95 backdrop-blur-md border border-border p-1 rounded-sm shadow-md pointer-events-auto max-w-full overflow-x-auto no-scrollbar">
+            {/* Mode Selector Segment: Orbit & Hand Move */}
+            <div className="flex items-center gap-0.5 bg-muted/60 p-0.5 rounded-xs shrink-0">
+              <button
+                type="button"
+                aria-label="Orbit 3D camera"
+                title="Orbit Mode: Rotate 360° around space [O]"
+                onClick={() => setInteractionMode("orbit")}
+                className={`flex items-center gap-1 text-[11px] sm:text-xs px-2 py-1 rounded-xs font-medium transition-all ${
+                  interactionMode === "orbit"
+                    ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                    : "text-foreground hover:bg-background/80"
+                }`}
+              >
+                <OrbitIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                <span>Orbit</span>
+              </button>
+              <button
+                type="button"
+                aria-label="Hand Pan and Move camera"
+                title="Hand Move Mode: Click & drag to grab and pan across models [H / Space]"
+                onClick={() => setInteractionMode("hand")}
+                className={`flex items-center gap-1 text-[11px] sm:text-xs px-2 py-1 rounded-xs font-medium transition-all ${
+                  interactionMode === "hand"
+                    ? "bg-accent text-accent-foreground font-semibold shadow-xs"
+                    : "text-foreground hover:bg-background/80"
+                }`}
+              >
+                <Hand className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                <span className="hidden xs:inline sm:inline">Hand Move</span>
+                <span className="xs:hidden">Hand</span>
+              </button>
             </div>
-          </div>
-        )}
 
-        {/* Bottom bar controls — single row, never wraps */}
-        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none z-10">
-          <div className="flex items-center gap-0.5 bg-background/90 backdrop-blur border border-border px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-sm shadow-sm pointer-events-auto">
-            {/* Quick Hand/Orbit toggle in bottom toolbar */}
+            <div className="h-3.5 w-px bg-border shrink-0" />
+
+            {/* Auto-Rotate */}
             <button
-              aria-label="Toggle Hand / Orbit tool"
-              title="Toggle Hand / Orbit mode [Space / H / O]"
-              onClick={() => setInteractionMode((m) => (m === "hand" ? "orbit" : "hand"))}
-              className={`flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-sm font-medium transition-colors ${
-                interactionMode === "hand" ? "bg-accent text-accent-foreground font-semibold" : "text-foreground hover:bg-muted"
-              }`}
-            >
-              {interactionMode === "hand" ? (
-                <>
-                  <Hand className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                  <span className="hidden xs:inline sm:inline">Hand</span>
-                </>
-              ) : (
-                <>
-                  <OrbitIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                  <span className="hidden xs:inline sm:inline">Orbit</span>
-                </>
-              )}
-            </button>
-            <div className="h-3.5 w-px bg-border" />
-            <button
-              aria-label="Toggle auto-rotate"
+              type="button"
+              aria-label="Toggle continuous auto-rotation"
+              title="Toggle continuous room rotation"
               onClick={() => setAutoRotate((v) => !v)}
-              className={`flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-sm font-medium ${
-                autoRotate ? "bg-accent text-accent-foreground" : "text-foreground"
+              className={`flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-xs font-medium transition-all shrink-0 ${
+                autoRotate ? "bg-accent text-accent-foreground font-semibold shadow-xs" : "text-foreground hover:bg-muted"
               }`}
             >
-              <RotateCw className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              <RotateCw className={`h-3 w-3 sm:h-3.5 sm:w-3.5 ${autoRotate ? "animate-spin" : ""}`} />
               <span className="hidden xs:inline sm:inline">Rotate</span>
             </button>
-            <div className="h-3.5 w-px bg-border" />
+
+            <div className="h-3.5 w-px bg-border shrink-0" />
+
+            {/* Lighting Preset */}
             <button
-              aria-label="Cycle lighting mode"
+              type="button"
+              aria-label="Cycle lighting ambience"
+              title={`Lighting: ${lighting} (Click to switch Warm / Cool / Neutral)`}
               onClick={() => setLighting((l) => (l === "warm" ? "cool" : l === "cool" ? "neutral" : "warm"))}
-              className="flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-sm capitalize font-medium text-foreground"
+              className="flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-xs font-medium text-foreground hover:bg-muted transition-all shrink-0"
             >
-              <Sun className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-amber-500" />
+              <Sun className={`h-3 w-3 sm:h-3.5 sm:w-3.5 ${lighting === "warm" ? "text-amber-500" : lighting === "cool" ? "text-blue-400" : "text-amber-200"}`} />
               <span className="hidden xs:inline sm:inline capitalize">{lighting}</span>
             </button>
-            <div className="h-3.5 w-px bg-border" />
+
+            <div className="h-3.5 w-px bg-border shrink-0" />
+
+            {/* Reset View */}
             <button
+              type="button"
               aria-label="Reset camera view"
+              title="Reset view to default angle"
               onClick={() => canvasRef.current?.resetView()}
-              className="flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-sm font-medium text-foreground"
+              className="flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-xs font-medium text-foreground hover:bg-muted transition-all shrink-0"
             >
               <RefreshCw className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               <span className="hidden xs:inline sm:inline">Reset</span>
             </button>
+
+            <div className="h-3.5 w-px bg-border shrink-0" />
+
+            {/* Snapshot */}
+            <button
+              type="button"
+              aria-label="Save snapshot of your design"
+              title="Take a high-resolution snapshot of this room design"
+              onClick={() => canvasRef.current?.takeSnapshot()}
+              className="flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-xs font-medium text-foreground hover:bg-muted transition-all shrink-0"
+            >
+              <Camera className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-foreground" />
+              <span className="hidden sm:inline">Snapshot</span>
+            </button>
+
+            <div className="h-3.5 w-px bg-border shrink-0" />
+
+            {/* Fullscreen */}
+            <button
+              type="button"
+              aria-label="Toggle fullscreen"
+              title="Toggle full screen immersion"
+              onClick={() => canvasRef.current?.fullscreen()}
+              className="flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-xs font-medium text-foreground hover:bg-muted transition-all shrink-0"
+            >
+              <Maximize2 className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              <span className="hidden sm:inline">Full</span>
+            </button>
           </div>
-          <button
-            aria-label="Toggle fullscreen"
-            onClick={() => canvasRef.current?.fullscreen()}
-            className="flex items-center gap-1 text-[11px] sm:text-xs bg-background/90 backdrop-blur border border-border px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-sm hover:border-accent font-medium shadow-sm pointer-events-auto text-foreground"
-          >
-            <Maximize2 className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-            <span className="hidden sm:inline">Full</span>
-          </button>
         </div>
       </div>
 
