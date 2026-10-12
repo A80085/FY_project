@@ -8,11 +8,12 @@ export const inquiryService = {
     try {
       const q = query(collection(db, COLLECTION_NAME), fbLimit(maxLimit));
       const snapshot = await getDocs(q);
+      /** @type {any[]} */
       let items = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
       // Sort client-side by creation date
       if (sort === "-created_date") {
-        items.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+        items.sort((a, b) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime());
       }
 
       return items;
