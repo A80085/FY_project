@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Plus, Pencil, Trash2, X, Search, AlertTriangle, Package, RefreshCw } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Search, AlertTriangle, RefreshCw } from "lucide-react";
 import { productService } from "@/services/productService";
 import { formatINR } from "@/lib/interiorData";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
@@ -45,7 +45,7 @@ export default function Inventory() {
       }
       await load();
       close();
-    } catch (err) {
+    } catch (_err) {
       toast({ title: "Error", description: "Failed to save product.", variant: "destructive" });
     } finally {
       setSaving(false);
@@ -63,8 +63,8 @@ export default function Inventory() {
         try {
           await productService.delete(p.id);
           setItems((arr) => arr.filter((x) => x.id !== p.id));
-          toast({ title: "Product deleted", description: `${p.name} removed from inventory.` });
-        } catch (err) {
+          toast({ title: "Product deleted", description: `${p.name} removed.` });
+        } catch (_err) {
           toast({ title: "Error", description: "Failed to delete product.", variant: "destructive" });
         }
       }
@@ -74,15 +74,15 @@ export default function Inventory() {
   function resetData() {
     setConfirmState({
       open: true,
-      title: "Reset catalog?",
-      description: "Reset catalog to initial seed data? Custom edits will be overwritten.",
+      title: "Reset inventory to seed products?",
+      description: "This will restore the 8 default showcase products into Firestore.",
       action: async () => {
         try {
           const resetSeed = await productService.reset();
           setItems(resetSeed);
-          toast({ title: "Catalog reset", description: "Inventory has been reset to seed data." });
-        } catch (err) {
-          toast({ title: "Error", description: "Failed to reset catalog.", variant: "destructive" });
+          toast({ title: "Inventory reset", description: "Product catalog restored to initial seed." });
+        } catch (_err) {
+          toast({ title: "Error", description: "Failed to reset products.", variant: "destructive" });
         }
       }
     });
@@ -92,19 +92,49 @@ export default function Inventory() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col sm:flex-row gap-3 justify-between">
-        <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col gap-4">
+        {/* Mobile touch scrollable category pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
           {["All", ...CATEGORIES].map((c) => (
-            <button key={c} onClick={() => setCat(c)} className={`px-3 py-1.5 text-xs font-medium rounded-sm border ${cat === c ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-accent"}`}>{c}</button>
+            <button
+              key={c}
+              onClick={() => setCat(c)}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-sm border shrink-0 transition-colors ${
+                cat === c ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-accent bg-card text-foreground"
+              }`}
+            >
+              {c}
+            </button>
           ))}
         </div>
-        <div className="flex gap-2">
-          <div className="relative">
+
+        {/* Action controls header */}
+        <div className="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between">
+          <div className="relative flex-1 max-w-md">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search inventory…" className="pl-8 pr-3 py-2 text-sm border border-border rounded-sm focus:outline-none focus:border-accent" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search inventory by name, SKU…"
+              className="w-full pl-8 pr-3 py-2 text-sm border border-border rounded-sm focus:outline-none focus:border-accent bg-card"
+            />
           </div>
-          <button aria-label="Reset catalog to seed" onClick={resetData} title="Reset catalog to seed" className=""><RefreshCw className="" /></button>
-          <button onClick={openNew} className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-4 py-2 text-sm font-medium rounded-sm hover:bg-accent/90 shadow-sm"><Plus className="h-4 w-4" /> Add product</button>
+          <div className="flex items-center gap-2">
+            <button
+              aria-label="Reset catalog to seed"
+              onClick={resetData}
+              title="Reset catalog to seed"
+              className="p-2 border border-border rounded-sm hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors bg-card"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </button>
+            <button
+              onClick={openNew}
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-4 py-2 text-sm font-semibold rounded-sm hover:bg-accent/90 shadow-sm"
+            >
+              <Plus className="h-4 w-4" /> Add product
+            </button>
+          </div>
         </div>
       </div>
 
@@ -130,16 +160,16 @@ export default function Inventory() {
         </div>
       ) : (
         <div className="bg-card border border-border rounded-sm overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto no-scrollbar">
+            <table className="w-full text-sm min-w-[650px]">
               <thead className="bg-secondary/60 text-muted-foreground">
-                <tr className="text-left border-b border-border">
-                  <th className="p-3 font-medium">Product</th>
-                  <th className="p-3 font-medium">Category</th>
-                  <th className="p-3 font-medium text-right">Price</th>
-                  <th className="p-3 font-medium text-right">Stock</th>
-                  <th className="p-3 font-medium text-right">Min Threshold</th>
-                  <th className="p-3 font-medium w-20"></th>
+                <tr className="text-left border-b border-border text-xs uppercase tracking-wider font-semibold">
+                  <th className="p-3">Product</th>
+                  <th className="p-3">Category</th>
+                  <th className="p-3 text-right">Price</th>
+                  <th className="p-3 text-right">Stock</th>
+                  <th className="p-3 text-right">Min Threshold</th>
+                  <th className="p-3 text-center w-24">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -148,28 +178,30 @@ export default function Inventory() {
                   return (
                     <tr key={p.id} className="border-t border-border hover:bg-secondary/30 transition-colors">
                       <td className="p-3">
-                        <div className="flex items-center gap-3">
-                          <span className="h-9 w-9 rounded-sm bg-muted grid place-items-center overflow-hidden shrink-0">
-                            {p.image_url ? <img src={p.image_url} alt="" className="h-full w-full object-cover" /> : <Package className="h-4 w-4 text-muted-foreground" />}
-                          </span>
-                          <div>
-                            <p className="font-medium text-foreground">{p.name}</p>
-                            <p className="text-xs text-muted-foreground">{p.sku}</p>
-                          </div>
-                        </div>
+                        <div className="font-semibold text-foreground">{p.name}</div>
+                        <div className="text-xs text-muted-foreground">{p.sku} {p.color_family ? `· ${p.color_family}` : ""}</div>
                       </td>
-                      <td className="p-3 text-muted-foreground">{p.category}</td>
-                      <td className="p-3 text-right font-medium">{formatINR(p.price)} <span className="text-xs text-muted-foreground font-normal">{p.unit}</span></td>
-                      <td className="p-3 text-right">
-                        <span className={`inline-flex items-center gap-1 ${low ? "text-destructive font-semibold" : ""}`}>
-                          {low && <AlertTriangle className="h-3.5 w-3.5" />}{p.stock}
+                      <td className="p-3">
+                        <span className="inline-block px-2 py-0.5 text-xs bg-secondary border border-border rounded-sm font-medium">
+                          {p.category}
+                        </span>
+                      </td>
+                      <td className="p-3 text-right font-medium">{formatINR(p.price)} <span className="text-[11px] text-muted-foreground">{p.unit}</span></td>
+                      <td className="p-3 text-right font-semibold">
+                        <span className={`inline-flex items-center gap-1 ${low ? "text-destructive font-bold" : "text-foreground"}`}>
+                          {low && <AlertTriangle className="h-3.5 w-3.5" />}
+                          {p.stock}
                         </span>
                       </td>
                       <td className="p-3 text-right text-muted-foreground">{p.min_threshold}</td>
-                      <td className="p-3">
-                        <div className="flex items-center justify-end gap-1">
-                          <button aria-label="Edit item" onClick={() => openEdit(p)} className=""><Pencil className="" /></button>
-                          <button aria-label="Delete item" onClick={() => remove(p)} className=""><Trash2 className="" /></button>
+                      <td className="p-3 text-center">
+                        <div className="flex items-center justify-center gap-1">
+                          <button onClick={() => openEdit(p)} className="p-1.5 rounded-sm hover:bg-secondary text-muted-foreground hover:text-foreground" title="Edit">
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button onClick={() => remove(p)} className="p-1.5 rounded-sm hover:bg-destructive/10 text-muted-foreground hover:text-destructive" title="Delete">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -178,18 +210,19 @@ export default function Inventory() {
               </tbody>
             </table>
           </div>
-          {!filtered.length && <p className="p-6 text-center text-sm text-muted-foreground">No products found.</p>}
+          {!filtered.length && <p className="p-6 text-center text-sm text-muted-foreground">No products match your search or filter.</p>}
         </div>
       )}
 
+      {/* Edit/Create Product Modal */}
       {editing && (
-        <div className="fixed inset-0 z-50 bg-primary/60 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto" onClick={close}>
-          <form onSubmit={save} className="bg-background w-full max-w-2xl rounded-sm border border-border my-8 shadow-xl" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-5 border-b border-border">
-              <h2 className="font-display text-xl font-bold text-primary">{editing === "new" ? "Add product" : "Edit product"}</h2>
-              <button aria-label="Close modal" type="button" onClick={close}><X className="" /></button>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto" onClick={close}>
+          <form onSubmit={save} className="bg-background w-full max-w-2xl rounded-sm border border-border my-6 shadow-2xl max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border shrink-0">
+              <h2 className="font-display text-lg sm:text-xl font-bold text-primary">{editing === "new" ? "Add product" : "Edit product"}</h2>
+              <button aria-label="Close modal" type="button" onClick={close} className="p-1.5 text-muted-foreground hover:text-foreground"><X className="h-5 w-5" /></button>
             </div>
-            <div className="p-5 grid sm:grid-cols-2 gap-4">
+            <div className="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 gap-3.5 overflow-y-auto">
               <F label="Name *"><input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="ainput" /></F>
               <F label="SKU"><input value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value })} className="ainput" /></F>
               <F label="Category">
@@ -206,20 +239,20 @@ export default function Inventory() {
               <F label="Colour family"><input value={form.color_family} onChange={(e) => setForm({ ...form, color_family: e.target.value })} className="ainput" /></F>
               <F label="Image URL" full><input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className="ainput" placeholder="https://…" /></F>
               <F label="Description" full><textarea rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="ainput resize-none" /></F>
-              <label className="flex items-center gap-2 sm:col-span-2 text-sm font-medium">
-                <input type="checkbox" checked={!!form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} />
+              <label className="flex items-center gap-2 sm:col-span-2 text-sm font-medium pt-1">
+                <input type="checkbox" checked={!!form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="h-4 w-4 rounded accent-accent" />
                 Feature on home catalog
               </label>
             </div>
-            <div className="p-5 border-t border-border flex justify-end gap-2 bg-secondary/30">
-              <button type="button" onClick={close} className="px-4 py-2 text-sm border border-border rounded-sm">Cancel</button>
-              <button type="submit" disabled={saving} className="px-5 py-2 text-sm bg-primary text-primary-foreground font-medium rounded-sm disabled:opacity-50">{saving ? "Saving…" : "Save product"}</button>
+            <div className="p-4 sm:p-5 border-t border-border flex justify-end gap-2 bg-secondary/30 shrink-0">
+              <button type="button" onClick={close} className="px-4 py-2 text-xs sm:text-sm border border-border rounded-sm font-medium">Cancel</button>
+              <button type="submit" disabled={saving} className="px-5 py-2 text-xs sm:text-sm bg-primary text-primary-foreground font-semibold rounded-sm disabled:opacity-50">{saving ? "Saving…" : "Save product"}</button>
             </div>
           </form>
         </div>
       )}
 
-      <style>{`.ainput{width:100%;padding:0.5rem 0.7rem;font-size:0.875rem;background:#fff;border:1px solid hsl(var(--border));border-radius:0.125rem;}.ainput:focus{outline:none;border-color:hsl(var(--accent));}`}</style>
+      <style>{`.ainput{width:100%;padding:0.5rem 0.7rem;font-size:0.875rem;background:hsl(var(--card));color:hsl(var(--foreground));border:1px solid hsl(var(--border));border-radius:0.125rem;}.ainput:focus{outline:none;border-color:hsl(var(--accent));}`}</style>
       
       <ConfirmDialog 
         open={confirmState.open} 

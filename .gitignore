@@ -27,6 +27,6 @@ dist-ssr
 *.sln
 *.sw?
 
-.env
 .vite
-.env
+.firebase/
+scratch/

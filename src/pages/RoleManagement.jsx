@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { userService } from "@/services/userService";
 import { useAuth } from "@/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RoleManagement() {
   const [users, setUsers] = useState([]);
@@ -24,7 +25,7 @@ export default function RoleManagement() {
       await userService.updateUserRole(uid, newRole);
       setUsers(users.map(u => u.id === uid ? { ...u, role: newRole } : u));
       toast({ title: "Role updated successfully" });
-    } catch (err) {
+    } catch (_err) {
       toast({ title: "Error", description: "Failed to update role.", variant: "destructive" });
     }
   }
@@ -44,7 +45,7 @@ export default function RoleManagement() {
         return u;
       }));
       toast({ title: approved ? "Request approved" : "Request denied" });
-    } catch (err) {
+    } catch (_err) {
       toast({ title: "Error", description: "Failed to resolve request.", variant: "destructive" });
     }
   }
@@ -58,75 +59,90 @@ export default function RoleManagement() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Role Management</h1>
-        <p className="text-muted-foreground text-sm mt-1">Approve role requests and manage staff assignments. Note: You cannot downgrade your own role.</p>
+        <h1 className="text-xl sm:text-2xl font-bold font-display text-primary">Role Management</h1>
+        <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">Approve role requests and manage staff assignments. Note: You cannot downgrade your own role.</p>
       </div>
 
-      <div className="flex space-x-1 border-b border-border">
+      <div className="flex items-center space-x-1 border-b border-border overflow-x-auto no-scrollbar pb-1">
         <button
           onClick={() => setActiveTab("pending")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${activeTab === "pending" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+          className={`px-4 py-2 text-xs sm:text-sm font-semibold border-b-2 shrink-0 transition-colors ${activeTab === "pending" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}
         >
-          Pending Requests {pendingUsers.length > 0 && <span className="ml-2 bg-primary text-primary-foreground text-[10px] px-2 py-0.5 rounded-full">{pendingUsers.length}</span>}
+          Pending Requests {pendingUsers.length > 0 && <span className="ml-1.5 bg-accent text-accent-foreground text-[10px] px-2 py-0.5 rounded-full font-bold">{pendingUsers.length}</span>}
         </button>
         <button
           onClick={() => setActiveTab("team")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${activeTab === "team" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+          className={`px-4 py-2 text-xs sm:text-sm font-semibold border-b-2 shrink-0 transition-colors ${activeTab === "team" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}
         >
           Staff & Admins ({teamUsers.length})
         </button>
         <button
           onClick={() => setActiveTab("customers")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${activeTab === "customers" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+          className={`px-4 py-2 text-xs sm:text-sm font-semibold border-b-2 shrink-0 transition-colors ${activeTab === "customers" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}
         >
           Customers ({customerUsers.length})
         </button>
       </div>
 
       {loading ? (
-        <div className="text-muted-foreground text-sm">Loading users...</div>
+        <div className="bg-card border border-border rounded-sm overflow-hidden shadow-sm p-4 space-y-4">
+          <div className="flex gap-4 border-b border-border pb-4">
+            <Skeleton className="h-4 w-1/4" />
+            <Skeleton className="h-4 w-1/4" />
+            <Skeleton className="h-4 w-1/5" />
+            <Skeleton className="h-4 w-1/5" />
+          </div>
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex gap-4 items-center">
+              <Skeleton className="h-4 w-1/4" />
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-5 w-16 rounded-full" />
+              <Skeleton className="h-7 w-24 rounded-sm" />
+            </div>
+          ))}
+        </div>
       ) : (
         <div className="bg-card border border-border rounded-sm overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto no-scrollbar">
+            <table className="w-full text-sm min-w-[600px]">
               <thead className="bg-secondary/60 text-muted-foreground">
-                <tr className="text-left border-b border-border">
-                  <th className="p-3 font-medium">Name</th>
-                  <th className="p-3 font-medium">Email</th>
-                  <th className="p-3 font-medium">Role</th>
-                  <th className="p-3 font-medium">Actions</th>
+                <tr className="text-left border-b border-border text-xs uppercase tracking-wider font-semibold">
+                  <th className="p-3">Name</th>
+                  <th className="p-3">Email</th>
+                  <th className="p-3">Role</th>
+                  <th className="p-3">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {displayedUsers.map((u) => (
                   <tr key={u.id} className="border-t border-border hover:bg-secondary/30 transition-colors">
-                    <td className="p-3 font-medium text-foreground">{u.name || 'Unknown'}</td>
+                    <td className="p-3 font-semibold text-foreground">{u.name || 'Unknown'}</td>
                     <td className="p-3 text-muted-foreground">{u.email}</td>
                     <td className="p-3">
-                      <span className={`px-2 py-1 text-xs rounded-full uppercase tracking-wide font-medium
-                        ${u.role === 'admin' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' : 
-                          u.role === 'manager' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                          u.role === 'staff' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
-                          'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200'
+                      <span className={`px-2.5 py-0.5 text-xs rounded-sm uppercase tracking-wide font-semibold border
+                        ${u.role === 'admin' ? 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30' : 
+                          u.role === 'manager' ? 'bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/30' :
+                          u.role === 'staff' ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30' :
+                          'bg-secondary text-muted-foreground border-border'
                         }`}>
                         {u.role || 'customer'}
                       </span>
                     </td>
                     <td className="p-3">
                       {activeTab === "pending" ? (
-                        <div className="flex items-center space-x-2">
-                          <span className="text-xs text-muted-foreground mr-2">Requested: <strong className="text-foreground capitalize">{u.requestedRole}</strong></span>
-                          <button onClick={() => resolveRequest(u.id, true, u.requestedRole)} className="bg-primary text-primary-foreground text-xs px-3 py-1 rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors">Approve</button>
-                          <button onClick={() => resolveRequest(u.id, false, null)} className="bg-secondary text-secondary-foreground text-xs px-3 py-1 rounded-sm border border-border hover:bg-muted transition-colors">Deny</button>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground mr-1">Requested: <strong className="text-foreground capitalize">{u.requestedRole}</strong></span>
+                          <button onClick={() => resolveRequest(u.id, true, u.requestedRole)} className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors shadow-sm">Approve</button>
+                          <button onClick={() => resolveRequest(u.id, false, null)} className="bg-secondary text-secondary-foreground text-xs font-semibold px-3 py-1 rounded-sm border border-border hover:bg-muted transition-colors">Deny</button>
                         </div>
                       ) : (
                         currentUser?.id === u.id ? (
-                          <span className="px-2 py-1 text-xs rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 font-medium">You</span>
+                          <span className="px-2.5 py-0.5 text-xs rounded-sm bg-secondary text-muted-foreground font-semibold border border-border">You</span>
                         ) : (
                           <select 
                             value={u.role || "customer"}
                             onChange={(e) => updateRole(u.id, e.target.value)}
-                            className="bg-transparent border border-border rounded px-2 py-1 text-sm focus:outline-none focus:border-accent"
+                            className="bg-card border border-border rounded px-2.5 py-1 text-xs sm:text-sm font-medium focus:outline-none focus:border-accent"
                           >
                             <option value="customer">Customer</option>
                             <option value="staff">Staff</option>

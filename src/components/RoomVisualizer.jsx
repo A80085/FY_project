@@ -6,7 +6,6 @@ import { BUILTIN_SLOTS, CATALOG_TO_SLOT, COLOR_FAMILY_MAP, FINISH_MAP } from "./
 import VisualizerControls from "./VisualizerControls";
 import VisualizerCanvas from "./VisualizerCanvas";
 
-// ROOMS definition for overlay buttons
 const ROOMS = {
   living: { name: "Living Room" },
   bedroom: { name: "Bedroom" },
@@ -89,8 +88,8 @@ export default function RoomVisualizer() {
   }
 
   return (
-    <div className="grid lg:grid-cols-[1fr_340px] gap-5">
-      <div className="relative rounded-sm overflow-hidden border border-border bg-muted">
+    <div className="grid lg:grid-cols-[1fr_340px] gap-5 items-start">
+      <div className="relative rounded-sm overflow-hidden border border-border bg-muted shadow-sm">
         <VisualizerCanvas 
           ref={canvasRef}
           room={room}
@@ -99,28 +98,66 @@ export default function RoomVisualizer() {
           autoRotate={autoRotate}
           lighting={lighting}
         />
-        <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-          {Object.entries(ROOMS).map(([key, r]) => (
+        {/* Room selection pills — horizontal scroll with fade hint on the right */}
+        <div className="absolute top-3 left-3 right-3">
+          <div className="relative">
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+              {Object.entries(ROOMS).map(([key, r]) => (
+                <button
+                  key={key}
+                  onClick={() => setRoom(key)}
+                  className={`px-3 py-1.5 text-xs font-semibold tracking-wide rounded-sm border shrink-0 transition-colors shadow-sm ${
+                    room === key ? "bg-primary text-primary-foreground border-primary" : "bg-background/90 backdrop-blur border-border hover:border-accent text-foreground"
+                  }`}
+                >
+                  {r.name}
+                </button>
+              ))}
+            </div>
+            {/* Fade hint so users discover horizontal scroll */}
+            <div className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-black/20 to-transparent rounded-r-sm" />
+          </div>
+        </div>
+        {/* Bottom bar controls — single row, never wraps */}
+        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">
+          <div className="flex items-center gap-0.5 bg-background/90 backdrop-blur border border-border px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-sm shadow-sm pointer-events-auto">
             <button
-              key={key}
-              onClick={() => setRoom(key)}
-              className={`px-3 py-1.5 text-xs tracking-wide rounded-sm border transition-colors ${
-                room === key ? "bg-primary text-primary-foreground border-primary" : "bg-background/90 border-border hover:border-accent"
+              aria-label="Toggle auto-rotate"
+              onClick={() => setAutoRotate((v) => !v)}
+              className={`flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-sm font-medium ${
+                autoRotate ? "bg-accent text-accent-foreground" : "text-foreground"
               }`}
             >
-              {r.name}
+              <RotateCw className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              <span className="hidden xs:inline sm:inline">Rotate</span>
             </button>
-          ))}
-        </div>
-        <div className="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 bg-background/90 backdrop-blur border border-border px-2.5 py-1.5 rounded-sm">
-            <button onClick={() => setAutoRotate((v) => !v)} className={`flex items-center gap-1.5 text-xs px-2 py-1 rounded-sm ${autoRotate ? "bg-accent text-accent-foreground" : ""}`}><RotateCw className="h-3.5 w-3.5" /> Rotate</button>
-            <div className="h-4 w-px bg-border" />
-            <button onClick={() => setLighting((l) => (l === "warm" ? "cool" : l === "cool" ? "neutral" : "warm"))} className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-sm capitalize"><Sun className="h-3.5 w-3.5" /> {lighting}</button>
-            <div className="h-4 w-px bg-border" />
-            <button onClick={() => canvasRef.current?.resetView()} className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-sm"><RefreshCw className="h-3.5 w-3.5" /> Reset</button>
+            <div className="h-3.5 w-px bg-border" />
+            <button
+              aria-label="Cycle lighting mode"
+              onClick={() => setLighting((l) => (l === "warm" ? "cool" : l === "cool" ? "neutral" : "warm"))}
+              className="flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-sm capitalize font-medium text-foreground"
+            >
+              <Sun className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-amber-500" />
+              <span className="hidden xs:inline sm:inline capitalize">{lighting}</span>
+            </button>
+            <div className="h-3.5 w-px bg-border" />
+            <button
+              aria-label="Reset camera view"
+              onClick={() => canvasRef.current?.resetView()}
+              className="flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-sm font-medium text-foreground"
+            >
+              <RefreshCw className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              <span className="hidden xs:inline sm:inline">Reset</span>
+            </button>
           </div>
-          <button onClick={() => canvasRef.current?.fullscreen()} className="flex items-center gap-1.5 text-xs bg-background/90 backdrop-blur border border-border px-2.5 py-1.5 rounded-sm hover:border-accent"><Maximize2 className="h-3.5 w-3.5" /> Full</button>
+          <button
+            aria-label="Toggle fullscreen"
+            onClick={() => canvasRef.current?.fullscreen()}
+            className="flex items-center gap-1 text-[11px] sm:text-xs bg-background/90 backdrop-blur border border-border px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-sm hover:border-accent font-medium shadow-sm pointer-events-auto text-foreground"
+          >
+            <Maximize2 className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            <span className="hidden sm:inline">Full</span>
+          </button>
         </div>
       </div>
 
@@ -136,4 +173,3 @@ export default function RoomVisualizer() {
     </div>
   );
 }
-

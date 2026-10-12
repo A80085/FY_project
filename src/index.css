@@ -6,82 +6,124 @@
 
 @layer base {
   :root {
+    /* ── Light Mode — Warm Parchment & Walnut ─────────────────── */
 
-    --background: 40 33% 98%;
-    --foreground: 24 10% 12%;
-    --card: 0 0% 100%;
-    --card-foreground: 24 10% 12%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 24 10% 12%;
-    --primary: 28 30% 18%;
-    --primary-foreground: 40 30% 96%;
-    --secondary: 36 25% 92%;
-    --secondary-foreground: 28 30% 18%;
-    --muted: 36 20% 94%;
-    --muted-foreground: 28 8% 42%;
-    --accent: 38 45% 52%;
-    --accent-foreground: 28 30% 14%;
-    --destructive: 0 72% 48%;
-    --destructive-foreground: 40 30% 98%;
-    --border: 36 18% 88%;
-    --input: 36 18% 88%;
-    --ring: 38 45% 52%;
-    --chart-1: 28 30% 18%;
-    --chart-2: 38 45% 52%;
-    --chart-3: 150 18% 45%;
-    --chart-4: 12 55% 55%;
-    --chart-5: 220 20% 60%;
+    /* Surfaces */
+    --background:           38 28% 95%;    /* warm parchment cream          */
+    --foreground:           22 22% 14%;    /* deep walnut ink               */
+
+    --card:                 40 30% 98%;    /* near-white with warmth        */
+    --card-foreground:      22 22% 14%;
+
+    --popover:              40 30% 98%;
+    --popover-foreground:   22 22% 14%;
+
+    /* Primary — Rich Dark Walnut */
+    --primary:              22 32% 16%;    /* dark walnut brown             */
+    --primary-foreground:   40 28% 95%;    /* parchment on dark walnut      */
+
+    /* Secondary — Light Birch */
+    --secondary:            36 22% 89%;    /* light birch/sand surface      */
+    --secondary-foreground: 22 28% 20%;    /* dark walnut on birch          */
+
+    /* Muted */
+    --muted:                36 16% 91%;    /* very subtle warm linen        */
+    --muted-foreground:     28 10% 44%;    /* warm taupe text               */
+
+    /* Accent — Amber Brass (SAME hue in both modes for brand consistency) */
+    --accent:               35 72% 46%;    /* rich amber gold               */
+    --accent-foreground:    22 32% 12%;    /* dark walnut on amber          */
+
+    /* States */
+    --destructive:           0 72% 44%;
+    --destructive-foreground: 40 28% 96%;
+
+    /* Borders & Inputs */
+    --border:               34 20% 84%;    /* warm parchment border         */
+    --input:                34 20% 84%;
+    --ring:                 35 72% 46%;    /* amber focus ring              */
+
+    /* Charts */
+    --chart-1:              22 32% 16%;    /* dark walnut                   */
+    --chart-2:              35 72% 46%;    /* amber brass                   */
+    --chart-3:             148 22% 42%;    /* sage green                    */
+    --chart-4:              14 60% 52%;    /* terracotta                    */
+    --chart-5:             222 22% 56%;    /* slate blue                    */
+
+    /* Geometry */
     --radius: 0.25rem;
-    --font-heading: 'Cinzel', ui-serif, Georgia, serif;
-    --font-body: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Cinzel', ui-serif, Georgia, serif;
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    --sidebar-background: 28 30% 14%;
-    --sidebar-foreground: 40 20% 80%;
-    --sidebar-primary: 38 45% 52%;
-    --sidebar-primary-foreground: 28 30% 12%;
-    --sidebar-accent: 28 24% 22%;
-    --sidebar-accent-foreground: 40 20% 90%;
-    --sidebar-border: 28 20% 26%;
-    --sidebar-ring: 38 45% 52%;
 
+    /* Typography */
+    --font-heading:  'Cinzel', ui-serif, Georgia, serif;
+    --font-body:     'Montserrat', ui-sans-serif, system-ui, sans-serif;
+    --font-display:  'Cinzel', ui-serif, Georgia, serif;
+    --font-mono:     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+    /* Sidebar — Dark walnut panel (stable in both modes) */
+    --sidebar-background:         22 30% 12%;
+    --sidebar-foreground:         38 22% 78%;
+    --sidebar-primary:            35 72% 46%;
+    --sidebar-primary-foreground: 22 30% 10%;
+    --sidebar-accent:             22 24% 18%;
+    --sidebar-accent-foreground:  38 22% 90%;
+    --sidebar-border:             22 20% 20%;
+    --sidebar-ring:               35 72% 46%;
   }
 
   .dark {
+    /* ── Dark Mode — Deep Espresso Walnut ───────────────────────── */
 
-    --background: 28 30% 12%;
-    --foreground: 40 33% 98%;
-    --card: 28 24% 14%;
-    --card-foreground: 40 33% 98%;
-    --popover: 28 24% 14%;
-    --popover-foreground: 40 33% 98%;
-    --primary: 38 45% 52%;
-    --primary-foreground: 28 30% 12%;
-    --secondary: 28 24% 18%;
-    --secondary-foreground: 40 33% 98%;
-    --muted: 28 24% 18%;
-    --muted-foreground: 40 20% 70%;
-    --accent: 38 45% 52%;
-    --accent-foreground: 28 30% 14%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 40 33% 98%;
-    --border: 28 20% 22%;
-    --input: 28 20% 22%;
-    --ring: 38 45% 52%;
-    --chart-1: 38 45% 52%;
-    --chart-2: 28 30% 18%;
-    --chart-3: 150 18% 45%;
-    --chart-4: 12 55% 55%;
-    --chart-5: 220 20% 60%;
-    --sidebar-background: 28 30% 10%;
-    --sidebar-foreground: 40 33% 98%;
-    --sidebar-primary: 38 45% 52%;
-    --sidebar-primary-foreground: 28 30% 12%;
-    --sidebar-accent: 28 24% 18%;
-    --sidebar-accent-foreground: 40 33% 98%;
-    --sidebar-border: 28 20% 22%;
-    --sidebar-ring: 38 45% 52%;
+    /* Surfaces — rich walnut depth tiers */
+    --background:           22 28%  7%;    /* deep espresso walnut          */
+    --foreground:           38 28% 88%;    /* warm linen text               */
 
+    --card:                 22 24% 11%;    /* medium dark walnut card       */
+    --card-foreground:      38 28% 88%;
+
+    --popover:              22 24% 10%;
+    --popover-foreground:   38 28% 88%;
+
+    /* Primary — Amber Brass (= light-mode accent = CONSISTENT brand!) */
+    --primary:              35 72% 50%;    /* amber brass — brand anchor    */
+    --primary-foreground:   22 30%  9%;    /* dark walnut on amber          */
+
+    /* Secondary — Elevated walnut surface */
+    --secondary:            22 22% 16%;    /* lifted walnut surface         */
+    --secondary-foreground: 38 24% 80%;    /* warm linen                    */
+
+    /* Muted */
+    --muted:                22 20% 14%;    /* subtle depth layer            */
+    --muted-foreground:     36 12% 58%;    /* warm taupe                    */
+
+    /* Accent — same amber brass, slightly brighter on dark bg */
+    --accent:               35 72% 50%;
+    --accent-foreground:    22 30%  9%;
+
+    /* States */
+    --destructive:           0 62% 38%;
+    --destructive-foreground: 38 28% 92%;
+
+    /* Borders & Inputs */
+    --border:               22 18% 20%;    /* deep walnut border            */
+    --input:                22 18% 20%;
+    --ring:                 35 72% 50%;
+
+    /* Charts */
+    --chart-1:              35 72% 50%;    /* amber brass                   */
+    --chart-2:              22 32% 24%;    /* mid walnut                    */
+    --chart-3:             148 22% 48%;    /* sage green                    */
+    --chart-4:              14 60% 55%;    /* terracotta                    */
+    --chart-5:             222 22% 60%;    /* slate blue                    */
+
+    /* Sidebar — slightly deeper than card */
+    --sidebar-background:         22 30%  8%;
+    --sidebar-foreground:         38 22% 82%;
+    --sidebar-primary:            35 72% 50%;
+    --sidebar-primary-foreground: 22 30%  8%;
+    --sidebar-accent:             22 24% 14%;
+    --sidebar-accent-foreground:  38 22% 90%;
+    --sidebar-border:             22 20% 16%;
+    --sidebar-ring:               35 72% 50%;
   }
 }
 
@@ -95,7 +137,11 @@
   }
 
   ::selection {
-    @apply bg-accent/30;
+    @apply bg-accent/25 text-accent-foreground;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 }
 
@@ -117,11 +163,28 @@
   }
 
   .btn-link {
-    @apply inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent transition-colors;
+    @apply inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-accent/80 transition-colors;
   }
 
   .hairline {
-    @apply border-t border-border/70;
+    @apply border-t border-border/60;
+  }
+
+  /* Accent pill badge */
+  .badge-accent {
+    @apply inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold tracking-widest uppercase text-accent;
+  }
+
+  /* Card hover lift */
+  .card-lift {
+    @apply transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md;
+  }
+
+  /* Handcrafted Luxury Timber Panel — Consistent Dark Walnut depth in both light and dark modes */
+  .wood-panel-dark {
+    background: linear-gradient(145deg, hsl(24 28% 12%) 0%, hsl(24 25% 8%) 100%);
+    color: hsl(40 28% 95%);
+    border-color: hsl(24 20% 18%);
   }
 }
 
@@ -129,10 +192,44 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Fine SVG noise — simulates wood grain texture */
   .grain {
-    background-image: radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px);
-    background-size: 3px 3px;
+    position: relative;
   }
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 120px 120px;
+    border-radius: inherit;
+    z-index: 0;
+  }
+
+  /* Horizontal wood-ring stripe pattern */
+  .wood-stripe {
+    background-image: repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 18px,
+      hsl(var(--primary) / 0.025) 18px,
+      hsl(var(--primary) / 0.025) 20px
+    );
+  }
+
+  /* Amber glow on interactive elements */
+  .glow-amber {
+    box-shadow: 0 0 0 0 hsl(var(--accent) / 0);
+    transition: box-shadow 0.3s ease;
+  }
+  .glow-amber:hover,
+  .glow-amber:focus-visible {
+    box-shadow: 0 0 18px -3px hsl(var(--accent) / 0.4);
+  }
+
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }

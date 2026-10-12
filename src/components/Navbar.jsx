@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, X, User, LogOut, Shield } from "lucide-react";
+import { Menu, X, LogOut, Shield } from "lucide-react";
 import { useAuth } from "@/AuthContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import Logo from "@/components/Logo";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { user, isAuthenticated, hasAdminAccess, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,53 +23,51 @@ export default function Navbar() {
     setMobileMenuOpen(false);
   }, [location]);
 
+  // Streamlined architectural navigation terms that give ample breathing room across all screen resolutions
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/catalog", label: "Catalog" },
-    { to: "/visualizer", label: "3D Visualiser" },
-    { to: "/estimate", label: "Cost Estimator" },
+    { to: "/visualizer", label: "3D Studio" },
+    { to: "/estimate", label: "Estimator" },
     { to: "/gallery", label: "Gallery" },
     { to: "/about", label: "About" },
-    { to: "/inquiry", label: "Contact & Inquiry" },
+    { to: "/inquiry", label: "Contact" },
   ];
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b ${
         scrolled
-          ? "bg-background/70 backdrop-blur-md border-border py-4 shadow-sm"
-          : "bg-transparent border-transparent py-6"
+          ? "bg-background/90 backdrop-blur-md border-border/80 py-2.5 sm:py-3.5 shadow-xs"
+          : "bg-transparent border-transparent py-4 sm:py-5"
       }`}
     >
-      <div className="container-px max-w-7xl mx-auto flex items-center justify-between">
-        {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-4 group">
-          <div className="h-12 w-12 rounded-sm bg-primary text-primary-foreground grid place-items-center font-display font-bold text-2xl transition-transform duration-500 group-hover:scale-95">
-            M
-          </div>
-          <div>
-            <span className="font-display font-bold text-xl sm:text-2xl tracking-tight block text-foreground uppercase">
+      <div className="container-px max-w-7xl mx-auto flex items-center justify-between gap-4">
+        {/* Brand Logo & Studio Mark */}
+        <Link to="/" className="flex items-center gap-3 group shrink-0 min-w-0">
+          <Logo className="h-9 w-9 sm:h-11 sm:w-11" />
+          <div className="min-w-0">
+            <span className="font-display font-semibold text-sm sm:text-base xl:text-lg tracking-tight block text-foreground uppercase leading-tight truncate">
               Shree Mangalam
             </span>
-            <span className="text-[10px] uppercase font-semibold tracking-widest block text-muted-foreground">
-              Interior Studio
+            <span className="text-[8px] sm:text-[9px] uppercase font-semibold tracking-[0.22em] block text-accent whitespace-nowrap">
+              Ply &amp; Interiors
             </span>
           </div>
         </Link>
 
-
-        {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-8 text-sm font-medium">
+        {/* Desktop Navigation Links — visible from xl (1280px) up with balanced spacing */}
+        <nav className="hidden xl:flex items-center gap-3 2xl:gap-5 text-xs 2xl:text-sm font-medium whitespace-nowrap px-2">
           {navLinks.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               end={link.to === "/"}
               className={({ isActive }) =>
-                `transition-colors hover:text-foreground ${
+                `px-2 py-1 rounded-2xs transition-colors hover:text-foreground whitespace-nowrap ${
                   isActive
-                    ? "text-foreground font-semibold"
-                    : "text-muted-foreground"
+                    ? "text-accent font-semibold"
+                    : "text-muted-foreground hover:text-foreground"
                 }`
               }
             >
@@ -77,20 +76,23 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Action Buttons / User Menu */}
-        <div className="hidden lg:flex items-center gap-4">
+        {/* Action Buttons & Utility Strip — separated with subtle divider to guarantee clearance */}
+        <div className="hidden xl:flex items-center gap-3.5 shrink-0">
           <ThemeToggle />
+
+          <div className="h-4 w-px bg-border/60 mx-0.5 shrink-0" />
+
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
-              {isAdmin && (
+              {hasAdminAccess && (
                 <Link
                   to="/admin"
-                  className="inline-flex items-center gap-1.5 bg-secondary text-foreground border border-border px-3.5 py-1.5 text-xs font-semibold rounded-sm hover:bg-muted transition-colors"
+                  className="inline-flex items-center gap-1.5 bg-secondary text-foreground border border-border px-3.5 py-1.5 text-xs font-semibold rounded-xs hover:bg-muted transition-colors"
                 >
                   <Shield className="h-3.5 w-3.5" /> Admin
                 </Link>
               )}
-              <div className="flex items-center gap-2 border-l border-border pl-4">
+              <div className="flex items-center gap-2 border-l border-border pl-3">
                 <div className="h-8 w-8 rounded-full grid place-items-center text-xs font-semibold bg-secondary text-foreground">
                   {user?.name?.[0] || "U"}
                 </div>
@@ -101,23 +103,23 @@ export default function Navbar() {
                 <button
                   onClick={logout}
                   title="Log out"
-                  className="p-1.5 rounded-sm hover:bg-muted text-muted-foreground hover:text-foreground transition-colors ml-1"
+                  className="p-1.5 rounded-xs hover:bg-muted text-muted-foreground hover:text-foreground transition-colors ml-1"
                 >
                   <LogOut className="h-4 w-4" />
                 </button>
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5 shrink-0">
               <Link
                 to="/login"
-                className="text-xs font-semibold px-4 py-2 rounded-sm transition-colors text-muted-foreground hover:text-foreground hover:bg-secondary"
+                className="text-xs font-semibold px-3 py-1.5 rounded-xs transition-colors text-muted-foreground hover:text-foreground hover:bg-secondary/60 whitespace-nowrap shrink-0"
               >
                 Sign in
               </Link>
               <Link
                 to="/inquiry"
-                className="bg-primary text-primary-foreground px-5 py-2 text-xs font-semibold rounded-sm hover:bg-primary/90 transition-colors shadow-sm"
+                className="glow-amber bg-accent text-accent-foreground px-4 py-2 text-xs font-semibold rounded-xs hover:bg-accent/90 transition-colors shadow-xs whitespace-nowrap shrink-0"
               >
                 Get Quote
               </Link>
@@ -125,27 +127,32 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile Hamburger Toggle */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-2 rounded-sm text-foreground hover:bg-secondary"
-        >
-          {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        {/* Mobile Controls — shown below xl */}
+        <div className="flex items-center gap-2 xl:hidden shrink-0">
+          <ThemeToggle />
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+            className="p-2 rounded-xs text-foreground hover:bg-secondary border border-border/80"
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer — sits directly below the header, no hardcoded pixel offset */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-[65px] bg-background border-b border-border shadow-xl p-6 flex flex-col gap-4 text-foreground">
-          <nav className="flex flex-col gap-3">
+        <div className="xl:hidden absolute inset-x-0 top-full bg-background/95 backdrop-blur-lg border-b border-border shadow-2xl p-5 flex flex-col gap-4 text-foreground max-h-[calc(100dvh-100%)] overflow-y-auto animate-in slide-in-from-top-2 duration-200 z-40">
+          <nav className="flex flex-col gap-1.5">
             {navLinks.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
                 end={link.to === "/"}
+                onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
-                  `px-3 py-2 rounded-sm text-sm font-medium transition-colors ${
-                    isActive ? "bg-accent/15 text-accent" : "hover:bg-secondary"
+                  `px-3.5 py-2.5 rounded-sm text-sm font-medium transition-colors ${
+                    isActive ? "bg-accent/15 text-accent font-semibold" : "hover:bg-secondary text-foreground/80"
                   }`
                 }
               >
@@ -156,30 +163,36 @@ export default function Navbar() {
           <div className="border-t border-border pt-4 flex flex-col gap-3">
             {isAuthenticated ? (
               <>
-                <div className="flex items-center justify-between px-3 py-2 bg-secondary/50 rounded-sm">
-                  <div className="flex items-center gap-2">
-                    <User className="h-4 w-4 text-accent" />
-                    <span className="text-sm font-medium">{user?.name} ({user?.role})</span>
+                <div className="flex items-center justify-between px-3 py-2.5 bg-secondary/60 rounded-sm">
+                  <div className="flex items-center gap-2.5">
+                    <div className="h-7 w-7 rounded-full bg-accent text-accent-foreground grid place-items-center text-xs font-bold">
+                      {user?.name?.[0] || "U"}
+                    </div>
+                    <div>
+                      <span className="text-xs font-semibold block">{user?.name}</span>
+                      <span className="text-[10px] text-muted-foreground uppercase font-medium">{user?.role}</span>
+                    </div>
                   </div>
-                  <button onClick={logout} className="text-xs text-destructive font-medium flex items-center gap-1">
+                  <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="text-xs text-destructive font-semibold flex items-center gap-1 hover:underline">
                     <LogOut className="h-3.5 w-3.5" /> Logout
                   </button>
                 </div>
-                {isAdmin && (
+                {hasAdminAccess && (
                   <Link
                     to="/admin"
-                    className="w-full bg-accent text-accent-foreground py-2.5 text-center text-xs font-medium rounded-sm"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full bg-accent text-accent-foreground py-2.5 text-center text-xs font-semibold rounded-sm shadow-sm flex items-center justify-center gap-2"
                   >
-                    Go to Admin Dashboard
+                    <Shield className="h-4 w-4" /> Go to Management Portal
                   </Link>
                 )}
               </>
             ) : (
-              <div className="flex gap-2">
-                <Link to="/login" className="flex-1 text-center border border-border py-2 text-xs font-medium rounded-sm">
-                  Log in
+              <div className="flex gap-2 pt-1">
+                <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex-1 text-center border border-border py-2.5 text-xs font-semibold rounded-sm hover:bg-secondary">
+                  Sign in
                 </Link>
-                <Link to="/register" className="flex-1 text-center bg-primary text-primary-foreground py-2 text-xs font-medium rounded-sm">
+                <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex-1 text-center bg-primary text-primary-foreground py-2.5 text-xs font-semibold rounded-sm hover:bg-primary/90">
                   Register
                 </Link>
               </div>

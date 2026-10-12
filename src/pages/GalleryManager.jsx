@@ -6,7 +6,7 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 
-const EMPTY = { title: "", room_type: "Living Room", category: "Modern", image_url: "", description: "", location: "Surat", year: "2024", is_featured: false };
+const EMPTY = { title: "", room_type: "Living Room", category: "Modern", image_url: "", description: "", location: "Virar West", year: "2024", is_featured: false };
 const ROOM_TYPES = ["Living Room", "Bedroom", "Kitchen", "Bathroom", "Office", "Dining", "Full Home"];
 const STYLES = ["Modern", "Classic", "Minimalist", "Industrial", "Scandinavian", "Luxury"];
 
@@ -44,7 +44,7 @@ export default function GalleryManager() {
       }
       await load();
       close();
-    } catch (err) {
+    } catch (_err) {
       toast({ title: "Error", description: "Failed to save project.", variant: "destructive" });
     } finally {
       setSaving(false);
@@ -63,7 +63,7 @@ export default function GalleryManager() {
           await galleryService.delete(p.id);
           setItems((arr) => arr.filter((x) => x.id !== p.id));
           toast({ title: "Project deleted", description: `${p.title} removed from gallery.` });
-        } catch (err) {
+        } catch (_err) {
           toast({ title: "Error", description: "Failed to delete project.", variant: "destructive" });
         }
       }
@@ -80,7 +80,7 @@ export default function GalleryManager() {
           const resetSeed = await galleryService.reset();
           setItems(resetSeed);
           toast({ title: "Gallery reset", description: "Gallery has been reset to seed data." });
-        } catch (err) {
+        } catch (_err) {
           toast({ title: "Error", description: "Failed to reset gallery.", variant: "destructive" });
         }
       }
@@ -168,7 +168,7 @@ export default function GalleryManager() {
       )}
 
       {editing && (
-        <div className="fixed inset-0 z-50 bg-primary/60 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto" onClick={close}>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto" onClick={close}>
           <form onSubmit={save} className="bg-background w-full max-w-xl rounded-sm border border-border my-8 shadow-xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between p-5 border-b border-border">
               <h2 className="font-display text-xl font-bold text-primary">{editing === "new" ? "Add project" : "Edit project"}</h2>
@@ -186,7 +186,7 @@ export default function GalleryManager() {
                   {STYLES.map((s) => <option key={s}>{s}</option>)}
                 </select>
               </F>
-              <F label="Location"><input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} className="ainput" placeholder="e.g. Surat" /></F>
+              <F label="Location"><input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} className="ainput" placeholder="e.g. Virar West" /></F>
               <F label="Year"><input value={form.year} onChange={(e) => setForm({ ...form, year: e.target.value })} className="ainput" placeholder="2024" /></F>
               <F label="Image URL" full><input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className="ainput" placeholder="https://…" /></F>
               <F label="Description" full><textarea rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="ainput resize-none" /></F>
@@ -203,7 +203,7 @@ export default function GalleryManager() {
         </div>
       )}
 
-      <style>{`.ainput{width:100%;padding:0.5rem 0.7rem;font-size:0.875rem;background:#fff;border:1px solid hsl(var(--border));border-radius:0.125rem;}.ainput:focus{outline:none;border-color:hsl(var(--accent));}`}</style>
+      <style>{`.ainput{width:100%;padding:0.5rem 0.7rem;font-size:0.875rem;background:hsl(var(--card));color:hsl(var(--foreground));border:1px solid hsl(var(--border));border-radius:0.125rem;}.ainput:focus{outline:none;border-color:hsl(var(--accent));}`}</style>
 
       <ConfirmDialog 
         open={confirmState.open} 

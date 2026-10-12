@@ -4,9 +4,9 @@ import { db } from "@/services/firebase";
 const DOC_REF = doc(db, "settings", "showroom");
 
 const DEFAULT_SETTINGS = {
-  showroomName: "Shree Mangalam Interior Studio",
-  address: "Station Road, Surat - Gujarat 395003",
-  phone: "+91 98250 12345",
+  showroomName: "Shree Mangalam Ply & Interiors",
+  address: "Shop No. 06, Kusum Vihar 'A', Beside Banjara Hotel, Old Viva College Road, Virar West - 401303",
+  phone: "+91 87886 09224 / +91 98250 12345",
   email: "contact@mangalaminterior.in",
   labourRate: 18,
   gstRate: 5,

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { CheckCircle2, ArrowLeft } from "lucide-react";
-import { authService } from "@/services/authService";
+import { ArrowLeft, Mail } from "lucide-react";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "@/services/firebase";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -14,10 +15,14 @@ export default function ForgotPassword() {
     setError("");
     setLoading(true);
     try {
-      await authService.resetPassword(email, "reset123");
+      await sendPasswordResetEmail(auth, email);
       setDone(true);
     } catch (err) {
-      setError(err.message || "Failed to reset password.");
+      if (err.code === "auth/user-not-found") {
+        setError("No account found with that email address.");
+      } else {
+        setError(err.message || "Failed to send reset email.");
+      }
     } finally {
       setLoading(false);
     }
@@ -26,11 +31,14 @@ export default function ForgotPassword() {
   if (done) {
     return (
       <div className="text-center py-6">
-        <CheckCircle2 className="h-12 w-12 text-accent mx-auto mb-4" />
-        <h1 className="font-display text-2xl font-bold text-primary">Password Reset</h1>
+        <div className="h-16 w-16 rounded-full bg-accent/10 grid place-items-center mx-auto mb-4">
+          <Mail className="h-8 w-8 text-accent" />
+        </div>
+        <h1 className="font-display text-2xl font-bold text-primary">Check your inbox</h1>
         <p className="text-xs text-muted-foreground mt-2 max-w-sm mx-auto">
-          Your password for <span className="font-medium text-foreground">{email}</span> has been reset to <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-accent">reset123</code> for testing purposes.
+          We've sent a password reset link to <span className="font-medium text-foreground">{email}</span>. Check your inbox and follow the link to set a new password.
         </p>
+        <p className="text-xs text-muted-foreground mt-2">Didn't get it? Check your spam folder.</p>
         <Link to="/login" className="mt-6 inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 text-xs font-medium rounded-sm">
           Return to Sign in
         </Link>

@@ -42,29 +42,33 @@ export default function VisualizerControls({
       </div>
 
       <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">{BUILTIN_SLOTS[activeSlot].label} finishes</p>
-      <div className="grid grid-cols-1 gap-2 overflow-y-auto max-h-[200px] sm:max-h-[250px] lg:max-h-[380px] pr-1">
-        {slotList.map((sw, i) => (
-          <button
-            key={i}
-            onClick={() => applySwatch(i)}
-            className={`flex items-center gap-3 p-2.5 border rounded-sm text-left transition-colors ${
-              selections[activeSlot] === i ? "border-accent bg-accent/10" : "border-border hover:border-accent/50"
-            }`}
-          >
-            {sw.customThumb ? (
-              <span className="h-9 w-9 rounded-sm border border-black/10 shrink-0 bg-cover bg-center" style={{ backgroundImage: `url(${sw.customThumb})` }} />
-            ) : (
-              <span className="h-9 w-9 rounded-sm border border-black/10 shrink-0" style={{ background: sw.color }} />
-            )}
-            <span className="flex-1 min-w-0">
-              <span className="block text-sm text-foreground truncate">{sw.name}</span>
-              <span className="block text-[11px] uppercase tracking-wide text-muted-foreground">
-                {sw.customTex ? "Your upload" : sw.fromCatalog ? `In stock · ₹${sw.price}${sw.unit ? "/" + sw.unit.replace("per ", "") : ""}` : sw.finish}
+      <div className="relative">
+        <div className="grid grid-cols-1 gap-1.5 overflow-y-auto max-h-[240px] sm:max-h-[260px] lg:max-h-[380px] pr-1">
+          {slotList.map((sw, i) => (
+            <button
+              key={i}
+              onClick={() => applySwatch(i)}
+              className={`flex items-center gap-3 p-2.5 border rounded-sm text-left transition-colors ${
+                selections[activeSlot] === i ? "border-accent bg-accent/10" : "border-border hover:border-accent/50"
+              }`}
+            >
+              {sw.customThumb ? (
+                <span className="h-9 w-9 rounded-sm border border-black/10 shrink-0 bg-cover bg-center" style={{ backgroundImage: `url(${sw.customThumb})` }} />
+              ) : (
+                <span className="h-9 w-9 rounded-sm border border-black/10 shrink-0" style={{ background: sw.color }} />
+              )}
+              <span className="flex-1 min-w-0">
+                <span className="block text-sm text-foreground truncate">{sw.name}</span>
+                <span className="block text-[11px] uppercase tracking-wide text-muted-foreground">
+                  {sw.customTex ? "Your upload" : sw.fromCatalog ? `In stock · ₹${sw.price}${sw.unit ? "/" + sw.unit.replace("per ", "") : ""}` : sw.finish}
+                </span>
               </span>
-            </span>
-            {selections[activeSlot] === i && <span className="text-xs text-accent font-medium shrink-0">In use</span>}
-          </button>
-        ))}
+              {selections[activeSlot] === i && <span className="text-xs text-accent font-medium shrink-0">In use</span>}
+            </button>
+          ))}
+        </div>
+        {/* Bottom fade to hint at scrollable content */}
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-card to-transparent" />
       </div>
 
       <button

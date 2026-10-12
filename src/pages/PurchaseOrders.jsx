@@ -4,6 +4,8 @@ import { supplierService } from "@/services/supplierService";
 import { productService } from "@/services/productService";
 import { useToast } from "@/components/ui/use-toast";
 import { formatINR } from "@/lib/interiorData";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const EMPTY = { supplierId: "", productId: "", quantity: 1, expectedDate: "" };
 
@@ -15,6 +17,7 @@ export default function PurchaseOrders() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
+  const [confirmState, setConfirmState] = useState({ open: false, title: "", description: "", action: null });
   const { toast } = useToast();
 
   useEffect(() => { load(); }, []);
@@ -41,89 +44,111 @@ export default function PurchaseOrders() {
     try {
       const prod = products.find(p => p.id === form.productId);
       const sup = suppliers.find(s => s.id === form.supplierId);
-      
+
       const payload = {
         ...form,
         supplierName: sup?.name || "Unknown",
         productName: prod?.name || "Unknown",
-        totalAmount: (prod?.price || 0) * form.quantity
+        totalAmount: (prod?.price || 0) * Number(form.quantity)
       };
 
       await supplierService.createPurchaseOrder(payload);
-      toast({ title: "Purchase Order created" });
-      
+      toast({ title: "Purchase Order created", description: `Order created for ${payload.productName}.` });
       await load();
       close();
-    } catch (err) {
+    } catch (_err) {
       toast({ title: "Error", description: "Failed to create PO.", variant: "destructive" });
     } finally {
       setSaving(false);
     }
   }
 
-  async function markReceived(p) {
-    if(!window.confirm(`Mark PO for ${p.productName} as received? This will update the inventory stock.`)) return;
-    try {
-      // Update PO Status
-      await supplierService.updatePurchaseOrderStatus(p.id, "received");
-      
-      // Update Inventory Stock
-      const prod = products.find(prod => prod.id === p.productId);
-      if (prod) {
-        await productService.update(prod.id, { stock: prod.stock + parseInt(p.quantity, 10) });
+  function markReceived(p) {
+    setConfirmState({
+      open: true,
+      title: `Mark PO as received?`,
+      description: `This will mark the order for "${p.productName}" as received and update the inventory stock.`,
+      action: async () => {
+        try {
+          await supplierService.updatePurchaseOrderStatus(p.id, "received");
+          const prod = products.find(prod => prod.id === p.productId);
+          if (prod) {
+            await productService.update(prod.id, { stock: (Number(prod.stock) || 0) + parseInt(p.quantity, 10) });
+          }
+          toast({ title: "Order received", description: "Inventory stock has been updated." });
+          await load();
+        } catch (_err) {
+          toast({ title: "Error", description: "Failed to receive order.", variant: "destructive" });
+        }
       }
-
-      toast({ title: "Order received", description: "Inventory stock has been updated." });
-      await load();
-    } catch (err) {
-      toast({ title: "Error", description: "Failed to receive order.", variant: "destructive" });
-    }
+    });
   }
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col sm:flex-row gap-3 justify-between">
-        <h1 className="text-2xl font-bold">Purchase Orders</h1>
-        <div className="flex gap-2">
-          <button onClick={openNew} className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-4 py-2 text-sm font-medium rounded-sm hover:bg-accent/90 shadow-sm"><Plus className="h-4 w-4" /> Create PO</button>
+      <div className="flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold font-display text-primary">Purchase Orders</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">Track restock orders from suppliers and automatically update stock upon receipt.</p>
         </div>
+        <button onClick={openNew} className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-4 py-2 text-sm font-semibold rounded-sm hover:bg-accent/90 shadow-sm">
+          <Plus className="h-4 w-4" /> Create PO
+        </button>
       </div>
 
       {loading ? (
-        <div className="text-muted-foreground">Loading orders...</div>
+        <div className="bg-card border border-border rounded-sm overflow-hidden shadow-sm p-4 space-y-4">
+          <div className="flex gap-4 border-b border-border pb-4">
+            {[1, 2, 3, 4, 5].map((i) => <Skeleton key={i} className="h-4 w-1/5" />)}
+          </div>
+          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-10 w-full" />)}
+        </div>
+      ) : items.length === 0 ? (
+        <div className="bg-card border border-border rounded-sm p-8 sm:p-12 text-center text-sm text-muted-foreground">
+          No purchase orders found. Click "Create PO" to issue your first restock order.
+        </div>
       ) : (
         <div className="bg-card border border-border rounded-sm overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto no-scrollbar">
+            <table className="w-full text-sm min-w-[680px]">
               <thead className="bg-secondary/60 text-muted-foreground">
-                <tr className="text-left border-b border-border">
-                  <th className="p-3 font-medium">Date</th>
-                  <th className="p-3 font-medium">Supplier</th>
-                  <th className="p-3 font-medium">Product</th>
-                  <th className="p-3 font-medium text-right">Qty</th>
-                  <th className="p-3 font-medium text-right">Total</th>
-                  <th className="p-3 font-medium">Status</th>
-                  <th className="p-3 font-medium w-20"></th>
+                <tr className="text-left border-b border-border text-xs uppercase tracking-wider font-semibold">
+                  <th className="p-3">PO Details</th>
+                  <th className="p-3">Supplier</th>
+                  <th className="p-3 text-right">Quantity</th>
+                  <th className="p-3 text-right">Total Amount</th>
+                  <th className="p-3">Status</th>
+                  <th className="p-3 text-center w-28">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {items.map((p) => (
                   <tr key={p.id} className="border-t border-border hover:bg-secondary/30 transition-colors">
-                    <td className="p-3 text-muted-foreground">{new Date(p.createdAt).toLocaleDateString()}</td>
-                    <td className="p-3 font-medium text-foreground">{p.supplierName}</td>
-                    <td className="p-3 text-muted-foreground">{p.productName}</td>
-                    <td className="p-3 text-right">{p.quantity}</td>
-                    <td className="p-3 text-right">{formatINR(p.totalAmount)}</td>
                     <td className="p-3">
-                      <span className={`px-2 py-1 text-xs rounded-full ${p.status === 'received' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'}`}>
-                        {p.status || 'pending'}
+                      <div className="font-semibold text-foreground">{p.productName}</div>
+                      <div className="text-xs text-muted-foreground">Exp: {p.expectedDate || "N/A"}</div>
+                    </td>
+                    <td className="p-3 font-medium text-foreground">{p.supplierName}</td>
+                    <td className="p-3 text-right font-semibold">{p.quantity}</td>
+                    <td className="p-3 text-right font-semibold text-primary">{formatINR(p.totalAmount || 0)}</td>
+                    <td className="p-3">
+                      <span className={`inline-block px-2.5 py-0.5 text-xs font-semibold rounded-sm capitalize ${
+                        p.status === "received"
+                          ? "bg-green-500/15 text-green-700 dark:text-green-300 border border-green-500/30"
+                          : "bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30"
+                      }`}>
+                        {p.status || "pending"}
                       </span>
                     </td>
-                    <td className="p-3">
-                      {p.status !== 'received' && (
-                        <div className="flex items-center justify-end gap-1">
-                          <button aria-label="Mark Received" onClick={() => markReceived(p)} className="p-1 text-green-600 hover:text-green-700"><CheckCircle className="h-4 w-4" /></button>
-                        </div>
+                    <td className="p-3 text-center">
+                      {p.status !== "received" && (
+                        <button
+                          onClick={() => markReceived(p)}
+                          className="inline-flex items-center gap-1 bg-primary text-primary-foreground px-2.5 py-1 text-xs font-semibold rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                          title="Mark PO as Received"
+                        >
+                          <CheckCircle className="h-3.5 w-3.5" /> Receive
+                        </button>
                       )}
                     </td>
                   </tr>
@@ -131,52 +156,84 @@ export default function PurchaseOrders() {
               </tbody>
             </table>
           </div>
-          {!items.length && <p className="p-6 text-center text-sm text-muted-foreground">No purchase orders found.</p>}
         </div>
       )}
 
+      {/* Create PO Modal */}
       {editing && (
-        <div className="fixed inset-0 z-50 bg-primary/60 backdrop-blur-sm grid place-items-center p-4 overflow-y-auto" onClick={close}>
-          <form onSubmit={save} className="bg-background w-full max-w-lg rounded-sm border border-border my-8 shadow-xl" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-5 border-b border-border">
-              <h2 className="font-display text-xl font-bold text-primary">Create Purchase Order</h2>
-              <button aria-label="Close" type="button" onClick={close}><X className="h-5 w-5" /></button>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto" onClick={close}>
+          <form onSubmit={save} className="bg-background w-full max-w-lg rounded-sm border border-border my-6 shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border">
+              <h2 className="font-display text-lg sm:text-xl font-bold text-primary">Create Purchase Order</h2>
+              <button aria-label="Close modal" type="button" onClick={close} className="p-1 text-muted-foreground hover:text-foreground"><X className="h-5 w-5" /></button>
             </div>
-            <div className="p-5 grid gap-4">
-              <F label="Supplier *">
-                <select required value={form.supplierId} onChange={(e) => setForm({ ...form, supplierId: e.target.value })} className="ainput">
-                  <option value="">Select Supplier...</option>
-                  {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+            <div className="p-4 sm:p-5 space-y-4">
+              <label className="block">
+                <span className="block text-xs uppercase tracking-wide text-muted-foreground mb-1.5 font-medium">Select Supplier *</span>
+                <select
+                  required
+                  value={form.supplierId}
+                  onChange={(e) => setForm({ ...form, supplierId: e.target.value })}
+                  className="w-full px-3 py-2.5 text-sm border border-border rounded-sm focus:outline-none focus:border-accent bg-card"
+                >
+                  <option value="">Select a supplier…</option>
+                  {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
-              </F>
-              <F label="Product *">
-                <select required value={form.productId} onChange={(e) => setForm({ ...form, productId: e.target.value })} className="ainput">
-                  <option value="">Select Product...</option>
-                  {products.map(p => <option key={p.id} value={p.id}>{p.name} ({p.sku})</option>)}
+              </label>
+
+              <label className="block">
+                <span className="block text-xs uppercase tracking-wide text-muted-foreground mb-1.5 font-medium">Select Product *</span>
+                <select
+                  required
+                  value={form.productId}
+                  onChange={(e) => setForm({ ...form, productId: e.target.value })}
+                  className="w-full px-3 py-2.5 text-sm border border-border rounded-sm focus:outline-none focus:border-accent bg-card"
+                >
+                  <option value="">Select a product to restock…</option>
+                  {products.map((p) => <option key={p.id} value={p.id}>{p.name} (Current Stock: {p.stock})</option>)}
                 </select>
-              </F>
-              <div className="grid grid-cols-2 gap-4">
-                <F label="Quantity"><input type="number" min="1" required value={form.quantity} onChange={(e) => setForm({ ...form, quantity: Number(e.target.value) })} className="ainput" /></F>
-                <F label="Expected Date"><input type="date" value={form.expectedDate} onChange={(e) => setForm({ ...form, expectedDate: e.target.value })} className="ainput" /></F>
+              </label>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label className="block">
+                  <span className="block text-xs uppercase tracking-wide text-muted-foreground mb-1.5 font-medium">Quantity *</span>
+                  <input
+                    type="number"
+                    min="1"
+                    required
+                    value={form.quantity}
+                    onChange={(e) => setForm({ ...form, quantity: Math.max(1, parseInt(e.target.value, 10) || 1) })}
+                    className="w-full px-3 py-2.5 text-sm border border-border rounded-sm focus:outline-none focus:border-accent bg-card"
+                  />
+                </label>
+
+                <label className="block">
+                  <span className="block text-xs uppercase tracking-wide text-muted-foreground mb-1.5 font-medium">Expected Date</span>
+                  <input
+                    type="date"
+                    value={form.expectedDate}
+                    onChange={(e) => setForm({ ...form, expectedDate: e.target.value })}
+                    className="w-full px-3 py-2.5 text-sm border border-border rounded-sm focus:outline-none focus:border-accent bg-card"
+                  />
+                </label>
               </div>
             </div>
-            <div className="p-5 border-t border-border flex justify-end gap-2 bg-secondary/30">
-              <button type="button" onClick={close} className="px-4 py-2 text-sm border border-border rounded-sm">Cancel</button>
-              <button type="submit" disabled={saving} className="px-5 py-2 text-sm bg-primary text-primary-foreground font-medium rounded-sm disabled:opacity-50">{saving ? "Saving…" : "Create PO"}</button>
+            <div className="p-4 sm:p-5 border-t border-border flex justify-end gap-2 bg-secondary/30">
+              <button type="button" onClick={close} className="px-4 py-2 text-xs sm:text-sm border border-border rounded-sm font-medium">Cancel</button>
+              <button type="submit" disabled={saving} className="px-5 py-2 text-xs sm:text-sm bg-primary text-primary-foreground font-semibold rounded-sm disabled:opacity-50">{saving ? "Creating…" : "Issue Order"}</button>
             </div>
           </form>
         </div>
       )}
-      <style>{`.ainput{width:100%;padding:0.5rem 0.7rem;font-size:0.875rem;background:#fff;border:1px solid hsl(var(--border));border-radius:0.125rem;}.ainput:focus{outline:none;border-color:hsl(var(--accent));}`}</style>
-    </div>
-  );
-}
 
-function F({ label, children }) {
-  return (
-    <label className="block">
-      <span className="block text-[11px] uppercase tracking-wide text-muted-foreground mb-1.5 font-medium">{label}</span>
-      {children}
-    </label>
+      <ConfirmDialog 
+        open={confirmState.open} 
+        onOpenChange={(open) => setConfirmState(prev => ({ ...prev, open }))}
+        title={confirmState.title}
+        description={confirmState.description}
+        onConfirm={confirmState.action}
+        confirmText="Confirm"
+      />
+    </div>
   );
 }

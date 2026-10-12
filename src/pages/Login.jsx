@@ -19,11 +19,13 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      const user = await login(email, password);
-      if (user.role === "admin" || user.role === "manager") {
-        navigate("/admin");
+      const loggedUser = await login(email, password);
+      if (from && from !== "/") {
+        navigate(from, { replace: true });
+      } else if (loggedUser.role === "admin" || loggedUser.role === "manager") {
+        navigate("/admin", { replace: true });
       } else {
-        navigate("/");
+        navigate("/", { replace: true });
       }
     } catch (err) {
       setError(err.message || "Failed to log in");
@@ -80,30 +82,6 @@ export default function Login() {
         </button>
       </form>
 
-      {/* Demo Credentials Box */}
-      <div className="mt-6 p-4 bg-secondary/60 border border-border rounded-sm text-xs space-y-2">
-        <p className="font-semibold text-primary uppercase tracking-wider text-[10px]">Evaluation Demo Accounts:</p>
-        <div className="flex justify-between items-center pt-1 border-t border-border/40">
-          <span>Admin Portal:</span>
-          <button
-            type="button"
-            onClick={() => { setEmail("admin@mangalam.com"); setPassword("Admin@123"); }}
-            className="text-accent font-mono hover:underline"
-          >
-            admin@mangalam.com / Admin@123
-          </button>
-        </div>
-        <div className="flex justify-between items-center pt-1 border-t border-border/40">
-          <span>Customer Account:</span>
-          <button
-            type="button"
-            onClick={() => { setEmail("user@mangalam.com"); setPassword("user123"); }}
-            className="text-accent font-mono hover:underline"
-          >
-            user@mangalam.com / user123
-          </button>
-        </div>
-      </div>
 
       <p className="mt-6 text-center text-xs text-muted-foreground">
         Don&apos;t have an account?{" "}

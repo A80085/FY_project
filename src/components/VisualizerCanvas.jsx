@@ -536,7 +536,14 @@ const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotat
       const controls = controlsRef.current;
       const camera = cameraRef.current;
       if (!controls || !camera) return;
-      camera.position.set(...def.cameraPos);
+      const isMobile = mountRef.current && mountRef.current.clientWidth < 640;
+      const pos = [...def.cameraPos];
+      if (isMobile) {
+        pos[0] = pos[0] * 1.35;
+        pos[1] = pos[1] * 1.2;
+        pos[2] = pos[2] * 1.35;
+      }
+      camera.position.set(...pos);
       controls.target.set(...def.cameraTarget);
       controls.update();
     },
@@ -593,13 +600,13 @@ const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotat
       const win = new THREE.Mesh(new THREE.PlaneGeometry(18, 9), new THREE.MeshBasicMaterial({ color: 0xffffff }));
       win.position.set(12, 9, 6); win.lookAt(0, 0, 0); envScene.add(win);
       scene.environment = pmrem.fromScene(envScene, 0.08).texture;
-    } catch (e) { /* env optional */ }
+    } catch { /* env optional */ }
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
-    controls.minDistance = 3.6;
-    controls.maxDistance = 13;
+    controls.minDistance = 2;
+    controls.maxDistance = 16;
     controls.maxPolarAngle = Math.PI / 2 - 0.04;
     controls.target.set(0, 0.6, 0);
     controlsRef.current = controls;
@@ -814,7 +821,16 @@ const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotat
 
     const controls = controlsRef.current;
     const camera = cameraRef.current;
-    camera.position.set(...def.cameraPos);
+    // On mobile (narrow viewport) push camera back ~35% so the scene
+    // isn't uncomfortably close given the portrait aspect ratio.
+    const isMobile = mountRef.current && mountRef.current.clientWidth < 640;
+    const pos = [...def.cameraPos];
+    if (isMobile) {
+      pos[0] = pos[0] * 1.35;
+      pos[1] = pos[1] * 1.2;
+      pos[2] = pos[2] * 1.35;
+    }
+    camera.position.set(...pos);
     controls.target.set(...def.cameraTarget);
     controls.update();
   }, [room, selections, slotSwatches]);
@@ -852,7 +868,7 @@ const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotat
 
 
   return (
-    <div ref={mountRef} className="w-full aspect-[4/3] lg:aspect-auto lg:h-[620px]" />
+    <div ref={mountRef} className="w-full aspect-square sm:aspect-[4/3] lg:aspect-auto lg:h-[min(620px,65vh)] min-h-[340px]" />
   );
 });
 

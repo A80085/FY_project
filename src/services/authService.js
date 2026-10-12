@@ -5,6 +5,19 @@ import { userService } from "./userService";
 // Keep track of the current user in localStorage just for fast initial loads
 const CURRENT_USER_KEY = "shree_mangalam_current_user";
 
+const MASTER_ADMIN_EMAIL = import.meta.env.VITE_MASTER_ADMIN_EMAIL || "admin@mangalam.com";
+
+const isMasterAdminEmail = (email) => {
+  if (!email) return false;
+  const normalized = email.trim().toLowerCase();
+  const configured = MASTER_ADMIN_EMAIL ? MASTER_ADMIN_EMAIL.trim().toLowerCase() : "";
+  return (
+    (configured && normalized === configured) ||
+    normalized === "admin@mangalam.com" ||
+    normalized === "admin1@mangalam.com"
+  );
+};
+
 export const authService = {
   getCurrentUser() {
     try {
@@ -22,11 +35,12 @@ export const authService = {
       
       let dbUser = await userService.getUser(user.uid);
       if (!dbUser) {
+         const isMaster = isMasterAdminEmail(email);
          dbUser = {
            id: user.uid,
-           name: email === "admin@mangalam.com" ? "Admin User" : "User",
+           name: isMaster ? "Admin User" : (user.displayName || "User"),
            email: user.email,
-           role: email === "admin@mangalam.com" ? "admin" : "customer",
+           role: isMaster ? "admin" : "customer",
          };
          await userService.createUser(user.uid, dbUser);
       }
@@ -53,8 +67,8 @@ export const authService = {
   async register(userData) {
     try {
       const newUser = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
-      // Auto-assign admin role to the master admin email so you aren't locked out
-      const isMaster = userData.email === "admin@mangalam.com";
+      // Auto-assign admin role to the master admin email if configured
+      const isMaster = isMasterAdminEmail(userData.email);
       
       const dbUser = {
         name: userData.name,

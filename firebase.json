@@ -3,6 +3,7 @@
     "rules": "firestore.rules"
   },
   "hosting": {
+    "site": "mangalam-fy-2026-7c2e3",
     "public": "dist",
     "ignore": [
       "firebase.json",

@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Check, ArrowRight, ArrowLeft, Sofa, BedDouble, UtensilsCrossed, Briefcase, DoorOpen, Ruler, Plus, Trash2, Wrench, Download } from "lucide-react";
 import { ROOM_TYPES, WALL_FINISHES, FLOORING_OPTIONS, HARDWARE_OPTIONS, FURNISHING_ADDONS, CUSTOM_PRESETS, calcEstimate, formatINR } from "@/lib/interiorData";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+import { generateEstimatePDF } from "@/utils/pdfGenerator";
 import PageHero from "@/components/PageHero";
 
 const STEPS = ["Room", "Dimensions", "Materials", "Add-ons", "Custom", "Estimate"];
@@ -19,7 +18,15 @@ export default function Estimate() {
   const [addons, setAddons] = useState([]);
   const [customItems, setCustomItems] = useState([]);
 
-  const estimate = room ? calcEstimate({ room, dims, wall, floor, hardware, addons, customItems }) : null;
+  const [estimate, setEstimate] = useState(null);
+
+  useEffect(() => {
+    if (!room) { setEstimate(null); return; }
+    let cancelled = false;
+    calcEstimate({ room, dims, wall, floor, hardware, addons, customItems })
+      .then((result) => { if (!cancelled) setEstimate(result); });
+    return () => { cancelled = true; };
+  }, [room, dims, wall, floor, hardware, addons, customItems]);
 
   function next() { setStep((s) => Math.min(s + 1, STEPS.length - 1)); }
   function back() { setStep((s) => Math.max(s - 1, 0)); }
@@ -51,30 +58,10 @@ export default function Estimate() {
   const [isExporting, setIsExporting] = useState(false);
 
   const generatePDF = async () => {
+    if (!estimate) return;
     setIsExporting(true);
-    const element = document.getElementById("estimate-results-content");
-    if (!element) {
-      setIsExporting(false);
-      return;
-    }
-
     try {
-      // Small delay to ensure any layout shifts are done
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#ffffff"
-      });
-      
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save("Interior_Estimate_Shree_Mangalam.pdf");
+      await generateEstimatePDF({ room, dims, wall, floor, hardware, addons, customItems, estimate });
     } catch (err) {
       console.error("PDF generation failed", err);
     } finally {
@@ -90,44 +77,65 @@ export default function Estimate() {
         description="An indicative estimate based on room size and the finishes we stock. Final pricing is confirmed at the showroom."
         image="/images/gallery_kitchen_1788941976982.jpg"
       />
-      <div className="container-px max-w-7xl mx-auto pt-10">
-        {/* progress */}
-        <div className="flex items-center gap-2 mb-10 overflow-x-auto no-scrollbar">
+      <div className="container-px max-w-7xl mx-auto pt-6 sm:pt-10">
+        {/* Mobile Step Header with Live Running Estimate */}
+        <div className="sm:hidden flex items-center justify-between mb-4 bg-card border border-border p-3 rounded-sm shadow-sm">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground shrink-0">
+              Step {step + 1}/{STEPS.length}
+            </span>
+            <span className="text-xs font-bold text-primary truncate">
+              · {STEPS[step]}
+            </span>
+          </div>
+          {estimate && (
+            <span className="font-display font-bold text-accent text-sm shrink-0 ml-2">
+              {formatINR(estimate.total)}
+            </span>
+          )}
+        </div>
+
+        {/* Scrollable Progress bar */}
+        <div className="flex items-center gap-2 mb-6 sm:mb-10 overflow-x-auto no-scrollbar pb-2">
           {STEPS.map((s, i) => (
             <div key={s} className="flex items-center gap-2 shrink-0">
-              <span className={`h-7 w-7 grid place-items-center rounded-full text-xs border transition-colors ${i <= step ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground"}`}>
+              <button
+                onClick={() => i <= step && setStep(i)}
+                disabled={i > step}
+                className={`h-7 w-7 grid place-items-center rounded-full text-xs border transition-colors ${i <= step ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground"}`}
+              >
                 {i < step ? <Check className="h-3.5 w-3.5" /> : i + 1}
-              </span>
-              <span className={`text-xs ${i === step ? "text-primary font-medium" : "text-muted-foreground"}`}>{s}</span>
-              {i < STEPS.length - 1 && <span className="w-6 sm:w-10 h-px bg-border" />}
+              </button>
+              <span className={`text-xs ${i === step ? "text-primary font-semibold" : "text-muted-foreground"}`}>{s}</span>
+              {i < STEPS.length - 1 && <span className="w-4 sm:w-10 h-px bg-border" />}
             </div>
           ))}
         </div>
 
         <div className="grid lg:grid-cols-[1fr_340px] gap-6">
-          <div className="bg-card border border-border rounded-sm p-6 sm:p-8">
+          <div className="bg-card border border-border rounded-sm p-4 sm:p-8 shadow-sm">
             {/* STEP 1: ROOM */}
             {step === 0 && (
               <div>
-                <h2 className="font-display text-2xl text-primary mb-1">Which room are you planning?</h2>
-                <p className="text-sm text-muted-foreground mb-6">Select a room type to start.</p>
-                <div className="grid sm:grid-cols-2 gap-3">
+                <h2 className="font-display text-xl sm:text-2xl text-primary mb-1">Which room are you planning?</h2>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-6">Select a room type to start.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {ROOM_TYPES.map((r) => {
                     const Icon = ICONS[r.icon] || Sofa;
                     return (
                       <button
                         key={r.id}
                         onClick={() => { setRoom(r.id); setDims(r.defaultDims); }}
-                        className={`flex items-center gap-4 p-4 border rounded-sm text-left transition-colors ${room === r.id ? "border-accent bg-accent/10" : "border-border hover:border-accent/50"}`}
+                        className={`flex items-center gap-3.5 p-3.5 sm:p-4 border rounded-sm text-left transition-colors ${room === r.id ? "border-accent bg-accent/10" : "border-border hover:border-accent/50"}`}
                       >
-                        <span className={`h-11 w-11 grid place-items-center rounded-sm ${room === r.id ? "bg-accent text-accent-foreground" : "bg-muted"}`}>
+                        <span className={`h-10 w-10 sm:h-11 sm:w-11 grid place-items-center rounded-sm shrink-0 ${room === r.id ? "bg-accent text-accent-foreground" : "bg-muted"}`}>
                           <Icon className="h-5 w-5" />
                         </span>
-                        <span className="flex-1">
-                          <span className="block font-medium text-sm">{r.name}</span>
+                        <span className="flex-1 min-w-0">
+                          <span className="block font-medium text-sm truncate">{r.name}</span>
                           <span className="block text-xs text-muted-foreground">Base rate {formatINR(r.baseRate)}/sq.ft</span>
                         </span>
-                        {room === r.id && <Check className="h-4 w-4 text-accent" />}
+                        {room === r.id && <Check className="h-4 w-4 text-accent shrink-0" />}
                       </button>
                     );
                   })}
@@ -138,44 +146,44 @@ export default function Estimate() {
             {/* STEP 2: DIMENSIONS */}
             {step === 1 && (
               <div>
-                <h2 className="font-display text-2xl text-primary mb-1">Enter dimensions (in feet)</h2>
-                <p className="text-sm text-muted-foreground mb-6">Approximate room size — used to calculate area.</p>
-                <div className="grid sm:grid-cols-3 gap-5">
+                <h2 className="font-display text-xl sm:text-2xl text-primary mb-1">Enter dimensions (in feet)</h2>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-6">Approximate room size — used to calculate area.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {[["length", "Length"], ["width", "Width"], ["height", "Height"]].map(([key, label]) => (
                     <div key={key}>
-                      <label className="text-xs uppercase tracking-wide text-muted-foreground flex items-center gap-1.5 mb-2"><Ruler className="h-3.5 w-3.5" />{label}</label>
+                      <label className="text-xs uppercase tracking-wide text-muted-foreground flex items-center gap-1.5 mb-2 font-medium"><Ruler className="h-3.5 w-3.5" />{label}</label>
                       <input
                         type="number" min="1" max="40"
                         value={dims[key]}
                         onChange={(e) => setDims((d) => ({ ...d, [key]: Number(e.target.value) }))}
-                        className="w-full px-4 py-3 text-lg border border-border rounded-sm focus:outline-none focus:border-accent"
+                        className="w-full px-4 py-3 text-base sm:text-lg border border-border rounded-sm focus:outline-none focus:border-accent"
                       />
                       <p className="text-xs text-muted-foreground mt-1">ft</p>
                     </div>
                   ))}
                 </div>
                 <div className="mt-6 p-4 bg-secondary/50 rounded-sm flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Floor area</span>
-                  <span className="font-display text-xl text-primary">{(dims.length * dims.width).toFixed(0)} sq.ft</span>
+                  <span className="text-xs sm:text-sm text-muted-foreground">Floor area</span>
+                  <span className="font-display text-lg sm:text-xl text-primary font-bold">{(dims.length * dims.width).toFixed(0)} sq.ft</span>
                 </div>
               </div>
             )}
 
             {/* STEP 3: MATERIALS */}
             {step === 2 && (
-              <div className="space-y-7">
+              <div className="space-y-6">
                 <div>
-                  <h2 className="font-display text-2xl text-primary mb-1">Choose your finishes</h2>
-                  <p className="text-sm text-muted-foreground mb-6">Materials we stock, applied to your room.</p>
+                  <h2 className="font-display text-xl sm:text-2xl text-primary mb-1">Choose your finishes</h2>
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-4">Materials we stock, applied to your room.</p>
                 </div>
                 {[
-                  ["Wall finish", WALL_FINISHES, wall, setWall],
-                  ["Flooring", FLOORING_OPTIONS, floor, setFloor],
-                  ["Hardware grade", HARDWARE_OPTIONS, hardware, setHardware],
-                ].map(([label, options, value, setter]) => (
+                  { label: "Wall finish", options: WALL_FINISHES, value: wall, setter: setWall },
+                  { label: "Flooring", options: FLOORING_OPTIONS, value: floor, setter: setFloor },
+                  { label: "Hardware grade", options: HARDWARE_OPTIONS, value: hardware, setter: setHardware },
+                ].map(({ label, options, value, setter }) => (
                   <div key={label}>
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-3">{label}</p>
-                    <div className="grid sm:grid-cols-3 gap-2.5">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2.5 font-medium">{label}</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
                       {options.map((o) => (
                         <button
                           key={o.id}
@@ -183,7 +191,7 @@ export default function Estimate() {
                           className={`p-3 border rounded-sm text-left transition-colors ${value === o.id ? "border-accent bg-accent/10" : "border-border hover:border-accent/50"}`}
                         >
                           <span className="block text-sm font-medium">{o.name}</span>
-                          <span className="block text-xs text-muted-foreground mt-0.5">{o.group} · ×{o.multiplier || "—"}{o.addPerSqft ? ` +${formatINR(o.addPerSqft)}/sq.ft` : ""}</span>
+                          <span className="block text-xs text-muted-foreground mt-0.5">{o.group || "Hardware"} · {o.multiplier ? `×${o.multiplier}` : ""}{o.addPerSqft ? ` +${formatINR(o.addPerSqft)}/sq.ft` : ""}</span>
                         </button>
                       ))}
                     </div>
@@ -195,9 +203,9 @@ export default function Estimate() {
             {/* STEP 4: ADDONS */}
             {step === 3 && (
               <div>
-                <h2 className="font-display text-2xl text-primary mb-1">Add finishing touches</h2>
-                <p className="text-sm text-muted-foreground mb-6">Optional furnishings to refine your estimate.</p>
-                <div className="grid sm:grid-cols-3 gap-3">
+                <h2 className="font-display text-xl sm:text-2xl text-primary mb-1">Add finishing touches</h2>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-6">Optional furnishings to refine your estimate.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {FURNISHING_ADDONS.map((a) => (
                     <button
                       key={a.id}
@@ -222,13 +230,12 @@ export default function Estimate() {
                   <Wrench className="h-4 w-4" />
                   <p className="eyebrow">For power users</p>
                 </div>
-                <h2 className="font-display text-2xl text-primary mb-1">Add your own line items</h2>
-                <p className="text-sm text-muted-foreground mb-6">
-                  Know exactly what you need? Add custom items with your own quantity and rate. They roll straight
-                  into the final estimate, with labour and GST applied.
+                <h2 className="font-display text-xl sm:text-2xl text-primary mb-1">Add your own line items</h2>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-6">
+                  Know exactly what you need? Add custom items with your own quantity and rate.
                 </p>
 
-                <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Quick add</p>
+                <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2 font-medium">Quick add</p>
                 <div className="flex flex-wrap gap-2 mb-6">
                   {CUSTOM_PRESETS.map((p) => (
                     <button
@@ -242,55 +249,55 @@ export default function Estimate() {
                 </div>
 
                 {customItems.length === 0 ? (
-                  <div className="border border-dashed border-border rounded-sm p-8 text-center text-sm text-muted-foreground">
+                  <div className="border border-dashed border-border rounded-sm p-6 sm:p-8 text-center text-sm text-muted-foreground">
                     No custom items yet. Use a quick-add above or add a blank row to build your own breakdown.
                   </div>
                 ) : (
                   <div className="overflow-x-auto no-scrollbar">
-                  <div className="min-w-[300px] space-y-2">
-                    <div className="grid grid-cols-[1fr_70px_80px_90px_36px] gap-2 px-1 text-[11px] uppercase tracking-wide text-muted-foreground">
-                      <span>Item</span><span>Qty</span><span>Unit</span><span className="text-right">Rate (₹)</span><span />
-                    </div>
-                    {customItems.map((c, i) => (
-                      <div key={i} className="grid grid-cols-[1fr_70px_80px_90px_36px] gap-2 items-center">
-                        <input
-                          value={c.name}
-                          onChange={(e) => updateCustom(i, "name", e.target.value)}
-                          placeholder="e.g. Skirting"
-                          className="w-full px-2.5 py-2 text-sm border border-border rounded-sm focus:outline-none focus:border-accent"
-                        />
-                        <input
-                          type="number" min="0" value={c.qty}
-                          onChange={(e) => updateCustom(i, "qty", e.target.value)}
-                          className="w-full px-2.5 py-2 text-sm border border-border rounded-sm focus:outline-none focus:border-accent"
-                        />
-                        <input
-                          value={c.unit}
-                          onChange={(e) => updateCustom(i, "unit", e.target.value)}
-                          placeholder="unit"
-                          className="w-full px-2.5 py-2 text-sm border border-border rounded-sm focus:outline-none focus:border-accent"
-                        />
-                        <input
-                          type="number" min="0" value={c.rate}
-                          onChange={(e) => updateCustom(i, "rate", e.target.value)}
-                          className="w-full px-2.5 py-2 text-sm border border-border rounded-sm text-right focus:outline-none focus:border-accent"
-                        />
-                        <button onClick={() => removeCustom(i)} className="grid place-items-center text-muted-foreground hover:text-destructive">
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                    <div className="min-w-[480px] space-y-2">
+                      <div className="grid grid-cols-[1fr_80px_90px_100px_36px] gap-2 px-1 text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">
+                        <span>Item</span><span>Qty</span><span>Unit</span><span className="text-right">Rate (₹)</span><span />
                       </div>
-                    ))}
-                  </div>
+                      {customItems.map((c, i) => (
+                        <div key={i} className="grid grid-cols-[1fr_80px_90px_100px_36px] gap-2 items-center">
+                          <input
+                            value={c.name}
+                            onChange={(e) => updateCustom(i, "name", e.target.value)}
+                            placeholder="e.g. Skirting"
+                            className="w-full px-2.5 py-2 text-sm border border-border rounded-sm focus:outline-none focus:border-accent"
+                          />
+                          <input
+                            type="number" min="0" value={c.qty}
+                            onChange={(e) => updateCustom(i, "qty", e.target.value)}
+                            className="w-full px-2.5 py-2 text-sm border border-border rounded-sm focus:outline-none focus:border-accent"
+                          />
+                          <input
+                            value={c.unit}
+                            onChange={(e) => updateCustom(i, "unit", e.target.value)}
+                            placeholder="unit"
+                            className="w-full px-2.5 py-2 text-sm border border-border rounded-sm focus:outline-none focus:border-accent"
+                          />
+                          <input
+                            type="number" min="0" value={c.rate}
+                            onChange={(e) => updateCustom(i, "rate", e.target.value)}
+                            className="w-full px-2.5 py-2 text-sm border border-border rounded-sm text-right focus:outline-none focus:border-accent"
+                          />
+                          <button onClick={() => removeCustom(i)} className="grid place-items-center text-muted-foreground hover:text-destructive p-1">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
 
                 <div className="mt-5 flex items-center justify-between">
-                  <button onClick={() => addCustom()} className="inline-flex items-center gap-1.5 text-sm text-primary hover:text-accent">
+                  <button onClick={() => addCustom()} className="inline-flex items-center gap-1.5 text-sm text-primary hover:text-accent font-medium">
                     <Plus className="h-4 w-4" /> Add blank row
                   </button>
                   <div className="text-right">
                     <p className="text-xs text-muted-foreground">Custom subtotal</p>
-                    <p className="font-display text-xl text-primary">{formatINR(customTotal)}</p>
+                    <p className="font-display text-lg sm:text-xl text-primary font-bold">{formatINR(customTotal)}</p>
                   </div>
                 </div>
               </div>
@@ -300,20 +307,20 @@ export default function Estimate() {
             {step === 5 && estimate && (
               <div>
                 <div id="estimate-results-content" className="bg-card pb-4">
-                  <h2 className="font-display text-2xl text-primary mb-1">Your rough estimate</h2>
-                  <p className="text-sm text-muted-foreground mb-6">Based on your selections. Final price confirmed at showroom.</p>
+                  <h2 className="font-display text-xl sm:text-2xl text-primary mb-1">Your rough estimate</h2>
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-6">Based on your selections. Final price confirmed at showroom.</p>
 
-                  <div className="bg-primary text-primary-foreground p-6 rounded-sm mb-6">
-                    <p className="eyebrow text-primary-foreground/60">Estimated total (incl. labour &amp; GST)</p>
-                    <p className="font-display text-5xl mt-2">{formatINR(estimate.total)}</p>
-                    <p className="text-primary-foreground/70 text-sm mt-1">≈ {formatINR(estimate.perSqft)} / sq.ft</p>
+                  <div className="wood-panel-dark p-5 sm:p-6 rounded-sm mb-6 shadow-sm border border-border/40">
+                    <p className="eyebrow text-accent">Estimated total (incl. labour &amp; GST)</p>
+                    <p className="font-display text-3xl sm:text-5xl mt-2 tracking-tight text-white">{formatINR(estimate.total)}</p>
+                    <p className="text-white/70 text-xs sm:text-sm mt-1">≈ {formatINR(estimate.perSqft)} / sq.ft</p>
                   </div>
 
                   <div className="space-y-2">
                     {estimate.breakdown.map((b) => (
-                      <div key={b.label} className="flex items-center justify-between py-2 border-b border-border">
-                        <span className="text-sm text-muted-foreground">{b.label}</span>
-                        <span className="text-sm font-medium">{formatINR(b.value)}</span>
+                      <div key={b.label} className="flex items-center justify-between py-2 border-b border-border text-xs sm:text-sm">
+                        <span className="text-muted-foreground truncate pr-2">{b.label}</span>
+                        <span className="font-medium shrink-0">{formatINR(b.value)}</span>
                       </div>
                     ))}
                   </div>
@@ -339,42 +346,42 @@ export default function Estimate() {
 
             {/* nav buttons */}
             <div className="flex items-center justify-between mt-8 pt-5 border-t border-border">
-              <button onClick={back} disabled={step === 0} className="inline-flex items-center gap-2 text-sm text-muted-foreground disabled:opacity-40 hover:text-primary">
+              <button onClick={back} disabled={step === 0} className="inline-flex items-center gap-2 text-sm text-muted-foreground disabled:opacity-40 hover:text-primary font-medium">
                 <ArrowLeft className="h-4 w-4" /> Back
               </button>
               {step < STEPS.length - 1 ? (
-                <button onClick={next} disabled={(step === 0 && !room)} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-2.5 text-sm rounded-sm disabled:opacity-40 hover:bg-accent hover:text-accent-foreground">
+                <button onClick={next} disabled={(step === 0 && !room)} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 sm:px-6 py-2.5 text-sm rounded-sm disabled:opacity-40 hover:bg-accent hover:text-accent-foreground font-medium transition-colors shadow-sm">
                   Continue <ArrowRight className="h-4 w-4" />
                 </button>
               ) : (
-                <Link to="/catalog" className="text-sm text-muted-foreground hover:text-accent">Browse catalog →</Link>
+                <Link to="/catalog" className="text-sm text-muted-foreground hover:text-accent font-medium">Browse catalog →</Link>
               )}
             </div>
           </div>
 
           {/* live sidebar */}
-          <div className="bg-card border border-border rounded-sm p-6 h-fit sticky top-28">
+          <div className="bg-card border border-border rounded-sm p-5 sm:p-6 h-fit sticky top-28 shadow-sm">
             <p className="eyebrow mb-3">Live summary</p>
             {room ? (
               <>
-                <h3 className="font-display text-xl text-primary">{ROOM_TYPES.find((r) => r.id === room)?.name}</h3>
-                <p className="text-sm text-muted-foreground mt-1">{dims.length} × {dims.width} × {dims.height} ft · {(dims.length * dims.width).toFixed(0)} sq.ft</p>
+                <h3 className="font-display text-lg sm:text-xl text-primary font-bold">{ROOM_TYPES.find((r) => r.id === room)?.name}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-1">{dims.length} × {dims.width} × {dims.height} ft · {(dims.length * dims.width).toFixed(0)} sq.ft</p>
                 <dl className="mt-5 space-y-2 text-xs">
-                  <div className="flex justify-between"><dt className="text-muted-foreground">Walls</dt><dd>{WALL_FINISHES.find((w) => w.id === wall)?.name}</dd></div>
-                  <div className="flex justify-between"><dt className="text-muted-foreground">Floor</dt><dd>{FLOORING_OPTIONS.find((f) => f.id === floor)?.name}</dd></div>
-                  <div className="flex justify-between"><dt className="text-muted-foreground">Hardware</dt><dd>{HARDWARE_OPTIONS.find((h) => h.id === hardware)?.name}</dd></div>
-                  <div className="flex justify-between"><dt className="text-muted-foreground">Add-ons</dt><dd>{addons.length || "None"}</dd></div>
-                  <div className="flex justify-between"><dt className="text-muted-foreground">Custom items</dt><dd>{customItems.filter((c) => c.name).length || "None"}</dd></div>
+                  <div className="flex justify-between"><dt className="text-muted-foreground">Walls</dt><dd className="font-medium">{WALL_FINISHES.find((w) => w.id === wall)?.name}</dd></div>
+                  <div className="flex justify-between"><dt className="text-muted-foreground">Floor</dt><dd className="font-medium">{FLOORING_OPTIONS.find((f) => f.id === floor)?.name}</dd></div>
+                  <div className="flex justify-between"><dt className="text-muted-foreground">Hardware</dt><dd className="font-medium">{HARDWARE_OPTIONS.find((h) => h.id === hardware)?.name}</dd></div>
+                  <div className="flex justify-between"><dt className="text-muted-foreground">Add-ons</dt><dd className="font-medium">{addons.length || "None"}</dd></div>
+                  <div className="flex justify-between"><dt className="text-muted-foreground">Custom items</dt><dd className="font-medium">{customItems.filter((c) => c.name).length || "None"}</dd></div>
                 </dl>
                 {estimate && (
                   <div className="mt-5 pt-4 border-t border-border">
                     <p className="text-xs text-muted-foreground">Estimate</p>
-                    <p className="font-display text-3xl text-primary">{formatINR(estimate.total)}</p>
+                    <p className="font-display text-2xl sm:text-3xl text-primary font-bold">{formatINR(estimate.total)}</p>
                   </div>
                 )}
               </>
             ) : (
-              <p className="text-sm text-muted-foreground">Select a room to begin your estimate.</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Select a room to begin your estimate.</p>
             )}
           </div>
         </div>

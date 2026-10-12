@@ -35,7 +35,7 @@ export default function Inquiry() {
     try {
       await inquiryService.create({ ...form, status: "New", source: "Website" });
       setDone(true);
-    } catch (err) {
+    } catch (_err) {
       setError("Something went wrong sending your inquiry. Please try again.");
     } finally {
       setSubmitting(false);
@@ -106,18 +106,18 @@ export default function Inquiry() {
           </form>
 
           <div className="space-y-4">
-            <div className="bg-primary text-primary-foreground rounded-sm overflow-hidden shadow-md">
-              <div className="relative h-32">
-                <Image src="/images/gallery_office_1788942067114.jpg" alt="Showroom" className="h-full w-full object-cover" fittingType="fill" />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary to-primary/40" />
+            <div className="wood-panel-dark rounded-sm overflow-hidden shadow-md border border-border/40">
+              <div className="relative h-40">
+                <Image src="/images/store_suspended_timber.jpg" alt="Shree Mangalam Showroom" className="h-full w-full object-cover" fittingType="fill" />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, hsl(24 25% 8%), hsla(24, 28%, 12%, 0.4))' }} />
               </div>
               <div className="p-6">
-                <p className="eyebrow text-accent mb-4">Visit the showroom</p>
-                <ul className="space-y-4 text-sm">
-                  <li className="flex items-start gap-3"><MapPin className="h-4 w-4 mt-0.5 text-accent shrink-0" /><span>Station Road, Surat — Gujarat 395003</span></li>
-                  <li className="flex items-center gap-3"><Phone className="h-4 w-4 text-accent shrink-0" /><span>+91 98250 12345</span></li>
+                <p className="eyebrow text-accent mb-4">Visit the Experience Showroom</p>
+                <ul className="space-y-4 text-sm text-white/90">
+                  <li className="flex items-start gap-3"><MapPin className="h-4 w-4 mt-0.5 text-accent shrink-0" /><span>Shop No. 06, Kusum Vihar 'A', Beside Banjara Hotel, Old Viva College Road, Virar West - 401303</span></li>
+                  <li className="flex items-center gap-3"><Phone className="h-4 w-4 text-accent shrink-0" /><span>+91 87886 09224 / +91 98250 12345</span></li>
                   <li className="flex items-center gap-3"><Mail className="h-4 w-4 text-accent shrink-0" /><span>contact@mangalaminterior.in</span></li>
-                  <li className="flex items-start gap-3"><Clock className="h-4 w-4 mt-0.5 text-accent shrink-0" /><span>Mon–Sat · 10:00am – 8:00pm<br />Sunday by appointment</span></li>
+                  <li className="flex items-start gap-3"><Clock className="h-4 w-4 mt-0.5 text-accent shrink-0" /><span>Mon–Sat · 10:00am – 8:30pm<br />Sunday by appointment</span></li>
                 </ul>
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function Inquiry() {
         </div>
       </div>
 
-      <style>{`.input{width:100%;padding:0.65rem 0.85rem;font-size:0.875rem;background:#fff;border:1px solid hsl(var(--border));border-radius:0.125rem;}.input:focus{outline:none;border-color:hsl(var(--accent));}`}</style>
+      <style>{`.input{width:100%;padding:0.65rem 0.85rem;font-size:0.875rem;background:hsl(var(--card));color:hsl(var(--foreground));border:1px solid hsl(var(--border));border-radius:0.125rem;}.input:focus{outline:none;border-color:hsl(var(--accent));}`}</style>
     </div>
   );
 }

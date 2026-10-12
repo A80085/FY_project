@@ -8,7 +8,6 @@ export default function Register() {
     email: "",
     phone: "",
     password: "",
-    role: "customer",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,13 +37,7 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      const submitData = { ...form };
-      if (submitData.role !== "customer") {
-        submitData.requestedRole = submitData.role;
-        submitData.role = "customer";
-      }
-
-      const user = await register(submitData);
+      const user = await register({ ...form, role: "customer" });
       if (user.role === "admin") {
         navigate("/admin");
       } else {
@@ -110,18 +103,6 @@ export default function Register() {
             className="w-full px-3 py-2.5 text-sm bg-card border border-border rounded-sm focus:outline-none focus:border-accent"
             placeholder="••••••••"
           />
-        </div>
-
-        <div>
-          <label className="block text-xs uppercase tracking-wide text-muted-foreground mb-1.5 font-medium">Account Role</label>
-          <select
-            value={form.role}
-            onChange={(e) => setForm({ ...form, role: e.target.value })}
-            className="w-full px-3 py-2.5 text-sm bg-card border border-border rounded-sm focus:outline-none focus:border-accent"
-          >
-            <option value="customer">Customer / Client</option>
-            <option value="admin">Showroom Staff / Admin</option>
-          </select>
         </div>
 
         {error && <p className="text-xs text-destructive">{error}</p>}
