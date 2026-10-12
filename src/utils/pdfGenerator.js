@@ -3,6 +3,18 @@ import jsPDF from "jspdf";
 import { ROOM_TYPES, WALL_FINISHES, FLOORING_OPTIONS, HARDWARE_OPTIONS, FURNISHING_ADDONS, formatINR } from "@/lib/interiorData";
 import { settingsService } from "@/services/settingsService";
 
+/**
+ * @param {Object} [options]
+ * @param {string} [options.room]
+ * @param {any} [options.dims]
+ * @param {string} [options.wall]
+ * @param {string} [options.floor]
+ * @param {string} [options.hardware]
+ * @param {any[]} [options.addons]
+ * @param {any[]} [options.customItems]
+ * @param {any} [options.estimate]
+ * @param {any} [options.settings]
+ */
 export async function generateEstimatePDF({ room, dims, wall, floor, hardware, addons, customItems, estimate, settings = null } = {}) {
   let studioSettings = settings;
   if (!studioSettings) {

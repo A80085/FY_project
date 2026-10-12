@@ -217,7 +217,7 @@ export default function GalleryManager() {
   );
 }
 
-function F({ label, children, full }) {
+function F({ label, children, full = false }) {
   return (
     <label className={`block ${full ? "sm:col-span-2" : ""}`}>
       <span className="block text-[11px] uppercase tracking-wide text-muted-foreground mb-1.5 font-medium">{label}</span>

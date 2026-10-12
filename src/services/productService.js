@@ -22,6 +22,7 @@ export const productService = {
     }
   },
 
+  /** @returns {Promise<any>} */
   async getById(id) {
     try {
       const docRef = doc(db, COLLECTION_NAME, id);

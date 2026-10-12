@@ -143,6 +143,7 @@ export const salesService = {
       const q = query(collection(db, COLLECTION_NAME), limit(maxLimit));
       const snapshot = await getDocs(q);
       
+      /** @type {any[]} */
       let items = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
       // If Firestore is empty, return local seed data so the owner has an immediate working system
@@ -151,7 +152,7 @@ export const salesService = {
       }
 
       // Sort by date descending
-      items.sort((a, b) => new Date(b.date || b.createdAt || 0) - new Date(a.date || a.createdAt || 0));
+      items.sort((a, b) => new Date(b.date || b.createdAt || 0).getTime() - new Date(a.date || a.createdAt || 0).getTime());
 
       if (filters.search) {
         const s = filters.search.toLowerCase();

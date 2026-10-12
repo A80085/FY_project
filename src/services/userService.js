@@ -2,6 +2,7 @@ import { collection, doc, getDoc, setDoc, getDocs, updateDoc, deleteField } from
 import { db } from "@/services/firebase";
 
 export const userService = {
+  /** @returns {Promise<any>} */
   async getUser(uid) {
     try {
       const docRef = doc(db, "users", uid);

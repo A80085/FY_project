@@ -192,7 +192,7 @@ export default function Sales() {
     setForm({
       ...EMPTY_SALE_FORM,
       items: [
-        { productId: "", productName: "", category: "General", unit: "piece", quantity: 1, rate: 0, amount: 0 }
+        { productId: "", productName: "", category: "General", unit: "piece", quantity: 1, rate: 0, amount: 0, availableStock: 0 }
       ]
     });
     setIsModalOpen(true);
