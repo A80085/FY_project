@@ -523,7 +523,7 @@ const ROOMS = {
 };
 
 
-const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotate, lighting }, ref) => {
+const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotate, lighting, interactionMode = "orbit" }, ref) => {
   const mountRef = useRef(null);
   const sceneRef = useRef(null);
   const controlsRef = useRef(null);
@@ -608,6 +608,8 @@ const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotat
     controls.minDistance = 2;
     controls.maxDistance = 16;
     controls.maxPolarAngle = Math.PI / 2 - 0.04;
+    controls.enablePan = true;
+    controls.screenSpacePanning = true;
     controls.target.set(0, 0.6, 0);
     controlsRef.current = controls;
 
@@ -866,9 +868,66 @@ const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotat
     if (controlsRef.current) controlsRef.current.autoRotate = autoRotate;
   }, [autoRotate]);
 
+  useEffect(() => {
+    const controls = controlsRef.current;
+    const dom = rendererRef.current?.domElement;
+    if (!controls) return;
+
+    controls.enablePan = true;
+    controls.screenSpacePanning = true;
+
+    if (interactionMode === "hand") {
+      controls.mouseButtons = {
+        LEFT: THREE.MOUSE.PAN,
+        MIDDLE: THREE.MOUSE.DOLLY,
+        RIGHT: THREE.MOUSE.ROTATE
+      };
+      controls.touches = {
+        ONE: THREE.TOUCH.PAN,
+        TWO: THREE.TOUCH.DOLLY_PAN
+      };
+      controls.panSpeed = 1.25;
+      if (dom) dom.style.cursor = "grab";
+    } else {
+      controls.mouseButtons = {
+        LEFT: THREE.MOUSE.ROTATE,
+        MIDDLE: THREE.MOUSE.DOLLY,
+        RIGHT: THREE.MOUSE.PAN
+      };
+      controls.touches = {
+        ONE: THREE.TOUCH.ROTATE,
+        TWO: THREE.TOUCH.DOLLY_PAN
+      };
+      controls.panSpeed = 1.0;
+      if (dom) dom.style.cursor = "grab";
+    }
+  }, [interactionMode]);
+
+  useEffect(() => {
+    const dom = rendererRef.current?.domElement;
+    if (!dom) return;
+
+    const onPointerDown = () => {
+      dom.style.cursor = "grabbing";
+    };
+    const onPointerUp = () => {
+      dom.style.cursor = "grab";
+    };
+
+    dom.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointerup", onPointerUp);
+
+    return () => {
+      dom.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointerup", onPointerUp);
+    };
+  }, []);
 
   return (
-    <div ref={mountRef} className="w-full aspect-square sm:aspect-[4/3] lg:aspect-auto lg:h-[min(620px,65vh)] min-h-[340px]" />
+    <div 
+      ref={mountRef} 
+      className={`w-full aspect-square sm:aspect-[4/3] lg:aspect-auto lg:h-[min(620px,65vh)] min-h-[340px] cursor-grab active:cursor-grabbing select-none relative`} 
+    />
   );
 });
 

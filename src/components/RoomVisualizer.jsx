@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { Maximize2, RotateCw, Sun, RefreshCw } from "lucide-react";
+import { Maximize2, RotateCw, Sun, RefreshCw, Hand } from "lucide-react";
 import { productService } from "@/services/productService";
 import { BUILTIN_SLOTS, CATALOG_TO_SLOT, COLOR_FAMILY_MAP, FINISH_MAP } from "./constants";
 import VisualizerControls from "./VisualizerControls";
@@ -18,6 +18,7 @@ export default function RoomVisualizer() {
   const [selections, setSelections] = useState({ floor: 0, walls: 0, primary: 0, cabinetry: 1 });
   const [autoRotate, setAutoRotate] = useState(false);
   const [lighting, setLighting] = useState("warm");
+  const [interactionMode, setInteractionMode] = useState("orbit"); // "orbit" | "hand"
   const [slotSwatches, setSlotSwatches] = useState(() => {
     const o = {};
     Object.keys(BUILTIN_SLOTS).forEach((k) => (o[k] = BUILTIN_SLOTS[k].swatches.slice()));
@@ -26,6 +27,33 @@ export default function RoomVisualizer() {
   const [catalogCount, setCatalogCount] = useState(0);
 
   const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+      if (e.code === "Space" && !e.repeat) {
+        e.preventDefault();
+        setInteractionMode("hand");
+      } else if (e.key.toLowerCase() === "h") {
+        setInteractionMode("hand");
+      } else if (e.key.toLowerCase() === "o" || e.key.toLowerCase() === "r") {
+        setInteractionMode("orbit");
+      }
+    };
+    const handleKeyUp = (e) => {
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+      if (e.code === "Space") {
+        e.preventDefault();
+        setInteractionMode("orbit");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -97,16 +125,18 @@ export default function RoomVisualizer() {
           slotSwatches={slotSwatches}
           autoRotate={autoRotate}
           lighting={lighting}
+          interactionMode={interactionMode}
         />
-        {/* Room selection pills — horizontal scroll with fade hint on the right */}
-        <div className="absolute top-3 left-3 right-3">
-          <div className="relative">
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+
+        {/* Top bar: Room selection pills + Orbit/Hand tool selector */}
+        <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10">
+          <div className="relative min-w-0 flex-1">
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
               {Object.entries(ROOMS).map(([key, r]) => (
                 <button
                   key={key}
                   onClick={() => setRoom(key)}
-                  className={`px-3 py-1.5 text-xs font-semibold tracking-wide rounded-sm border shrink-0 transition-colors shadow-sm ${
+                  className={`px-3 py-1.5 text-xs font-semibold tracking-wide rounded-sm border shrink-0 transition-colors shadow-xs ${
                     room === key ? "bg-primary text-primary-foreground border-primary" : "bg-background/90 backdrop-blur border-border hover:border-accent text-foreground"
                   }`}
                 >
@@ -115,12 +145,68 @@ export default function RoomVisualizer() {
               ))}
             </div>
             {/* Fade hint so users discover horizontal scroll */}
-            <div className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-black/20 to-transparent rounded-r-sm" />
+            <div className="pointer-events-none absolute right-0 top-0 h-full w-6 bg-gradient-to-l from-background/40 to-transparent rounded-r-sm" />
+          </div>
+
+          {/* Mode Switcher: Orbit vs Hand Grab Tool */}
+          <div className="flex items-center gap-0.5 shrink-0 bg-background/90 backdrop-blur border border-border p-0.5 rounded-sm shadow-xs pointer-events-auto">
+            <button
+              type="button"
+              aria-label="Orbit 3D room rotation"
+              title="Orbit Mode (Rotate 360° around space) [O / R]"
+              onClick={() => setInteractionMode("orbit")}
+              className={`flex items-center gap-1 text-[11px] sm:text-xs px-2 py-1 rounded-xs font-medium transition-all ${
+                interactionMode === "orbit"
+                  ? "bg-primary text-primary-foreground shadow-xs font-semibold"
+                  : "text-foreground hover:bg-muted"
+              }`}
+            >
+              <RotateCw className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              <span className="hidden sm:inline">Orbit</span>
+            </button>
+            <button
+              type="button"
+              aria-label="Hand grab and move across 3D models"
+              title="Hand Tool (Click & drag to grab and move across models) [H or Hold Space]"
+              onClick={() => setInteractionMode("hand")}
+              className={`flex items-center gap-1 text-[11px] sm:text-xs px-2 py-1 rounded-xs font-medium transition-all ${
+                interactionMode === "hand"
+                  ? "bg-accent text-accent-foreground shadow-xs font-semibold"
+                  : "text-foreground hover:bg-muted"
+              }`}
+            >
+              <Hand className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              <span>Hand Move</span>
+            </button>
           </div>
         </div>
+
+        {/* Floating helper pill when Hand mode is active */}
+        {interactionMode === "hand" && (
+          <div className="absolute top-14 left-1/2 -translate-x-1/2 pointer-events-none z-10 transition-all">
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-black/80 backdrop-blur-md text-white text-[11px] rounded-full border border-white/10 shadow-lg tracking-wide font-medium whitespace-nowrap">
+              <Hand className="h-3.5 w-3.5 text-accent animate-pulse" />
+              <span>Hand Mode: Click &amp; drag to grab and move across space</span>
+            </div>
+          </div>
+        )}
+
         {/* Bottom bar controls — single row, never wraps */}
-        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">
+        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none z-10">
           <div className="flex items-center gap-0.5 bg-background/90 backdrop-blur border border-border px-1.5 py-1 sm:px-2 sm:py-1.5 rounded-sm shadow-sm pointer-events-auto">
+            {/* Quick Hand/Orbit toggle in bottom toolbar */}
+            <button
+              aria-label="Toggle Hand grab tool"
+              title="Hand Tool: Grab and move across space [Hold Space or press H]"
+              onClick={() => setInteractionMode((m) => (m === "hand" ? "orbit" : "hand"))}
+              className={`flex items-center gap-1 text-[11px] sm:text-xs px-1.5 sm:px-2 py-1 rounded-sm font-medium transition-colors ${
+                interactionMode === "hand" ? "bg-accent text-accent-foreground font-semibold" : "text-foreground hover:bg-muted"
+              }`}
+            >
+              <Hand className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              <span className="hidden xs:inline sm:inline">Hand</span>
+            </button>
+            <div className="h-3.5 w-px bg-border" />
             <button
               aria-label="Toggle auto-rotate"
               onClick={() => setAutoRotate((v) => !v)}

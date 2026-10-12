@@ -10,7 +10,7 @@ export default function Visualizer() {
           <h1 className="font-display text-4xl sm:text-5xl text-primary font-bold">Picture it finished.</h1>
           <p className="mt-3 text-muted-foreground">
             Choose a room template, then swap floors, walls, upholstery and cabinetry to the finishes we
-            stock. Drag to orbit, scroll to zoom.
+            stock. Use Orbit to rotate, the Hand tool (or hold Space) to grab &amp; move across models, and scroll to zoom.
           </p>
         </div>
         <RoomVisualizer />
