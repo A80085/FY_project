@@ -32,7 +32,7 @@ const EMPTY_SALE_FORM = {
   deductStock: true,
   notes: "",
   items: [
-    { productId: "", productName: "", category: "General", unit: "piece", quantity: 1, rate: 0, amount: 0 }
+    { productId: "", productName: "", category: "General", unit: "piece", quantity: 1, rate: 0, amount: 0, availableStock: 0 }
   ]
 };
 
@@ -148,7 +148,7 @@ export default function Sales() {
       ...f,
       items: [
         ...f.items,
-        { productId: "", productName: "", category: "General", unit: "piece", quantity: 1, rate: 0, amount: 0 }
+        { productId: "", productName: "", category: "General", unit: "piece", quantity: 1, rate: 0, amount: 0, availableStock: 0 }
       ]
     }));
   }

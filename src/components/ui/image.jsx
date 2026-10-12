@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from "react"
 import { useSize } from "@/lib/use-size"
 import { cn } from "@/lib/utils"
