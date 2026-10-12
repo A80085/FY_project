@@ -11,7 +11,7 @@ export default function Footer() {
           {/* Studio Info (4 cols) */}
           <div className="sm:col-span-2 lg:col-span-4">
             <div className="flex items-center gap-3 mb-4">
-              <Logo className="h-10 w-10 sm:h-11 sm:w-11" />
+              <Logo tone="light" className="h-10 w-10 sm:h-11 sm:w-11" />
               <div>
                 <span className="font-display text-xl font-bold tracking-tight text-white block leading-tight">
                   Shree Mangalam

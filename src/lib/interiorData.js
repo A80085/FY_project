@@ -108,14 +108,18 @@ export function formatINR(n) {
   return "₹" + Math.round(n).toLocaleString("en-IN");
 }
 
-// Curated gallery imagery featuring authentic Shree Mangalam Showroom.
+// Curated gallery imagery featuring authentic Shree Mangalam Showroom and delivered projects.
 export const GALLERY_SEED = [
   { title: "Timber & Veneer Atelier Gallery", room_type: "Living Room", category: "Modern", location: "Virar West", year: "2024", is_featured: true, image_url: "/images/store_suspended_timber.jpg", description: "Flagship showroom featuring suspended natural timber slabs, curved cantilever desk, and rotating veneer louvers." },
   { title: "Bespoke Arched Millwork Suite", room_type: "Office", category: "Classic", location: "Virar West", year: "2024", is_featured: true, image_url: "/images/showroom_arched_millwork_bespoke.jpg", description: "Custom dove gray arched wall shelving with warm walnut inserts, brass picture lighting, and raised-panel cabinetry." },
-  { title: "Choose Your Material Swatch Wall", room_type: "Office", category: "Modern", location: "Virar West", year: "2024", is_featured: true, image_url: "/images/store_material_library.png", description: "Curated physical material library housing 180+ touch-and-feel sample swatches of laminates, veneers, acrylics, and quartz." },
-  { title: "Walnut Living Suite", room_type: "Living Room", category: "Modern", location: "Mumbai", year: "2024", is_featured: false, image_url: "/images/gallery_walnut_1788941961232.jpg", description: "A warm walnut-and-ivory living room with fluted panelling and brushed-brass accents." },
-  { title: "Ivory Modular Kitchen", room_type: "Kitchen", category: "Minimalist", location: "Thane", year: "2024", is_featured: false, image_url: "/images/gallery_kitchen_1788941976982.jpg", description: "Handleless acrylic kitchen with quartz countertop and integrated appliances." },
-  { title: "Tranquil Master Bedroom", room_type: "Bedroom", category: "Scandinavian", location: "Palghar", year: "2023", is_featured: false, image_url: "/images/gallery_bedroom_1788942008850.jpg", description: "Soft oak wardrobe, linen headboard and layered warm lighting." },
+  { title: "Choose Your Material Swatch Wall", room_type: "Office", category: "Modern", location: "Virar West", year: "2024", is_featured: true, image_url: "/images/store_material_library.jpg", description: "Curated physical material library housing 180+ touch-and-feel sample swatches of laminates, veneers, acrylics, and quartz." },
+  { title: "Walnut Living Suite", room_type: "Living Room", category: "Modern", location: "Mumbai", year: "2024", is_featured: false, image_url: "/images/typology_living_walnut.jpg", description: "A warm walnut-and-ivory living room with fluted panelling, floating media console and Calacatta quartz low table." },
+  { title: "Ivory Modular Kitchen", room_type: "Kitchen", category: "Minimalist", location: "Thane", year: "2024", is_featured: false, image_url: "/images/typology_kitchen_island.jpg", description: "Handleless acrylic kitchen with waterfall quartz island, charcoal slatted accents and integrated appliances." },
+  { title: "Tranquil Master Bedroom", room_type: "Bedroom", category: "Scandinavian", location: "Palghar", year: "2023", is_featured: false, image_url: "/images/typology_bedroom_suite.jpg", description: "Soft oak wardrobe, book-matched teak fluted headboard and layered warm ambient cove lighting." },
+  { title: "Live-Edge Teak Dining Salon", room_type: "Dining", category: "Modern", location: "Virar West", year: "2024", is_featured: true, image_url: "/images/gallery_dining_teak.jpg", description: "Solid live-edge natural teak dining table, fluted smoked walnut feature wall, and custom brass lighting." },
+  { title: "Industrial Dining Nook", room_type: "Dining", category: "Industrial", location: "Virar West", year: "2023", is_featured: false, image_url: "/images/gallery_dining_1788942028543.jpg", description: "Exposed concrete, blackened-steel frames and a reclaimed-teak table." },
+  { title: "Heritage Veneer Lounge", room_type: "Living Room", category: "Classic", location: "Mumbai", year: "2022", is_featured: false, image_url: "/images/gallery_lounge_1788942051775.jpg", description: "Book-matched teak veneer with classical cornices, wood-burning fireplace, and brass inlay." },
+  { title: "Executive Home Office", room_type: "Office", category: "Minimalist", location: "Virar West", year: "2024", is_featured: false, image_url: "/images/typology_office_slat.jpg", description: "Floating charcoal walnut desk with integrated cable-way, acoustic dark wood slat feature wall, and warm LED shelving." },
 ];
 
 export const PRODUCT_SEED = [

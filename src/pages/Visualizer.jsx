@@ -10,7 +10,7 @@ export default function Visualizer() {
         eyebrow="Interactive 3D Studio"
         title="3D Room Finishes Visualizer"
         description="Explore genuine showroom laminates, veneers, quartz, and cabinetry in interactive 3D spaces. Orbit in 360°, inspect natural and warm lighting scenarios, and preview your custom interior before fabrication."
-        image="/images/gallery_lounge_1788942051775.jpg"
+        image="/images/typology_living_walnut.jpg"
       />
 
       <div className="container-px max-w-7xl mx-auto pt-8 sm:pt-10">

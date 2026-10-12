@@ -75,7 +75,7 @@ export default function Estimate() {
         eyebrow="Rough Estimate Calculator"
         title="Plan a budget in minutes."
         description="An indicative estimate based on room size and the finishes we stock. Final pricing is confirmed at the showroom."
-        image="/images/gallery_kitchen_1788941976982.jpg"
+        image="/images/typology_kitchen_island.jpg"
       />
       <div className="container-px max-w-7xl mx-auto pt-6 sm:pt-10">
         {/* Mobile Step Header with Live Running Estimate */}

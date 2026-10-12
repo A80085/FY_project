@@ -68,7 +68,7 @@ export default function Inquiry() {
         eyebrow="Contact & Inquiries"
         title="Let's talk interiors."
         description="Send us a message and we'll get back with pricing, availability or a site visit."
-        image="/images/gallery_lounge_1788942051775.jpg"
+        image="/images/store_suspended_timber.jpg"
       />
       <div className="container-px max-w-7xl mx-auto pt-10">
         <div className="grid lg:grid-cols-[1fr_360px] gap-8">

@@ -12,8 +12,7 @@ import {
   parseWixMediaUrl,
 } from "./image-helpers"
 
-const FALLBACK_IMAGE_URL =
-  "https://static.wixstatic.com/media/12d367_4f26ccd17f8f4e3a8958306ea08c2332~mv2.png"
+const FALLBACK_IMAGE_URL = "/images/typology_living_walnut.jpg"
 
 const ImageWrapper = React.forwardRef(({ aspectRatio, className, style, children }, ref) => (
   <span

@@ -39,7 +39,7 @@ const ROOM_PRESETS = [
     id: "living",
     title: "Living Room",
     subtitle: "Custom Wall Paneling & Media Console",
-    image: "/images/gallery_lounge_1788942051775.jpg",
+    image: "/images/typology_living_walnut.jpg",
     specs: "480 sq.ft · 10.5ft Ceilings · Warm Ambient Tone",
     materials: [
       { name: "Smoked Walnut", type: "Natural Veneer", color: "#4A3525" },
@@ -47,15 +47,15 @@ const ROOM_PRESETS = [
       { name: "Aged Antique Brass", type: "Profile Hardware", color: "#C59B27" }
     ],
     hotspots: [
-      { x: "32%", y: "45%", label: "Smoked Walnut Wall Paneling" },
-      { x: "68%", y: "62%", label: "Calacatta Quartz Low Table" }
+      { x: "24%", y: "42%", label: "Smoked Walnut Fluted Paneling" },
+      { x: "48%", y: "76%", label: "Calacatta Quartz Low Table" }
     ]
   },
   {
     id: "kitchen",
     title: "Modular Kitchen",
     subtitle: "L-Shape Layout with Breakfast Island",
-    image: "/images/gallery_kitchen_1788941976982.jpg",
+    image: "/images/typology_kitchen_island.jpg",
     specs: "320 sq.ft · 9.5ft Ceilings · Soft-Close Lift-Ups",
     materials: [
       { name: "Ivory Matte Acrylic", type: "Acrylic Sheet", color: "#ECE7DE" },
@@ -63,15 +63,15 @@ const ROOM_PRESETS = [
       { name: "Brushed Brass Bar Pulls", type: "Cabinet Hardware", color: "#D4AF37" }
     ],
     hotspots: [
-      { x: "45%", y: "40%", label: "Soft-Close Overhead Cabinets" },
-      { x: "72%", y: "70%", label: "Seamless Waterfall Quartz Counter" }
+      { x: "30%", y: "26%", label: "Ivory Matte Overhead Cabinets" },
+      { x: "62%", y: "68%", label: "Seamless Waterfall Quartz Island" }
     ]
   },
   {
     id: "bedroom",
     title: "Master Bedroom",
     subtitle: "Fluted Headboard & Full-Height Wardrobe",
-    image: "/images/gallery_bedroom_1788942008850.jpg",
+    image: "/images/typology_bedroom_suite.jpg",
     specs: "410 sq.ft · 10ft Ceilings · Concealed Storage",
     materials: [
       { name: "Book-Matched Teak", type: "Natural Veneer", color: "#6A4526" },
@@ -79,15 +79,15 @@ const ROOM_PRESETS = [
       { name: "Smoked Bronze Handles", type: "Wardrobe Hardware", color: "#544638" }
     ],
     hotspots: [
-      { x: "38%", y: "52%", label: "Fluted Teak Bedhead Feature" },
-      { x: "78%", y: "48%", label: "Floor-to-Ceiling Wardrobes" }
+      { x: "50%", y: "38%", label: "Book-Matched Teak & Fluted Bedhead" },
+      { x: "82%", y: "52%", label: "Floor-to-Ceiling Wardrobes" }
     ]
   },
   {
     id: "office",
     title: "Home Office",
     subtitle: "Floating Desk & Acoustic Slat Wall",
-    image: "/images/gallery_office_1788942067114.jpg",
+    image: "/images/typology_office_slat.jpg",
     specs: "280 sq.ft · 11ft Ceilings · Glare-Free Task Light",
     materials: [
       { name: "Charcoal Walnut", type: "Matte Veneer", color: "#362B28" },
@@ -95,8 +95,8 @@ const ROOM_PRESETS = [
       { name: "Blackened Steel Accents", type: "Metal Trim", color: "#222222" }
     ],
     hotspots: [
-      { x: "50%", y: "42%", label: "Built-in Floating Bookcase" },
-      { x: "30%", y: "68%", label: "Integrated Cable-Management Desk" }
+      { x: "24%", y: "35%", label: "Built-in Floating Bookcase" },
+      { x: "48%", y: "64%", label: "Integrated Cable-Management Desk" }
     ]
   }
 ];

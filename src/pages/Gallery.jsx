@@ -65,6 +65,13 @@ const CASE_STUDY_SPECS = {
     lighting: "Indirect Ambient Recessed (2700K)",
     roomPreset: "bedroom"
   },
+  "Live-Edge Teak Dining Salon": {
+    footprint: "360 sq.ft Dining Salon",
+    clientType: "Contemporary Penthouse",
+    materials: ["Solid Live-Edge Natural Teak Slab", "Fluted Smoked Walnut Feature Wall", "Sculptural Brass Chandelier"],
+    lighting: "Warm Indirect Vertical LED Strips (3000K)",
+    roomPreset: "living"
+  },
   "Industrial Dining Nook": {
     footprint: "280 sq.ft Dining Salon",
     clientType: "Modern Residence",
@@ -84,6 +91,13 @@ const CASE_STUDY_SPECS = {
     clientType: "Consulting Suite",
     materials: ["Matt Charcoal Laminate", "Acoustic Slat Cladding", "Floating Teak Wireway Desk"],
     lighting: "High-CRI Glare-Free Task Lighting",
+    roomPreset: "office"
+  },
+  "Executive Home Office": {
+    footprint: "320 sq.ft Executive Study",
+    clientType: "Private Corporate Suite",
+    materials: ["Floating Charcoal Walnut Desk", "Acoustic Dark Wood Slat Wall", "Built-In LED Shelving"],
+    lighting: "Warm Recessed LED Linear Lighting + Task Glare-Free",
     roomPreset: "office"
   }
 };
