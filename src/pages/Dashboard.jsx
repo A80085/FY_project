@@ -50,7 +50,6 @@ export default function Dashboard() {
   }, []);
 
   const lowStock = stats.products.filter((p) => p.stock <= p.min_threshold);
-  const newInquiries = stats.inquiries.filter((i) => i.status === "New");
   const inventoryValue = stats.products.reduce((s, p) => s + (p.price || 0) * (p.stock || 0), 0);
   const totalSalesRevenue = stats.sales.reduce((s, x) => s + (Number(x.amountPaid) || Number(x.totalAmount) || 0), 0);
   const pendingDues = stats.sales.reduce((s, x) => s + (Number(x.balanceDue) || 0), 0);

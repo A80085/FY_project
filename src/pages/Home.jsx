@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { 
   ArrowRight, 
-  Layers, 
-  Ruler, 
   Maximize, 
   ArrowUpRight, 
   Sparkles, 
@@ -13,10 +11,8 @@ import {
   MapPin,
   Clock,
   Phone,
-  ShieldCheck,
   Star,
-  Building2,
-  Check
+  Building2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { productService } from "@/services/productService";

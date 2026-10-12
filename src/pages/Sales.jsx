@@ -5,24 +5,14 @@ import {
   Printer, 
   MessageCircle, 
   Trash2, 
-  CheckCircle2, 
-  Clock, 
-  AlertCircle, 
-  IndianRupee, 
   X, 
-  ShoppingCart,
-  Phone,
-  MapPin,
-  Calendar,
-  Layers,
-  ArrowUpRight
+  Phone
 } from "lucide-react";
 import { salesService } from "@/services/salesService";
 import { productService } from "@/services/productService";
 import { formatINR } from "@/lib/interiorData";
 import { useToast } from "@/components/ui/use-toast";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import Logo from "@/components/Logo";
 
 const PAYMENT_MODES = ["UPI", "Cash", "Bank Transfer / NEFT", "Cheque", "Card"];
 const PAYMENT_STATUSES = ["Paid", "Partial", "Pending"];
@@ -247,7 +237,7 @@ export default function Sales() {
       });
       toast({ title: "Balance Cleared", description: `Invoice ${sale.invoiceNumber} is marked fully Paid.` });
       await loadData();
-    } catch (e) {
+    } catch (_e) {
       toast({ title: "Error", description: "Failed to update payment.", variant: "destructive" });
     }
   }
@@ -260,7 +250,7 @@ export default function Sales() {
       toast({ title: "Record Deleted", description: `Invoice ${confirmDelete.invoiceNumber} removed.` });
       setConfirmDelete({ open: false, id: null, invoiceNumber: "" });
       await loadData();
-    } catch (e) {
+    } catch (_e) {
       toast({ title: "Error", description: "Failed to delete record.", variant: "destructive" });
     }
   }

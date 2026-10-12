@@ -108,8 +108,25 @@ const ResponsiveImage = React.forwardRef(
 ResponsiveImage.displayName = "ResponsiveImage"
 
 /**
+ * @typedef {Object} ImageProps
+ * @property {string} [src]
+ * @property {string} [alt]
+ * @property {string} [className]
+ * @property {"fill" | "fit" | string} [fittingType]
+ * @property {number} [originWidth]
+ * @property {number} [originHeight]
+ * @property {number} [focalPointX]
+ * @property {number} [focalPointY]
+ * @property {number} [quality]
+ * @property {(e: any) => void} [onError]
+ * @property {(e: any) => void} [onLoad]
+ * @property {React.CSSProperties} [style]
+ */
+
+/**
  * Responsive image helper with lazy resizing and fallback handling for supported
  * public image URLs. Unsupported URLs fall back to a normal <img> render.
+ * @type {React.ForwardRefExoticComponent<ImageProps & React.ImgHTMLAttributes<HTMLImageElement> & React.RefAttributes<HTMLImageElement>>}
  */
 const Image = React.forwardRef(
   (

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { MapPin, Phone, Mail, Clock, CheckCircle2, MessageCircle } from "lucide-react";
 import { inquiryService } from "@/services/inquiryService";
-import { Image } from "@/components/ui/image";
 import PageHero from "@/components/PageHero";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
@@ -127,7 +126,7 @@ export default function Inquiry() {
 
             <div className="wood-panel-dark rounded-sm overflow-hidden shadow-md border border-border/40">
               <div className="relative h-40">
-                <Image src="/images/store_suspended_timber.jpg" alt="Shree Mangalam Showroom" className="h-full w-full object-cover" fittingType="fill" />
+                <img src="/images/store_suspended_timber.jpg" alt="Shree Mangalam Showroom" className="h-full w-full object-cover" />
                 <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, hsl(24 25% 8%), hsla(24, 28%, 12%, 0.4))' }} />
               </div>
               <div className="p-6">
