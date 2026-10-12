@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "mangalam-fy-2026-7c2e3"
-  }
+  },
+  "targets": {
+    "mangalam-fy-2026-7c2e3": {
+      "hosting": {
+        "app": [
+          "shree-mangalam-interiors"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
