@@ -27,11 +27,11 @@ export default function Navbar() {
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/catalog", label: "Catalog" },
-    { to: "/visualizer", label: "3D Studio" },
-    { to: "/estimate", label: "Estimator" },
+    { to: "/visualizer", label: "3D Visualizer" },
+    { to: "/estimate", label: "Cost Calculator" },
     { to: "/gallery", label: "Gallery" },
-    { to: "/about", label: "About" },
-    { to: "/inquiry", label: "Contact" },
+    { to: "/about", label: "About Us" },
+    { to: "/inquiry", label: "Contact & Visit" },
   ];
 
   return (

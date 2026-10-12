@@ -12,46 +12,46 @@ import { Image } from "@/components/ui/image";
 const TIMELINE = [
   {
     year: "2010",
-    title: "The Artisanal Joinery Genesis",
-    desc: "Founded as a specialized timber and plywood workshop in Virar West, dedicated to hand-selecting genuine BWP marine plywood, natural teak, and veneers for residential and commercial interiors."
+    title: "Workshop Established in Virar West",
+    desc: "Founded as a specialized timber and plywood supplier on Old Viva College Road, dedicated to genuine BWP marine plywood, teak timber, and hardware for residential homes."
   },
   {
     year: "2016",
-    title: "Zero-Joint Hot-Air Edgebanding",
-    desc: "Pioneered computerized beam sizing and seamless hot-air edgebanding in South Gujarat, eliminating visible glue lines and preventing tropical humidity peeling."
+    title: "Precision Edgebanding & Sizing",
+    desc: "Introduced computerized panel sizing and seamless hot-air edgebanding machines, eliminating messy glue lines and preventing humidity peeling in coastal Mumbai climates."
   },
   {
     year: "2021",
-    title: "Parametric 3D Material Simulation",
-    desc: "Introduced browser-based interactive 3D spatial simulation, allowing visionary homeowners and architects to evaluate grain alignment and light reflection prior to fabrication."
+    title: "Interactive 3D Room Visualizer",
+    desc: "Launched our browser-based 3D room configurator, allowing homeowners and designers to test laminate finishes, grain orientation, and lighting before ordering materials."
   },
   {
     year: "2026",
-    title: "The Flagship Experience Atelier",
-    desc: "Expanded into an architectural archive housing 180+ curated laminates, acrylics, and artisanal hardware specimens serving projects across Mumbai, Palghar, Thane, and Gujarat."
+    title: "Flagship Experience Showroom",
+    desc: "Expanded our Virar West store to feature 180+ physical finish swatches, full-scale modular kitchen displays, rotating louvers, and direct distributor pricing."
   }
 ];
 
 const PILLARS = [
   {
     num: "I",
-    title: "Direct Forest & Mill Provenance",
-    desc: "Every veneer log is inspected at source for moisture equilibrium and grain fidelity. FSC-certified sustainable harvesting with complete chain-of-custody documentation."
+    title: "100% Genuine IS:710 Marine Plywood",
+    desc: "Every sheet is sourced directly from certified mills with verifiable QR authenticity codes. Waterproof, borer-proof, and backed by a 10-year manufacturer warranty."
   },
   {
     num: "II",
-    title: "Zero-Joint Edgebanding Precision",
-    desc: "Precision hot-air laser edge application seals panel substrates against coastal humidity, creating an invisible structural transition that outperforms conventional adhesive banding."
+    title: "Seamless Zero-Joint Edgebanding",
+    desc: "High-precision edge application protects panel cores from coastal moisture and humidity, creating smooth transitions that prevent corner chipping."
   },
   {
     num: "III",
-    title: "Real-Time 3D Parametric Simulation",
-    desc: "Our RoomSketch 3D technology tests daylight conditions (3200K to 5500K) and grain alignment before cutting a single sheet, eliminating costly on-site surprises."
+    title: "Real-Time 3D Material Preview",
+    desc: "Our interactive room configurator lets you visualize daylight and warm light reflection on different laminate and veneer textures before fabrication begins."
   },
   {
     num: "IV",
-    title: "Atelier Concierge & White-Glove Handover",
-    desc: "From physical 10×10cm sample delivery to on-site carpenter guidance, our dedicated atelier concierges coordinate every phase with micrometer tolerances."
+    title: "Showroom Samples & Site Assistance",
+    desc: "Visit our showroom to inspect physical 10×10cm samples, consult on hardware mechanisms, and get accurate sq.ft. estimates for your carpenters."
   }
 ];
 
@@ -59,9 +59,9 @@ export default function About() {
   return (
     <div className="pb-24 bg-background text-foreground">
       <PageHero
-        eyebrow="Architectural Heritage &amp; Craft"
-        title="The Virar West Millwork Atelier"
-        description="Crafting bespoke architectural laminates, hand-matched veneers, and precision hardware since 2010."
+        eyebrow="About Shree Mangalam"
+        title="Plywood, Laminates & Custom Interior Solutions"
+        description="Supplying genuine BWP marine plywood, 180+ designer laminate sheets, and custom modular woodwork across Mumbai and Palghar since 2010."
         image="/images/gallery_walnut_1788941961232.jpg"
       />
 
@@ -70,28 +70,28 @@ export default function About() {
         {/* ── 1. PROVENANCE STORY SPLIT ── */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           <div className="lg:col-span-6 space-y-6">
-            <span className="badge-accent">
-              • CHAPTER 01 · OUR PHILOSOPHY
+            <span className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-secondary/70 px-3.5 py-1 text-xs font-medium text-foreground">
+              Our Journey &amp; Commitment
             </span>
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-medium text-foreground leading-[1.12]">
-              Materiality is the soul of <br />
-              <span className="italic font-light text-accent">architectural permanence.</span>
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-[1.15]">
+              Built for Real Homes. <br />
+              <span className="text-accent">Tested for Coastal Durability.</span>
             </h2>
-            <div className="space-y-4 text-muted-foreground text-sm sm:text-base leading-relaxed font-light">
+            <div className="space-y-4 text-muted-foreground text-sm sm:text-base leading-relaxed font-normal">
               <p>
-                In an era of mass-manufactured, disposable synthetic interiors, Shree Mangalam Interior Studio was established on a different premise: that architectural woodwork should age with grace, dignity, and structural endurance.
+                In an industry often clouded by duplicate plywood grades and inflated quotes, Shree Mangalam Ply and Interiors was built on trust: providing genuine materials, direct distributor rates, and clear guidance for your home.
               </p>
               <p>
-                What began as a localized timber atelier on Old Viva College Road in Virar West has grown into a comprehensive specification house for discerning architects, luxury homeowners, and interior designers across Mumbai, Palghar, and Western India.
+                What began as a localized timber and plywood workshop on Old Viva College Road in Virar West has grown into a trusted resource for homeowners, interior contractors, and architects across Virar, Vasai, Palghar, and Mumbai.
               </p>
               <p>
-                We unite time-tested master carpenter joinery with digital 3D parametric visualization and computerized CNC precision—guaranteeing that what you specify digitally is executed with millimeter accuracy on your site.
+                Whether you need a single sheet of decorative laminate, a full shipment of BWP marine plywood for your 2BHK flat, or custom modular kitchen cabinetry, we combine physical showroom verification with modern 3D visualization.
               </p>
             </div>
-            <div className="pt-2 flex items-center gap-6 text-xs font-mono text-muted-foreground">
-              <span>✦ VIRAR WEST FLAGSHIP</span>
-              <span>✦ 12+ YEARS HERITAGE</span>
-              <span>✦ FSC CERTIFIED</span>
+            <div className="pt-2 flex flex-wrap items-center gap-5 text-xs text-muted-foreground">
+              <span className="font-medium text-foreground">✓ Virar West Experience Center</span>
+              <span className="font-medium text-foreground">✓ 14+ Years in Business</span>
+              <span className="font-medium text-foreground">✓ IS:710 Marine Certified</span>
             </div>
           </div>
 

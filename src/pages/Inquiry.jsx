@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { MapPin, Phone, Mail, Clock, CheckCircle2 } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, CheckCircle2, MessageCircle } from "lucide-react";
 import { inquiryService } from "@/services/inquiryService";
 import { Image } from "@/components/ui/image";
 import PageHero from "@/components/PageHero";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function Inquiry() {
   const [params] = useSearchParams();
@@ -106,6 +107,24 @@ export default function Inquiry() {
           </form>
 
           <div className="space-y-4">
+            {/* Direct WhatsApp Contact Card */}
+            <a
+              href="https://wa.me/918788609224?text=Hi%20Shree%20Mangalam%20Team,%20I'd%20like%20to%20inquire%20about%20plywood%20finishes%20and%20an%20estimate."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-card border border-[#25D366]/40 hover:border-[#25D366] rounded-sm p-5 shadow-sm flex items-center justify-between gap-4 transition-colors group"
+            >
+              <div>
+                <p className="text-[11px] font-semibold text-[#25D366] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                  <MessageCircle className="h-3.5 w-3.5 fill-[#25D366]" /> Fast WhatsApp Response
+                </p>
+                <p className="text-xs text-muted-foreground">Share floor plans, photos or ask for current laminate stock directly.</p>
+              </div>
+              <span className="shrink-0 bg-[#25D366] text-white text-xs font-semibold px-3 py-1.5 rounded-sm group-hover:bg-[#20ba5a] transition-colors">
+                Chat Now
+              </span>
+            </a>
+
             <div className="wood-panel-dark rounded-sm overflow-hidden shadow-md border border-border/40">
               <div className="relative h-40">
                 <Image src="/images/store_suspended_timber.jpg" alt="Shree Mangalam Showroom" className="h-full w-full object-cover" fittingType="fill" />
@@ -129,6 +148,9 @@ export default function Inquiry() {
           </div>
         </div>
       </div>
+
+      {/* Floating WhatsApp trigger specifically for Contact & Inquiry page */}
+      <WhatsAppButton />
 
       <style>{`.input{width:100%;padding:0.65rem 0.85rem;font-size:0.875rem;background:hsl(var(--card));color:hsl(var(--foreground));border:1px solid hsl(var(--border));border-radius:0.125rem;}.input:focus{outline:none;border-color:hsl(var(--accent));}`}</style>
     </div>
