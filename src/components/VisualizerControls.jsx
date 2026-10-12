@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Eye, Package, Upload, CheckCircle2, Layers } from "lucide-react";
+import { Eye, Package, Upload, Layers } from "lucide-react";
 import { BUILTIN_SLOTS } from "./constants";
 
 export default function VisualizerControls({

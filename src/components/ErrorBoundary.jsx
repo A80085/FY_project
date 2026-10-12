@@ -12,7 +12,9 @@ export class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error("ErrorBoundary caught an error", error, errorInfo);
+    if (import.meta.env.DEV) {
+      console.error("ErrorBoundary caught an error", error, errorInfo);
+    }
     // If it's a dynamic chunk loading failure due to a new deployment, auto-reload once to fetch fresh assets
     const msg = error?.message || "";
     if (msg.includes("Failed to fetch dynamically imported module") || msg.includes("Importing a module script failed")) {

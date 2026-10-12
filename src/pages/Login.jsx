@@ -11,8 +11,10 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
-  const from = location.state?.from?.pathname || (email.includes("admin") ? "/admin" : "/");
+  const rawFrom = location.state?.from?.pathname;
+  // Basic OpSec: sanitize redirect path to prevent open redirects (e.g. protocol-relative URLs or backslashes)
+  const isValidRedirect = typeof rawFrom === "string" && rawFrom.startsWith("/") && !rawFrom.startsWith("//") && !rawFrom.includes("\\");
+  const from = isValidRedirect ? rawFrom : (email.includes("admin") ? "/admin" : "/");
 
   async function handleSubmit(e) {
     e.preventDefault();

@@ -30,3 +30,30 @@ dist-ssr
 .vite
 .firebase/
 scratch/
+
+# Security & Secrets (OpSec)
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+id_rsa*
+serviceAccountKey*.json
+*-adminsdk-*.json
+google-services.json
+GoogleService-Info.plist
+credentials.json
+client_secret*.json
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+
+# Database Dumps & Local Backups
+*.sql
+*.sqlite
+*.db
+*.dump
+
+# Cache & Diagnostics
+.eslintcache
+Thumbs.db

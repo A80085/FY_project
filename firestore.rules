@@ -2,11 +2,12 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper: check if requester is admin/manager via Custom Claims (zero read cost) or Firestore user doc
+    // Helper: check if requester is admin/manager via Custom Claims (zero read cost), master email, or Firestore user doc
     function isPrivilegedUser() {
       return request.auth != null &&
              (
                (request.auth.token != null && request.auth.token.role in ["admin", "manager"]) ||
+               (request.auth.token.email in ["admin@mangalam.com", "admin1@mangalam.com"]) ||
                (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
                 get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ["admin", "manager"])
              );
@@ -24,9 +25,15 @@ service cloud.firestore {
       allow write: if isPrivilegedUser();
     }
 
-    // Inquiries: anyone can submit a form (create), only admin/manager can read/update/delete
+    // Inquiries: public submission with schema and size validation, admin/manager read/update/delete only
     match /inquiries/{docId} {
-      allow create: if true;
+      allow create: if request.resource.data.name is string &&
+                       request.resource.data.name.size() > 0 &&
+                       request.resource.data.name.size() <= 120 &&
+                       (!("phone" in request.resource.data) || (request.resource.data.phone is string && request.resource.data.phone.size() <= 30)) &&
+                       (!("email" in request.resource.data) || (request.resource.data.email is string && request.resource.data.email.size() <= 120)) &&
+                       (!("message" in request.resource.data) || (request.resource.data.message is string && request.resource.data.message.size() <= 2000)) &&
+                       (!("status" in request.resource.data) || request.resource.data.status in ["New", "new", "Pending", "pending"]);
       allow read, update, delete: if isPrivilegedUser();
     }
 
@@ -36,17 +43,24 @@ service cloud.firestore {
       allow write: if isPrivilegedUser();
     }
 
-    // Users: authenticated users can read all profiles (needed for role management UI),
-    // but can ONLY write their own document and CANNOT change their own role field.
+    // Users:
+    // - get: single profile read allowed for own document or admin/manager (prevents customer harvesting)
+    // - list: collection queries restricted to admin/manager
+    // - create: user can only initialize self as customer (or designated master admin email), preventing privilege escalation
+    // - update: user cannot modify own role; only admin/manager can alter roles
     match /users/{userId} {
-      allow read: if request.auth != null;
-      // Own profile: can update anything except the role field
-      allow update: if request.auth.uid == userId &&
-                       !("role" in request.resource.data.diff(resource.data).affectedKeys());
-      // Create own doc (on first login/register)
-      allow create: if request.auth.uid == userId;
-      // Only admin/manager can change roles or write other users' docs
-      allow write: if isPrivilegedUser();
+      allow get: if request.auth != null && (request.auth.uid == userId || isPrivilegedUser());
+      allow list: if isPrivilegedUser();
+      allow create: if (request.auth.uid == userId &&
+                        (
+                          !("role" in request.resource.data) ||
+                          request.resource.data.role == "customer" ||
+                          (request.auth.token.email in ["admin@mangalam.com", "admin1@mangalam.com"] && request.resource.data.role == "admin")
+                        )) || isPrivilegedUser();
+      allow update: if (request.auth.uid == userId &&
+                        !("role" in request.resource.data.diff(resource.data).affectedKeys())) ||
+                       isPrivilegedUser();
+      allow delete: if isPrivilegedUser();
     }
 
     // Suppliers: admin/manager only
