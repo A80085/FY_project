@@ -899,7 +899,7 @@ const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotat
         TWO: THREE.TOUCH.DOLLY_PAN
       };
       controls.panSpeed = 1.0;
-      if (dom) dom.style.cursor = "grab";
+      if (dom) dom.style.cursor = "url('/images/cursor-orbit.svg') 16 16, grab, auto";
     }
   }, [interactionMode]);
 
@@ -908,10 +908,18 @@ const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotat
     if (!dom) return;
 
     const onPointerDown = () => {
-      dom.style.cursor = "grabbing";
+      if (interactionMode === "hand") {
+        dom.style.cursor = "grabbing";
+      } else {
+        dom.style.cursor = "url('/images/cursor-orbit-active.svg') 16 16, grabbing, auto";
+      }
     };
     const onPointerUp = () => {
-      dom.style.cursor = "grab";
+      if (interactionMode === "hand") {
+        dom.style.cursor = "grab";
+      } else {
+        dom.style.cursor = "url('/images/cursor-orbit.svg') 16 16, grab, auto";
+      }
     };
 
     dom.addEventListener("pointerdown", onPointerDown);
@@ -921,12 +929,17 @@ const VisualizerCanvas = forwardRef(({ room, selections, slotSwatches, autoRotat
       dom.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointerup", onPointerUp);
     };
-  }, []);
+  }, [interactionMode]);
+
+  const activeCursor = interactionMode === "hand" 
+    ? "grab" 
+    : "url('/images/cursor-orbit.svg') 16 16, grab, auto";
 
   return (
     <div 
       ref={mountRef} 
-      className={`w-full aspect-square sm:aspect-[4/3] lg:aspect-auto lg:h-[min(620px,65vh)] min-h-[340px] cursor-grab active:cursor-grabbing select-none relative`} 
+      style={{ cursor: activeCursor }}
+      className={`w-full aspect-square sm:aspect-[4/3] lg:aspect-auto lg:h-[min(620px,65vh)] min-h-[340px] select-none relative`} 
     />
   );
 });
