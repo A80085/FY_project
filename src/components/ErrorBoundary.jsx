@@ -13,6 +13,16 @@ export class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error("ErrorBoundary caught an error", error, errorInfo);
+    // If it's a dynamic chunk loading failure due to a new deployment, auto-reload once to fetch fresh assets
+    const msg = error?.message || "";
+    if (msg.includes("Failed to fetch dynamically imported module") || msg.includes("Importing a module script failed")) {
+      const lastReload = sessionStorage.getItem("chunk_reload_ts");
+      const now = Date.now();
+      if (!lastReload || now - Number(lastReload) > 10000) {
+        sessionStorage.setItem("chunk_reload_ts", String(now));
+        window.location.reload();
+      }
+    }
   }
 
   render() {
@@ -24,17 +34,9 @@ export class ErrorBoundary extends React.Component {
               <AlertTriangle className="h-6 w-6" />
             </div>
             <h1 className="text-xl font-bold text-primary mb-2 font-display">Something went wrong</h1>
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-sm text-muted-foreground mb-6">
               We encountered an unexpected error. Please try refreshing the page or returning home.
             </p>
-            {this.state.error?.message && (
-              <details className="text-left text-xs bg-muted/50 p-2.5 rounded border border-border/60 mb-5 text-muted-foreground font-mono overflow-auto max-h-32">
-                <summary className="cursor-pointer text-[11px] font-sans font-medium text-destructive mb-1">
-                  View Diagnostic Details
-                </summary>
-                {this.state.error.message}
-              </details>
-            )}
             <div className="flex gap-3 justify-center">
               <button 
                 onClick={() => {
