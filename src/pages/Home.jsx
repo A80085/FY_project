@@ -11,7 +11,8 @@ import {
   MapPin,
   Clock,
   Phone,
-  Building2
+  Building2,
+  Plus
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { productService } from "@/services/productService";
@@ -47,8 +48,8 @@ const ROOM_PRESETS = [
       { name: "Aged Antique Brass", type: "Profile Hardware", color: "#C59B27" }
     ],
     hotspots: [
-      { x: "24%", y: "42%", label: "Smoked Walnut Fluted Paneling" },
-      { x: "48%", y: "76%", label: "Calacatta Quartz Low Table" }
+      { x: "12%", y: "38%", label: "Smoked Walnut Fluted Paneling", type: "Natural Veneer", color: "#4A3525" },
+      { x: "47%", y: "76%", label: "Calacatta Quartz Low Table", type: "Engineered Stone", color: "#E8E5DD" }
     ]
   },
   {
@@ -63,8 +64,8 @@ const ROOM_PRESETS = [
       { name: "Brushed Brass Bar Pulls", type: "Cabinet Hardware", color: "#D4AF37" }
     ],
     hotspots: [
-      { x: "30%", y: "26%", label: "Ivory Matte Overhead Cabinets" },
-      { x: "62%", y: "68%", label: "Seamless Waterfall Quartz Island" }
+      { x: "28%", y: "20%", label: "Ivory Matte Overhead Cabinets", type: "Acrylic Sheet", color: "#ECE7DE" },
+      { x: "35%", y: "72%", label: "Seamless Waterfall Quartz Island", type: "Engineered Quartz", color: "#E2DDD3" }
     ]
   },
   {
@@ -79,8 +80,8 @@ const ROOM_PRESETS = [
       { name: "Smoked Bronze Handles", type: "Wardrobe Hardware", color: "#544638" }
     ],
     hotspots: [
-      { x: "50%", y: "38%", label: "Book-Matched Teak & Fluted Bedhead" },
-      { x: "82%", y: "52%", label: "Floor-to-Ceiling Wardrobes" }
+      { x: "50%", y: "36%", label: "Book-Matched Teak & Fluted Bedhead", type: "Natural Veneer", color: "#6A4526" },
+      { x: "88%", y: "46%", label: "Floor-to-Ceiling Wardrobes", type: "Textured Laminate", color: "#A89A89" }
     ]
   },
   {
@@ -95,8 +96,8 @@ const ROOM_PRESETS = [
       { name: "Blackened Steel Accents", type: "Metal Trim", color: "#222222" }
     ],
     hotspots: [
-      { x: "24%", y: "35%", label: "Built-in Floating Bookcase" },
-      { x: "48%", y: "64%", label: "Integrated Cable-Management Desk" }
+      { x: "24%", y: "38%", label: "Built-in Floating Bookcase", type: "Matte Veneer & LED", color: "#362B28" },
+      { x: "38%", y: "63%", label: "Integrated Cable-Management Desk", type: "Matte Veneer", color: "#4A3B32" }
     ]
   }
 ];
@@ -410,36 +411,115 @@ export default function Home() {
                 </div>
 
                 {/* Hotspots */}
-                {currentRoom.hotspots.map((pin, i) => (
-                  <div
-                    key={i}
-                    style={{ left: pin.x, top: pin.y }}
-                    className="absolute z-20 -translate-x-1/2 -translate-y-1/2"
-                  >
-                    <button
-                      onClick={() => setActiveHotspot(activeHotspot === i ? null : i)}
-                      className="group/pin relative flex items-center justify-center"
+                {currentRoom.hotspots.map((pin, i) => {
+                  const isTopHalf = parseInt(pin.y) < 28;
+                  const isRightHalf = parseInt(pin.x) > 75;
+                  const isLeftHalf = parseInt(pin.x) < 25;
+                  const isActive = activeHotspot === i;
+
+                  return (
+                    <div
+                      key={i}
+                      style={{ left: pin.x, top: pin.y }}
+                      className="absolute z-20 -translate-x-1/2 -translate-y-1/2"
                     >
-                      <span className="relative h-6 w-6 rounded-full bg-accent text-accent-foreground font-bold text-xs flex items-center justify-center shadow-lg hover:scale-110 transition-transform border-2 border-white">
-                        +
-                      </span>
-                    </button>
-
-                    {activeHotspot === i && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-background text-foreground px-3 py-2 rounded-md border border-border shadow-xl text-xs font-medium whitespace-nowrap z-30"
+                      <button
+                        onClick={() => setActiveHotspot(isActive ? null : i)}
+                        aria-label={`Inspect ${pin.label}`}
+                        className={`group/pin relative flex items-center justify-center p-2 focus:outline-none transition-transform duration-300 ${
+                          isActive ? "scale-110" : "hover:scale-110"
+                        }`}
                       >
-                        <p className="text-[10px] uppercase tracking-wider text-accent font-semibold">Specified Material</p>
-                        <p>{pin.label}</p>
-                      </motion.div>
-                    )}
-                  </div>
-                ))}
+                        {/* Outer ambient pulsing ripple ring */}
+                        <span className="absolute inset-0 rounded-full bg-accent/40 animate-ping opacity-60 pointer-events-none" />
 
-                <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2 bg-black/70 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-full text-xs">
-                  <Eye className="h-3.5 w-3.5 text-accent" />
+                        {/* Soft frosted halo backdrop */}
+                        <span className="absolute inset-0.5 rounded-full bg-black/40 backdrop-blur-xs border border-white/30 transition-transform duration-300 group-hover/pin:scale-125" />
+
+                        {/* Core luxury metallic button */}
+                        <span
+                          className={`relative h-7 w-7 rounded-full flex items-center justify-center text-white transition-all duration-300 border-2 border-white/90 shadow-[0_4px_14px_rgba(0,0,0,0.5),0_0_12px_rgba(212,175,55,0.45)] ${
+                            isActive
+                              ? "bg-gradient-to-tr from-amber-600 via-amber-500 to-amber-400 ring-2 ring-white ring-offset-2 ring-offset-black/80 shadow-[0_0_20px_rgba(212,175,55,0.8)]"
+                              : "bg-gradient-to-tr from-amber-700 via-accent to-amber-500 hover:brightness-110"
+                          }`}
+                        >
+                          <Plus
+                            className={`h-3.5 w-3.5 stroke-[2.5] text-white transition-transform duration-300 ${
+                              isActive ? "rotate-45" : "group-hover/pin:rotate-90"
+                            }`}
+                          />
+                        </span>
+                      </button>
+
+                      {/* Tooltip Popover Card */}
+                      <AnimatePresence>
+                        {isActive && (
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: isTopHalf ? -6 : 6 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.92, y: isTopHalf ? -4 : 4 }}
+                            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                            className={`absolute z-30 min-w-[210px] max-w-[270px] p-3 rounded-xl bg-zinc-950/92 backdrop-blur-xl border border-white/20 text-white shadow-[0_12px_36px_rgba(0,0,0,0.65)] ${
+                              isTopHalf ? "top-full mt-2.5" : "bottom-full mb-2.5"
+                            } ${
+                              isRightHalf
+                                ? "right-0"
+                                : isLeftHalf
+                                ? "left-0"
+                                : "left-1/2 -translate-x-1/2"
+                            }`}
+                          >
+                            {/* Directional pointer caret */}
+                            <div
+                              className={`absolute w-2.5 h-2.5 bg-zinc-950 border-white/20 rotate-45 ${
+                                isTopHalf
+                                  ? "-top-1.5 border-t border-l"
+                                  : "-bottom-1.5 border-b border-r"
+                              } ${
+                                isRightHalf
+                                  ? "right-3.5"
+                                  : isLeftHalf
+                                  ? "left-3.5"
+                                  : "left-1/2 -translate-x-1/2"
+                              }`}
+                            />
+
+                            {/* Header: Swatch + Category */}
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <span
+                                className="h-2.5 w-2.5 rounded-full shrink-0 border border-white/40 shadow-xs"
+                                style={{ backgroundColor: pin.color || "#D4AF37" }}
+                              />
+                              <span className="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-semibold truncate">
+                                {pin.type || "Specified Material"}
+                              </span>
+                            </div>
+
+                            {/* Material Name */}
+                            <p className="text-xs font-semibold text-white leading-snug">
+                              {pin.label}
+                            </p>
+
+                            {/* Footer hint */}
+                            <div className="mt-2.5 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-zinc-400">
+                              <span>Applied Spec</span>
+                              <Link
+                                to="/catalog"
+                                className="text-amber-300 hover:text-white font-medium inline-flex items-center gap-0.5 transition-colors"
+                              >
+                                View finish <ArrowUpRight className="h-2.5 w-2.5" />
+                              </Link>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
+
+                <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2 bg-black/75 backdrop-blur-md text-white/90 px-3.5 py-1.5 rounded-full text-xs border border-white/10 shadow-lg">
+                  <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
                   <span>Click plus pins to inspect material specs</span>
                 </div>
               </div>
@@ -469,24 +549,53 @@ export default function Home() {
                     </p>
 
                     <div className="space-y-2.5">
-                      {currentRoom.materials.map((mat, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center justify-between p-2.5 rounded-md border border-border/70 bg-muted/20"
-                        >
-                          <div className="flex items-center gap-3">
-                            <span
-                              className="h-6 w-6 rounded-sm border border-border/50 shrink-0"
-                              style={{ backgroundColor: mat.color }}
-                            />
-                            <div>
-                              <p className="text-xs font-semibold text-foreground">{mat.name}</p>
-                              <p className="text-[11px] text-muted-foreground">{mat.type}</p>
+                      {currentRoom.materials.map((mat, idx) => {
+                        const activePin = activeHotspot !== null ? currentRoom.hotspots[activeHotspot] : null;
+                        const isMatch = activePin && (
+                          activePin.label.toLowerCase().includes(mat.name.toLowerCase()) ||
+                          mat.name.toLowerCase().includes(activePin.label.toLowerCase()) ||
+                          activePin.type === mat.type
+                        );
+
+                        return (
+                          <div
+                            key={idx}
+                            onClick={() => {
+                              const matchIdx = currentRoom.hotspots.findIndex(h =>
+                                h.label.toLowerCase().includes(mat.name.toLowerCase()) ||
+                                mat.name.toLowerCase().includes(h.label.toLowerCase())
+                              );
+                              if (matchIdx !== -1) {
+                                setActiveHotspot(activeHotspot === matchIdx ? null : matchIdx);
+                              }
+                            }}
+                            className={`flex items-center justify-between p-2.5 rounded-md border transition-all cursor-pointer ${
+                              isMatch
+                                ? "border-accent bg-accent/15 shadow-sm ring-1 ring-accent/40"
+                                : "border-border/70 bg-muted/20 hover:bg-muted/40"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <span
+                                className="h-6 w-6 rounded-sm border border-border/50 shrink-0 shadow-xs"
+                                style={{ backgroundColor: mat.color }}
+                              />
+                              <div>
+                                <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                                  {mat.name}
+                                  {isMatch && (
+                                    <span className="text-[9px] uppercase px-1.5 py-0.5 rounded-full bg-accent text-accent-foreground font-bold leading-none">
+                                      Active Pin
+                                    </span>
+                                  )}
+                                </p>
+                                <p className="text-[11px] text-muted-foreground">{mat.type}</p>
+                              </div>
                             </div>
+                            <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400">In Stock</span>
                           </div>
-                          <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400">In Stock</span>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
