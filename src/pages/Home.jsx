@@ -5,7 +5,6 @@ import {
   Maximize, 
   ArrowUpRight, 
   Sparkles, 
-  Eye, 
   CheckCircle2, 
   Sun,
   MapPin,
