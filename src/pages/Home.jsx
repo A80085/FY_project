@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { productService } from "@/services/productService";
 import ProductCard from "@/components/ProductCard";
 import { Image } from "@/components/ui/image";
+import { PRODUCT_SEED } from "@/lib/interiorData";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 25 },
@@ -121,7 +122,9 @@ export default function Home() {
   const [activeHotspot, setActiveHotspot] = useState(null);
 
   useEffect(() => {
-    productService.list("-created_date", 8).then(setProducts).catch(() => setProducts([]));
+    productService.list("-created_date", 8)
+      .then((data) => setProducts(data?.length ? data : PRODUCT_SEED))
+      .catch(() => setProducts(PRODUCT_SEED));
   }, []);
 
   const featured = products.filter((p) => p.is_featured);

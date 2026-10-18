@@ -37,9 +37,12 @@ export const inquiryService = {
 
   async create(data) {
     const newId = "inq_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4);
+    const customerName = data.customer_name || data.name || "Customer";
     const newItem = {
       ...data,
       id: newId,
+      name: customerName,
+      customer_name: customerName,
       status: data.status || "New",
       source: data.source || "Website",
       created_date: new Date().toISOString(),
