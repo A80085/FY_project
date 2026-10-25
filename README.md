@@ -1,49 +1,86 @@
-# Shree Mangalam Interior Studio
+# Shree Mangalam Ply and Interiors
 
-This is a comprehensive full-stack React + Vite web application. It serves as an interior design storefront, 3D visualizer, and an administrative dashboard for an interior and material showroom. 
+Website for Shree Mangalam Ply and Interiors, a material showroom in Virar West, Mumbai. Built as a final year project.
 
-The project is fully integrated with **Firebase** (Authentication + Firestore) for real-time cloud data persistence.
+The site has a public storefront for customers and a private management portal for the shop owner/staff.
 
-## Project Highlights
+## What it does
 
-- **3D Room Visualizer:** Built with vanilla Three.js inside React, allowing users to switch room types, apply custom textures (walls, flooring, upholstery, cabinetry), modify lighting (warm/cool), orbit/zoom, and take high-resolution screenshots.
-- **Firebase Backend:** 
-  - **Auth:** Secure admin login system.
-  - **Firestore:** Cloud persistence for the product catalog, gallery, customer inquiries, and global store settings.
-- **Admin Dashboard:** Includes inventory tracking (CRUD), project gallery management, lead/inquiries handling, global settings, and sales analytics/charts using Recharts.
-- **Estimate Generator:** Lets customers generate PDF quotations for interior setups using jsPDF and html2canvas.
-- **Responsive & Modern UI:** Styled meticulously with Tailwind CSS and Radix UI primitives, featuring custom loaders, interactive dialogs, toasts, full mobile responsiveness, and accessibility (aria-labels).
+**Public side (for customers):**
+- Browse the product catalog — plywood, laminates, veneer, hardware
+- View project gallery
+- Use the 3D room visualizer to preview finishes (Three.js)
+- Generate a rough cost estimate and download it as a PDF
+- Submit an inquiry / contact form
 
-## Technologies Used
+**Admin side (for shop staff):**
+- Dashboard with sales stats and charts
+- Inventory management (add/edit/delete products)
+- View and manage customer inquiries
+- Record in-store sales and generate invoices
+- Manage suppliers and purchase orders
+- Upload/remove gallery images
+- User role management (admin, manager, staff, customer)
+- Edit store settings (showroom details, labour rate, GST rate)
 
-- **Framework:** React 18
-- **Build Tool:** Vite
-- **Styling:** Tailwind CSS
-- **Components:** Shadcn/ui (Radix Primitives), Lucide Icons
-- **3D Rendering:** Three.js
-- **Backend (BaaS):** Firebase (Auth + Firestore)
-- **Charts:** Recharts
-- **PDF Generation:** jsPDF, html2canvas
-- **Routing:** React Router DOM
+## Tech used
 
-## Setup & Running Locally
+- React 18 + Vite
+- Tailwind CSS + shadcn/ui
+- Firebase (Auth + Firestore)
+- Three.js (3D visualizer)
+- Recharts (dashboard charts)
+- jsPDF + html2canvas (PDF estimates)
+- React Router DOM
+- Framer Motion
 
-1. **Install dependencies:**
-   npm install
+## Running locally
 
-2. **Run the development server:**
-   npm run dev
+1. Clone the repo
+2. Copy `.env.example` to `.env` and fill in your Firebase credentials
+3. Run:
 
-3. Open the local Vite URL (usually http://localhost:5173).
+```bash
+npm install
+npm run dev
+```
 
-### Firebase Setup
-The project uses Firebase for data persistence. A configuration file src/lib/firebase.js connects to a Firestore instance. Ensure your Firebase Firestore Security Rules are set to allow public reads and authenticated writes (as implemented in firestore.rules).
+Open `http://localhost:5173`
 
-## Project Structure
+## Environment variables
 
-- src/pages - Public pages (Home, Catalog, Gallery, Estimate, Visualizer, About) and Admin pages (Dashboard, Inventory, GalleryManager, Inquiries, Settings)
-- src/components - Reusable UI components (admin, visualizer, ui, layout)
-- src/services - Firebase API wrappers (productService, galleryService, inquiryService, settingsService, authService)
-- src/lib - Shared utilities, constants, and Firebase configuration
-- src/context - Global React contexts (e.g., AuthContext)
-- public/images - AI-generated static assets and product images
+Create a `.env` file (see `.env.example`):
+
+```
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+VITE_FIREBASE_MEASUREMENT_ID=
+VITE_MASTER_ADMIN_EMAIL=
+```
+
+## Firebase setup
+
+- Firestore rules are in `firestore.rules` — products and gallery are publicly readable, everything else requires auth
+- To deploy rules: `firebase deploy --only firestore:rules`
+- To deploy the site: `npm run build` then `firebase deploy --only hosting`
+
+## Project structure
+
+```
+src/
+  pages/       — all page components (public + admin)
+  components/  — reusable components and UI
+  services/    — Firebase data access (one file per collection)
+  lib/         — shared utilities and seed data
+  utils/       — PDF generator
+public/
+  images/      — static image assets
+```
+
+## Admin login
+
+The master admin email is set via `VITE_MASTER_ADMIN_EMAIL` in `.env`. Register with that email and it gets auto-assigned the admin role.

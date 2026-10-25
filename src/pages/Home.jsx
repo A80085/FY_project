@@ -285,8 +285,8 @@ export default function Home() {
         <div className="container-px max-w-7xl mx-auto">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 divide-y sm:divide-y-0 sm:divide-x divide-border/60">
             {[
-              { stat: "14+ Years", title: "Showroom Experience", desc: "Serving Virar West, Palghar & Mumbai since 2010" },
-              { stat: "2,400+", title: "Homes & Flats Furnished", desc: "Modular kitchens, wardrobes & living suites" },
+              { stat: "16+ Years", title: "Showroom Experience", desc: "Serving Virar West, Palghar & Mumbai since 2010" },
+              { stat: "1,800+", title: "Carpenters & Builders Served", desc: "Modular kitchens, wardrobes & full-home joinery" },
               { stat: "180+", title: "Finishes in Stock", desc: "Physical laminate, veneer & acrylic swatches" },
               { stat: "10-Year", title: "Plywood Warranty", desc: "100% genuine BWP IS:710 marine grade guarantee" }
             ].map((item, idx) => (
@@ -753,7 +753,7 @@ export default function Home() {
                 </p>
                 <div className="flex flex-wrap items-center gap-5 pt-2 text-xs text-white/80">
                   <span className="flex items-center gap-1.5">
-                    <Phone className="h-3.5 w-3.5 text-accent" /> +91 87886 09224 / +91 98250 12345
+                    <Phone className="h-3.5 w-3.5 text-accent" /> +91 87886 09224
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="h-3.5 w-3.5 text-accent" /> Mon – Sat: 10:00 AM – 8:30 PM (Sunday by Appointment)

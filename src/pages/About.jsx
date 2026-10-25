@@ -90,7 +90,7 @@ export default function About() {
             </div>
             <div className="pt-2 flex flex-wrap items-center gap-5 text-xs text-muted-foreground">
               <span className="font-medium text-foreground">✓ Virar West Experience Center</span>
-              <span className="font-medium text-foreground">✓ 14+ Years in Business</span>
+              <span className="font-medium text-foreground">✓ 16+ Years in Business</span>
               <span className="font-medium text-foreground">✓ IS:710 Marine Certified</span>
             </div>
           </div>

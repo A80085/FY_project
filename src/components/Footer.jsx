@@ -36,7 +36,7 @@ export default function Footer() {
               <li><Link to="/catalog" className="hover:text-accent transition-colors">Material Archive</Link></li>
               <li><Link to="/visualizer" className="hover:text-accent transition-colors">3D Studio</Link></li>
               <li><Link to="/estimate" className="hover:text-accent transition-colors">Cost Estimator</Link></li>
-              <li><Link to="/gallery" className="hover:text-accent transition-colors">Spatial Case Studies</Link></li>
+              <li><Link to="/gallery" className="hover:text-accent transition-colors">Project Gallery</Link></li>
               <li><Link to="/inquiry" className="hover:text-accent transition-colors">Site Visit Request</Link></li>
               <li><Link to="/login" className="hover:text-accent transition-colors">Staff &amp; Admin Portal</Link></li>
             </ul>
@@ -64,7 +64,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="h-4 w-4 text-accent shrink-0" />
-                <span>+91 87886 09224 / +91 98250 12345</span>
+                <span>+91 87886 09224</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="h-4 w-4 text-accent shrink-0" />
@@ -79,11 +79,9 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-white/60">
-          <p>© {new Date().getFullYear()} Shree Mangalam Interior Studio.</p>
+          <p>© {new Date().getFullYear()} Shree Mangalam Ply and Interiors. All rights reserved.</p>
           <div className="flex gap-6">
-            <Link to="/inquiry" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link to="/inquiry" className="hover:text-white transition-colors">Terms of Service</Link>
-            <Link to="/admin" className="hover:text-accent transition-colors">Admin Access</Link>
+            <Link to="/admin" className="hover:text-accent transition-colors">Admin Portal</Link>
           </div>
         </div>
       </div>
