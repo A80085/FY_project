@@ -33,9 +33,9 @@ const staggerContainer = {
 
 // Curated complementary material pairings for architectural moodboarding
 const COMPLEMENTARY_PAIRINGS = [
-  { name: "Aged Knurled Brass Pull", category: "Hardware", finish: "Satin Gold", image: "/images/prod_brass_handle_1788942126754.jpg", code: "ACC-01" },
-  { name: "Calacatta Quartz", category: "Stone", finish: "Honed", image: "/images/prod_calacatta_quartz.jpg", code: "STN-03" },
-  { name: "Ivory Matte Acrylic", category: "Laminate", finish: "Anti-Fingerprint", image: "/images/prod_ivory_acrylic_1788942113723.jpg", code: "ACR-08" }
+  { name: "Aged Knurled Brass Pull", category: "Hardware", finish: "Satin Gold", image: "/images/sm_prod_brass_handle.jpg", code: "ACC-01" },
+  { name: "Calacatta Quartz", category: "Stone", finish: "Honed", image: "/images/sm_prod_quartz_slab.jpg", code: "STN-03" },
+  { name: "Ivory Matte Acrylic", category: "Laminate", finish: "Anti-Fingerprint", image: "/images/sm_prod_ivory_acrylic.jpg", code: "ACR-08" }
 ];
 
 export default function ProductDetail() {
@@ -80,7 +80,7 @@ export default function ProductDetail() {
   }
 
   const lowStock = product.stock <= (product.min_threshold || 10);
-  const displayImage = product.image_url || "/images/prod_walnut_lam_1788942098886.jpg";
+  const displayImage = product.image_url || "/images/sm_prod_walnut_laminate.jpg";
 
   return (
     <div className="min-h-screen pt-28 sm:pt-32 pb-24 bg-background text-foreground">
@@ -298,7 +298,7 @@ export default function ProductDetail() {
             <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 text-xs text-muted-foreground font-light border-t border-border/40">
               <p className="flex items-center gap-2.5">
                 <Truck className="h-4 w-4 text-accent shrink-0" />
-                <span>Dedicated millwork delivery across Mumbai, Palghar, Thane &amp; Gujarat.</span>
+                <span>Dedicated millwork delivery across Virar, Vasai, Mira-Bhayandar, Mumbai &amp; Thane.</span>
               </p>
               <p className="flex items-center gap-2.5">
                 <ShieldCheck className="h-4 w-4 text-accent shrink-0" />

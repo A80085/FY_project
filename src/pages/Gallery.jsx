@@ -125,7 +125,7 @@ export default function Gallery() {
   return (
     <div className="pb-24 bg-background text-foreground">
       <PageHero
-        eyebrow="Architectural Portfolio · South Gujarat"
+        eyebrow="Architectural Portfolio | Virar & Western Suburbs"
         title="Delivered Spatial Archives"
         description="A curated journal of private residences, modular culinary spaces, and executive ateliers executed with millimeter joinery precision."
         image="/images/gallery_walnut_1788941961232.jpg"
@@ -313,7 +313,7 @@ export default function Gallery() {
                     </div>
                     <div>
                       <span className="text-[10px] uppercase tracking-wider text-muted-foreground block mb-0.5">Location</span>
-                      <span className="font-medium text-foreground">{selectedCaseStudy.location}, Gujarat</span>
+                      <span className="font-medium text-foreground">{selectedCaseStudy.location}</span>
                     </div>
                     <div>
                       <span className="text-[10px] uppercase tracking-wider text-muted-foreground block mb-0.5">Year Completed</span>
